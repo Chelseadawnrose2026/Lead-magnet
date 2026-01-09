@@ -10,6 +10,7 @@ import Testimonials from "./components/Testimonials";
 import Contact from "./components/Contact";
 import Booking from "./components/Booking";
 import Footer from "./components/Footer";
+import Admin from "./components/Admin";
 import { Toaster } from "./components/ui/sonner";
 
 const Home = () => {
@@ -37,6 +38,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/admin" element={<Admin />} />
         </Routes>
       </BrowserRouter>
     </div>
