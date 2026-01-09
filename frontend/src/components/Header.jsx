@@ -31,10 +31,11 @@ const Header = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           <div className="flex-shrink-0">
-            <h1 className="text-2xl font-bold" style={{ color: '#7B3B3B' }}>
-              Chelsea Flynn
-            </h1>
-            <p className="text-xs text-gray-600">Catholic Speaker & Coach</p>
+            <img
+              src="https://customer-assets.emergentagent.com/job_messiah-message/artifacts/hhhu4js6_4328b845-5ddb-4309-9762-a6b2dd73cb70.png"
+              alt="Chelsea Flynn"
+              className="h-12 w-auto"
+            />
           </div>
 
           {/* Desktop Navigation */}
