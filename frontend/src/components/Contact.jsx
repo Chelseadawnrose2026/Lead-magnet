@@ -5,6 +5,10 @@ import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { Label } from './ui/label';
 import { toast } from 'sonner';
+import axios from 'axios';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +17,7 @@ const Contact = () => {
     phone: '',
     message: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -21,12 +26,23 @@ const Contact = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Mock submission
-    console.log('Contact form submitted:', formData);
-    toast.success('Thank you! Your message has been sent. Chelsea will get back to you soon.');
-    setFormData({ name: '', email: '', phone: '', message: '' });
+    setIsSubmitting(true);
+
+    try {
+      const response = await axios.post(`${API}/contact`, formData);
+      
+      if (response.data) {
+        toast.success('Thank you! Your message has been sent. Chelsea will get back to you soon.');
+        setFormData({ name: '', email: '', phone: '', message: '' });
+      }
+    } catch (error) {
+      console.error('Error submitting contact form:', error);
+      toast.error('Sorry, there was an error sending your message. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
