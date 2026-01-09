@@ -59,13 +59,23 @@ const About = () => {
                       >
                         <Icon className="w-6 h-6" style={{ color: '#7B3B3B' }} />
                       </div>
-                      <div>
+                      <div className="flex-1">
                         <h3 className="text-xl font-bold mb-2" style={{ color: '#7B3B3B' }}>
                           {highlight.title}
                         </h3>
-                        <p className="text-gray-600 leading-relaxed">
+                        <p className="text-gray-600 leading-relaxed mb-3">
                           {highlight.description}
                         </p>
+                        {highlight.title === 'Radio' && (
+                          <Button
+                            onClick={() => scrollToSection('radio')}
+                            size="sm"
+                            style={{ backgroundColor: '#7B3B3B' }}
+                            className="hover:opacity-90 transition-opacity duration-200 mt-2"
+                          >
+                            Listen to Radio Show
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </div>
