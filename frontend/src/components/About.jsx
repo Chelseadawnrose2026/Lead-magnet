@@ -1,6 +1,7 @@
 import React from 'react';
 import { mockData } from '../mock';
 import { Users, Mountain, Heart } from 'lucide-react';
+import { Button } from './ui/button';
 
 const About = () => {
   const { about } = mockData;
@@ -8,7 +9,14 @@ const About = () => {
   const iconMap = {
     'Catholic Convert': Users,
     'Mother of Three': Heart,
-    'Radio Host': Mountain
+    'Radio': Mountain
+  };
+
+  const scrollToSection = (id) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return (
