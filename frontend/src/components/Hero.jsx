@@ -18,13 +18,14 @@ const Hero = () => {
       {/* Translucent background image */}
       <div className="absolute inset-0 z-0">
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-30"
+          className="absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage: "url('https://customer-assets.emergentagent.com/job_messiah-message/artifacts/2oqtbyq8_20250913-YAN02706.jpg')",
-            backgroundPosition: 'center center'
+            backgroundPosition: 'center center',
+            opacity: 0.6
           }}
         ></div>
-        <div className="absolute inset-0 bg-white/70"></div>
+        <div className="absolute inset-0 bg-white/40"></div>
       </div>
 
       <div className="max-w-6xl mx-auto relative z-10">
