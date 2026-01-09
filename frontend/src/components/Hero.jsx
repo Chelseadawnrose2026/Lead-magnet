@@ -18,33 +18,24 @@ const Hero = () => {
       {/* Translucent background image */}
       <div className="absolute inset-0 z-0">
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-15"
+          className="absolute inset-0 bg-cover bg-center opacity-30"
           style={{
-            backgroundImage: "url('https://customer-assets.emergentagent.com/job_messiah-message/artifacts/dpav30r7_20250913-YAN02706.jpg')",
-            backgroundPosition: 'center top'
+            backgroundImage: "url('https://customer-assets.emergentagent.com/job_messiah-message/artifacts/2oqtbyq8_20250913-YAN02706.jpg')",
+            backgroundPosition: 'center center'
           }}
         ></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-white/80 to-white"></div>
+        <div className="absolute inset-0 bg-white/70"></div>
       </div>
 
       <div className="max-w-6xl mx-auto relative z-10">
         {/* Centered Content */}
-        <div className="text-center space-y-5 mb-12">
-          {/* Logo */}
-          <div className="flex justify-center mb-6">
-            <img
-              src="https://customer-assets.emergentagent.com/job_messiah-message/artifacts/hhhu4js6_4328b845-5ddb-4309-9762-a6b2dd73cb70.png"
-              alt="Chelsea Flynn"
-              className="h-20 w-auto md:h-28"
-            />
-          </div>
-
+        <div className="text-center space-y-5 mb-12 pt-8">
           {/* Location Badge */}
           <div className="flex justify-center">
             <div className="inline-flex items-center px-4 py-2 rounded-full" style={{ backgroundColor: '#E0C4C0' }}>
               <MapPin className="w-4 h-4 mr-2" style={{ color: '#7B3B3B' }} />
               <span className="text-sm font-medium" style={{ color: '#7B3B3B' }}>
-                {hero.location}
+                Based in Cayman Islands
               </span>
             </div>
           </div>
