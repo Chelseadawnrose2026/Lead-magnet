@@ -47,8 +47,8 @@ const Hero = () => {
           </h2>
 
           {/* Tagline */}
-          <p className="text-xl md:text-2xl italic font-semibold max-w-4xl mx-auto" style={{ color: '#7B3B3B' }}>
-            "{hero.tagline}"
+          <p className="text-3xl md:text-4xl lg:text-5xl italic font-bold max-w-5xl mx-auto leading-tight" style={{ color: '#7B3B3B' }}>
+            He turns your mess into a message, your tests into testimonies
           </p>
 
           {/* Description */}
