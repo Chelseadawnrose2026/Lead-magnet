@@ -74,7 +74,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <p className="font-semibold" style={{ color: '#7B3B3B' }}>Email</p>
-                    <p className="text-gray-600">chelsea@chelseaflynn.com</p>
+                    <p className="text-gray-600">transform@chelseaflynncoaching.com</p>
                   </div>
                 </div>
 
@@ -87,7 +87,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <p className="font-semibold" style={{ color: '#7B3B3B' }}>Phone</p>
-                    <p className="text-gray-600">+1 (345) 555-0123</p>
+                    <p className="text-gray-600">1 345 325 3924</p>
                   </div>
                 </div>
 
