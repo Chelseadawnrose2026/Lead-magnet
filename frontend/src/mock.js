@@ -20,7 +20,7 @@ export const mockData = {
         description: "Including a child with special needs, I bring real-world understanding of life's challenges and God's grace through hardship."
       },
       {
-        title: "Radio Host",
+        title: "Radio",
         description: "Sharing faith-based insights and inspiration through regular radio show appearances."
       }
     ],
@@ -28,7 +28,7 @@ export const mockData = {
   },
   services: [
     {
-      title: "OCIA Programs",
+      title: "OCIA Programmes",
       description: "Engaging talks for Order of Christian Initiation of Adults groups, sharing the convert's perspective and journey into the Catholic faith.",
       icon: "users"
     },
