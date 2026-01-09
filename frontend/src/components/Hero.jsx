@@ -14,26 +14,28 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative pt-32 pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden">
-      {/* Optional: Translucent background image - uncomment to enable */}
-      {/* <div className="absolute inset-0 z-0">
+    <section className="relative pt-24 pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      {/* Translucent background image */}
+      <div className="absolute inset-0 z-0">
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-10"
+          className="absolute inset-0 bg-cover bg-center opacity-15"
           style={{
-            backgroundImage: "url('https://customer-assets.emergentagent.com/job_messiah-message/artifacts/dpav30r7_20250913-YAN02706.jpg')"
+            backgroundImage: "url('https://customer-assets.emergentagent.com/job_messiah-message/artifacts/dpav30r7_20250913-YAN02706.jpg')",
+            backgroundPosition: 'center top'
           }}
         ></div>
-      </div> */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-white/80 to-white"></div>
+      </div>
 
       <div className="max-w-6xl mx-auto relative z-10">
         {/* Centered Content */}
-        <div className="text-center space-y-6 mb-12">
+        <div className="text-center space-y-5 mb-12">
           {/* Logo */}
-          <div className="flex justify-center mb-8">
+          <div className="flex justify-center mb-6">
             <img
               src="https://customer-assets.emergentagent.com/job_messiah-message/artifacts/hhhu4js6_4328b845-5ddb-4309-9762-a6b2dd73cb70.png"
               alt="Chelsea Flynn"
-              className="h-24 w-auto md:h-32"
+              className="h-20 w-auto md:h-28"
             />
           </div>
 
@@ -48,22 +50,22 @@ const Hero = () => {
           </div>
 
           {/* Subtitle */}
-          <h2 className="text-2xl md:text-3xl font-medium text-gray-700 max-w-3xl mx-auto">
+          <h2 className="text-2xl md:text-3xl font-medium text-gray-800 max-w-3xl mx-auto">
             {hero.subtitle}
           </h2>
 
           {/* Tagline */}
-          <p className="text-xl md:text-2xl italic font-medium max-w-4xl mx-auto" style={{ color: '#7B3B3B' }}>
+          <p className="text-xl md:text-2xl italic font-semibold max-w-4xl mx-auto" style={{ color: '#7B3B3B' }}>
             "{hero.tagline}"
           </p>
 
           {/* Description */}
-          <p className="text-gray-600 text-lg leading-relaxed max-w-3xl mx-auto">
+          <p className="text-gray-700 text-lg leading-relaxed max-w-3xl mx-auto">
             {hero.description}
           </p>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-4 pt-6 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 pt-4 justify-center">
             <Button
               onClick={() => scrollToSection('booking')}
               size="lg"
