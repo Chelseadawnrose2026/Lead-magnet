@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from './ui/button';
-import { MapPin, Play } from 'lucide-react';
+import { MapPin, Play, Globe } from 'lucide-react';
 import { mockData } from '../mock';
 
 const Hero = () => {
@@ -32,37 +32,43 @@ const Hero = () => {
         {/* Centered Content */}
         <div className="text-center space-y-5 mb-12 pt-8">
           {/* Location Badge */}
-          <div className="flex justify-center">
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-3">
             <div className="inline-flex items-center px-4 py-2 rounded-full" style={{ backgroundColor: '#E0C4C0' }}>
               <MapPin className="w-4 h-4 mr-2" style={{ color: '#7B3B3B' }} />
               <span className="text-sm font-medium" style={{ color: '#7B3B3B' }}>
                 Based in Cayman Islands
               </span>
             </div>
+            <div className="inline-flex items-center px-4 py-2 rounded-full" style={{ backgroundColor: '#E0C4C0' }}>
+              <Globe className="w-4 h-4 mr-2" style={{ color: '#7B3B3B' }} />
+              <span className="text-sm font-medium" style={{ color: '#7B3B3B' }}>
+                Available to Travel Internationally
+              </span>
+            </div>
           </div>
 
           {/* Subtitle */}
-          <h2 className="text-2xl md:text-3xl font-medium text-gray-800 max-w-3xl mx-auto">
+          <h2 className="text-xl md:text-2xl lg:text-3xl font-medium text-gray-800 max-w-3xl mx-auto px-4">
             {hero.subtitle}
           </h2>
 
           {/* Tagline */}
-          <p className="text-3xl md:text-4xl lg:text-5xl italic font-bold max-w-5xl mx-auto leading-tight" style={{ color: '#7B3B3B' }}>
+          <p className="text-2xl md:text-3xl lg:text-5xl italic font-bold max-w-5xl mx-auto leading-tight px-4" style={{ color: '#7B3B3B' }}>
             He turns your mess into a message, your tests into testimonies
           </p>
 
           {/* Description */}
-          <p className="text-gray-700 text-lg leading-relaxed max-w-3xl mx-auto">
+          <p className="text-gray-700 text-base md:text-lg leading-relaxed max-w-3xl mx-auto px-4">
             {hero.description}
           </p>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-4 pt-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 pt-4 justify-center px-4">
             <Button
               onClick={() => scrollToSection('booking')}
               size="lg"
               style={{ backgroundColor: '#7B3B3B' }}
-              className="hover:opacity-90 transition-all duration-200 text-lg px-8 py-6"
+              className="hover:opacity-90 transition-all duration-200 text-base md:text-lg px-6 md:px-8 py-5 md:py-6 w-full sm:w-auto"
             >
               Book a Virtual Meeting
             </Button>
@@ -71,7 +77,7 @@ const Hero = () => {
               size="lg"
               variant="outline"
               style={{ borderColor: '#7B3B3B', color: '#7B3B3B' }}
-              className="hover:bg-[#E0C4C0] transition-all duration-200 text-lg px-8 py-6"
+              className="hover:bg-[#E0C4C0] transition-all duration-200 text-base md:text-lg px-6 md:px-8 py-5 md:py-6 w-full sm:w-auto"
             >
               Contact Chelsea
             </Button>

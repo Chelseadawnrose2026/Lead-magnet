@@ -28,49 +28,50 @@ const Header = () => {
       style={{ backgroundColor: '#7B3B3B' }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
+        <div className="flex justify-between items-center h-16 md:h-20">
           <div className="flex-shrink-0">
             <img
               src="https://customer-assets.emergentagent.com/job_messiah-message/artifacts/hhhu4js6_4328b845-5ddb-4309-9762-a6b2dd73cb70.png"
               alt="Chelsea Flynn"
-              className="h-12 w-auto brightness-0 invert"
+              className="h-8 md:h-12 w-auto brightness-0 invert"
             />
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex items-center space-x-6 lg:space-x-8">
             <button
               onClick={() => scrollToSection('about')}
-              className="text-white/90 hover:text-white transition-colors duration-200 font-medium"
+              className="text-white/90 hover:text-white transition-colors duration-200 font-medium text-sm lg:text-base"
             >
               About
             </button>
             <button
               onClick={() => scrollToSection('services')}
-              className="text-white/90 hover:text-white transition-colors duration-200 font-medium"
+              className="text-white/90 hover:text-white transition-colors duration-200 font-medium text-sm lg:text-base"
             >
               Services
             </button>
             <button
               onClick={() => scrollToSection('radio')}
-              className="text-white/90 hover:text-white transition-colors duration-200 font-medium"
+              className="text-white/90 hover:text-white transition-colors duration-200 font-medium text-sm lg:text-base"
             >
-              Radio Show
+              Radio
             </button>
             <button
               onClick={() => scrollToSection('testimonials')}
-              className="text-white/90 hover:text-white transition-colors duration-200 font-medium"
+              className="text-white/90 hover:text-white transition-colors duration-200 font-medium text-sm lg:text-base"
             >
               Testimonials
             </button>
             <button
               onClick={() => scrollToSection('contact')}
-              className="text-white/90 hover:text-white transition-colors duration-200 font-medium"
+              className="text-white/90 hover:text-white transition-colors duration-200 font-medium text-sm lg:text-base"
             >
               Contact
             </button>
             <Button
               onClick={() => scrollToSection('booking')}
+              size="sm"
               style={{ backgroundColor: '#E0C4C0', color: '#7B3B3B' }}
               className="hover:opacity-90 transition-opacity duration-200 font-semibold"
             >
@@ -111,7 +112,7 @@ const Header = () => {
                 onClick={() => scrollToSection('radio')}
                 className="text-left text-white/90 hover:text-white transition-colors duration-200 font-medium"
               >
-                Radio Show
+                Radio
               </button>
               <button
                 onClick={() => scrollToSection('testimonials')}
