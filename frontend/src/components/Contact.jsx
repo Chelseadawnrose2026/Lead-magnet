@@ -177,11 +177,12 @@ const Contact = () => {
 
               <Button
                 type="submit"
+                disabled={isSubmitting}
                 className="w-full text-lg py-6 hover:opacity-90 transition-opacity duration-200"
                 style={{ backgroundColor: '#7B3B3B' }}
               >
                 <Send className="w-5 h-5 mr-2" />
-                Send Message
+                {isSubmitting ? 'Sending...' : 'Send Message'}
               </Button>
             </form>
           </div>
