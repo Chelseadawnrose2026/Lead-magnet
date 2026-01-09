@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heart, Mail, Phone, MapPin } from 'lucide-react';
+import { Heart, Mail, Phone, MapPin, Instagram, Facebook, Youtube } from 'lucide-react';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -13,7 +13,7 @@ const Footer = () => {
             <h3 className="text-2xl font-bold text-white mb-2">Chelsea Flynn</h3>
             <p className="text-white/80 mb-4">Catholic Speaker & Life Transformation Coach</p>
             <p className="text-white/70 text-sm italic">
-              "Turning your mess into a message, your tests into testimonies"
+              "He turns your mess into a message, your tests into testimonies"
             </p>
           </div>
 
@@ -33,7 +33,7 @@ const Footer = () => {
               </li>
               <li>
                 <a href="#radio" className="text-white/80 hover:text-white transition-colors duration-200">
-                  Radio Show
+                  Radio
                 </a>
               </li>
               <li>
@@ -55,15 +55,53 @@ const Footer = () => {
             <div className="space-y-3">
               <div className="flex items-center space-x-3 text-white/80">
                 <Mail className="w-4 h-4" />
-                <span className="text-sm">chelsea@chelseaflynn.com</span>
+                <a href="mailto:transform@chelseaflynncoaching.com" className="text-sm hover:text-white transition-colors">
+                  transform@chelseaflynncoaching.com
+                </a>
               </div>
               <div className="flex items-center space-x-3 text-white/80">
                 <Phone className="w-4 h-4" />
-                <span className="text-sm">+1 (345) 555-0123</span>
+                <a href="tel:13453253924" className="text-sm hover:text-white transition-colors">
+                  1 345 325 3924
+                </a>
               </div>
               <div className="flex items-center space-x-3 text-white/80">
                 <MapPin className="w-4 h-4" />
                 <span className="text-sm">Cayman Islands</span>
+              </div>
+            </div>
+
+            {/* Social Media Links */}
+            <div className="mt-6">
+              <h4 className="text-lg font-bold text-white mb-3">Follow Me</h4>
+              <div className="flex items-center space-x-4">
+                <a
+                  href="https://www.instagram.com/chelseaflynncoaching"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white/80 hover:text-white transition-colors duration-200"
+                  aria-label="Instagram"
+                >
+                  <Instagram className="w-6 h-6" />
+                </a>
+                <a
+                  href="https://www.facebook.com/chelseaflynncoaching"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white/80 hover:text-white transition-colors duration-200"
+                  aria-label="Facebook"
+                >
+                  <Facebook className="w-6 h-6" />
+                </a>
+                <a
+                  href="https://www.youtube.com/@chelseaflynncoaching"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white/80 hover:text-white transition-colors duration-200"
+                  aria-label="YouTube"
+                >
+                  <Youtube className="w-6 h-6" />
+                </a>
               </div>
             </div>
           </div>
