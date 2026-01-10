@@ -28,6 +28,11 @@ export const mockData = {
   },
   services: [
     {
+      title: "Conferences & Parish Talks",
+      description: "Dynamic speaking engagements for Catholic conferences and parishes, covering topics of conversion, hardship, and God's transformative power.",
+      icon: "mic"
+    },
+    {
       title: "OCIA Programmes",
       description: "Engaging talks for Order of Christian Initiation of Adults groups, sharing the convert's perspective and journey into the Catholic faith.",
       icon: "users"
@@ -36,11 +41,6 @@ export const mockData = {
       title: "Retreats",
       description: "Transformative retreat experiences focusing on spiritual growth, healing, and deepening relationship with Christ.",
       icon: "mountain"
-    },
-    {
-      title: "Conferences",
-      description: "Dynamic speaking engagements for Catholic conferences, covering topics of conversion, hardship, and God's transformative power.",
-      icon: "mic"
     },
     {
       title: "1:1 Life Coaching",
@@ -73,16 +73,16 @@ export const mockData = {
   ],
   testimonials: [
     {
-      name: "Father Michael Rodriguez",
-      role: "Parish Priest",
-      text: "Chelsea's testimony as a convert brings such authenticity to our OCIA program. Her ability to connect with seekers is truly a gift from God.",
-      image: "https://customer-assets.emergentagent.com/job_messiah-message/artifacts/vapynd8k_IMG_8211%20%282%29.JPG"
+      name: "Samantha Pedley-Dorman",
+      role: "Coaching Client",
+      text: "Chelsea understands that my faith is central to who I am and how I show up in every space. It's incredibly refreshing to work with someone who also deeply values her faith and makes time for daily devotionals, seeking to learn more about God's word. It's truly inspiring and comforting!",
+      image: "https://customer-assets.emergentagent.com/job_messiah-message/artifacts/9f5vu1a1_IMG_6023%20%281%29.jpg"
     },
     {
-      name: "Sarah Martinez",
-      role: "Retreat Participant",
-      text: "Chelsea's retreat changed my life. Her genuine faith and powerful story showed me that God can truly transform our deepest struggles into our greatest strengths.",
-      image: "https://customer-assets.emergentagent.com/job_messiah-message/artifacts/4ou38hwb_CL-22.jpg"
+      name: "Fanell Verway-Massiah",
+      role: "Coaching Client",
+      text: "Having a career coach is great, but when you're a Christian and you find someone who shares your faith and truly understands your journey, it feels like a blessing you didn't even know you needed. Working with Chelsea has been a gold mine. Her guidance, encouragement and faith centered approach have touched me deeply, and I'm genuinely grateful that I chose her as my coach.",
+      image: "https://customer-assets.emergentagent.com/job_messiah-message/artifacts/oxb8r19g_429a397b-e139-44fd-ab0f-3ba8e1f65259.jpeg"
     },
     {
       name: "David Thompson",

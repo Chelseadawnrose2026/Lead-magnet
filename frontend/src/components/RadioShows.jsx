@@ -12,7 +12,7 @@ const RadioShows = () => {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: '#7B3B3B' }}>
-            Radio Show Highlights
+            Radio Highlights
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Watch snippets from recent radio appearances where faith meets real life
