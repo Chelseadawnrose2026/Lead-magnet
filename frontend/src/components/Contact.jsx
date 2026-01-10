@@ -111,7 +111,7 @@ const Contact = () => {
               <img
                 src="https://customer-assets.emergentagent.com/job_messiah-message/artifacts/sxg4ghbz_CL-53.jpg"
                 alt="Chelsea Flynn"
-                className="rounded-2xl shadow-lg w-full h-64 object-cover"
+                className="rounded-2xl shadow-lg w-full h-64 object-cover object-top"
               />
             </div>
           </div>
