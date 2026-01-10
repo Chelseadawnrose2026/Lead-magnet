@@ -76,13 +76,13 @@ export const mockData = {
       name: "Samantha Pedley-Dorman",
       role: "Coaching Client",
       text: "Chelsea understands that my faith is central to who I am and how I show up in every space. It's incredibly refreshing to work with someone who also deeply values her faith and makes time for daily devotionals, seeking to learn more about God's word. It's truly inspiring and comforting!",
-      image: "https://customer-assets.emergentagent.com/job_messiah-message/artifacts/9f5vu1a1_IMG_6023%20%281%29.jpg"
+      image: "https://customer-assets.emergentagent.com/job_messiah-message/artifacts/oxb8r19g_429a397b-e139-44fd-ab0f-3ba8e1f65259.jpeg"
     },
     {
       name: "Fanell Verway-Massiah",
       role: "Coaching Client",
       text: "Having a career coach is great, but when you're a Christian and you find someone who shares your faith and truly understands your journey, it feels like a blessing you didn't even know you needed. Working with Chelsea has been a gold mine. Her guidance, encouragement and faith centered approach have touched me deeply, and I'm genuinely grateful that I chose her as my coach.",
-      image: "https://customer-assets.emergentagent.com/job_messiah-message/artifacts/oxb8r19g_429a397b-e139-44fd-ab0f-3ba8e1f65259.jpeg"
+      image: "https://customer-assets.emergentagent.com/job_messiah-message/artifacts/9f5vu1a1_IMG_6023%20%281%29.jpg"
     },
     {
       name: "David Thompson",
