@@ -181,6 +181,23 @@ async def submit_booking_request(input: BookingRequestCreate):
         await db.booking_requests.insert_one(doc)
         logger.info(f"Booking request submitted: {booking_obj.name} - {booking_obj.email}")
         
+        # Send email notification
+        html_content = f"""
+        <h2>New Booking Request</h2>
+        <p><strong>Name:</strong> {booking_obj.name}</p>
+        <p><strong>Email:</strong> {booking_obj.email}</p>
+        <p><strong>Phone:</strong> {booking_obj.phone or 'Not provided'}</p>
+        <p><strong>Booking Type:</strong> {booking_obj.booking_type}</p>
+        <p><strong>Message:</strong></p>
+        <p>{booking_obj.message}</p>
+        <hr>
+        <p style="color: #666; font-size: 12px;">Submitted on {datetime.now(timezone.utc).strftime('%B %d, %Y at %I:%M %p UTC')}</p>
+        """
+        await send_notification_email(
+            subject=f"New Booking Request: {booking_obj.name} - {booking_obj.booking_type}",
+            html_content=html_content
+        )
+        
         return booking_obj
     except Exception as e:
         logger.error(f"Error submitting booking request: {str(e)}")
