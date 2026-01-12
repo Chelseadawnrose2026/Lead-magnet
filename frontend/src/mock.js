@@ -21,7 +21,7 @@ export const mockData = {
       },
       {
         title: "Radio",
-        description: "Sharing faith-based insights and inspiration through regular radio show appearances."
+        description: "Sharing faith-based insights and inspiration through regular radio show appearances every Saturday between 11am-1pm EST."
       },
       {
         title: "Charity",
