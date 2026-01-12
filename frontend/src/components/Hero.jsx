@@ -87,28 +87,24 @@ const Hero = () => {
         {/* Full-Width Video */}
         <div className="w-full max-w-5xl mx-auto">
           <div className="relative rounded-2xl overflow-hidden shadow-2xl" style={{ backgroundColor: '#E0C4C0' }}>
-            <div className="aspect-video bg-gray-900 flex items-center justify-center relative group">
-              {/* Video placeholder */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center space-y-4">
-                  <div
-                    className="w-20 h-20 mx-auto rounded-full flex items-center justify-center cursor-pointer transform transition-transform duration-300 group-hover:scale-110"
-                    style={{ backgroundColor: '#7B3B3B' }}
-                  >
-                    <Play className="w-10 h-10 text-white fill-white ml-1" />
-                  </div>
-                  <p className="text-white text-lg font-medium">Watch My Story</p>
-                  <p className="text-white/70 text-sm">From Chaos to Christ - My Journey</p>
-                </div>
-              </div>
-              {/* Actual video would go here */}
-              {/* <iframe
-                className="w-full h-full"
-                src={hero.videoPlaceholder}
-                title="Chelsea Flynn Introduction"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              /> */}
+            <div className="aspect-video bg-gray-900 flex items-center justify-center relative">
+              <video
+                className="w-full h-full object-cover"
+                controls
+                poster=""
+                playsInline
+                data-testid="hero-intro-video"
+              >
+                <source 
+                  src="https://customer-assets.emergentagent.com/job_faith-speaker/artifacts/xgqvo8vl_copy_9C64AC4D-8D20-455E-8F82-6FD8FB0FFBF9.mov" 
+                  type="video/quicktime" 
+                />
+                <source 
+                  src="https://customer-assets.emergentagent.com/job_faith-speaker/artifacts/xgqvo8vl_copy_9C64AC4D-8D20-455E-8F82-6FD8FB0FFBF9.mov" 
+                  type="video/mp4" 
+                />
+                Your browser does not support the video tag.
+              </video>
             </div>
           </div>
         </div>
