@@ -91,7 +91,7 @@ const Hero = () => {
               <video
                 className="w-full h-full object-cover"
                 controls
-                poster="https://customer-assets.emergentagent.com/job_faith-speaker/artifacts/18d4smyc_image.png"
+                poster="https://customer-assets.emergentagent.com/job_faith-speaker/artifacts/xqtnxi69_image.png"
                 playsInline
                 preload="metadata"
                 data-testid="hero-intro-video"
