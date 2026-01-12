@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from './ui/button';
-import { MapPin, Play, Globe } from 'lucide-react';
+import { MapPin, Globe } from 'lucide-react';
 import { mockData } from '../mock';
 
 const Hero = () => {
