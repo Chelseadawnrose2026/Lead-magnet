@@ -87,25 +87,16 @@ const Hero = () => {
         {/* Full-Width Video */}
         <div className="w-full max-w-5xl mx-auto">
           <div className="relative rounded-2xl overflow-hidden shadow-2xl" style={{ backgroundColor: '#E0C4C0' }}>
-            <div className="aspect-video bg-gray-900 flex items-center justify-center relative">
-              <video
-                className="w-full h-full object-cover"
-                controls
-                poster="https://customer-assets.emergentagent.com/job_faith-speaker/artifacts/xqtnxi69_image.png"
-                playsInline
-                preload="metadata"
+            <div className="aspect-video">
+              <iframe
+                className="w-full h-full"
+                src="https://www.youtube.com/embed/qd6_F2M9K_s?rel=0"
+                title="Chelsea Flynn - From Chaos to Christ"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
                 data-testid="hero-intro-video"
-              >
-                <source 
-                  src="https://customer-assets.emergentagent.com/job_faith-speaker/artifacts/xgqvo8vl_copy_9C64AC4D-8D20-455E-8F82-6FD8FB0FFBF9.mov" 
-                  type="video/quicktime" 
-                />
-                <source 
-                  src="https://customer-assets.emergentagent.com/job_faith-speaker/artifacts/xgqvo8vl_copy_9C64AC4D-8D20-455E-8F82-6FD8FB0FFBF9.mov" 
-                  type="video/mp4" 
-                />
-                Your browser does not support the video tag.
-              </video>
+              ></iframe>
             </div>
           </div>
         </div>
