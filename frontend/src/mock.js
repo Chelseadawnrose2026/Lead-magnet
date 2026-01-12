@@ -25,10 +25,10 @@ export const mockData = {
       },
       {
         title: "Charity",
-        description: "Chair and Founder of Autism Acceptance Cayman Islands, a registered not-for-profit organisation dedicated to supporting families affected by autism."
+        description: "Chair and Founder of Autism Acceptance Cayman Islands, a registered not-for-profit organisation dedicated to supporting autistic individuals and their families on their unique journey."
       },
       {
-        title: "1:1 Life Coaching",
+        title: "Christ-centred Life Transformation Coaching",
         description: "Personal transformation coaching rooted in Christ, helping you navigate life's challenges and discover your God-given purpose."
       }
     ],
@@ -58,7 +58,7 @@ export const mockData = {
   ],
   radioShows: [
     {
-      title: "Finding Faith in the Journey",
+      title: "Trusting the Process with Keith Kajese",
       description: "A conversation about conversion and discovering God's plan",
       videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
       duration: "28:45",
