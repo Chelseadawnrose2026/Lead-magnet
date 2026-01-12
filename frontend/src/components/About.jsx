@@ -11,7 +11,7 @@ const About = () => {
     'Mother of Three': Heart,
     'Radio': Youtube,
     'Charity': HandHeart,
-    '1:1 Life Coaching': Sparkles
+    'Christ-centred Life Transformation Coaching': Sparkles
   };
 
   const scrollToSection = (id) => {
@@ -95,6 +95,19 @@ const About = () => {
                           </Button>
                         )}
                         
+                        {/* Mother of Three - Contact Chelsea */}
+                        {highlight.title === 'Mother of Three' && (
+                          <Button
+                            onClick={() => scrollToSection('contact')}
+                            size="sm"
+                            style={{ backgroundColor: '#7B3B3B' }}
+                            className="hover:opacity-90 transition-opacity duration-200 mt-2"
+                            data-testid="mother-contact-cta"
+                          >
+                            Contact Chelsea
+                          </Button>
+                        )}
+                        
                         {/* Radio - Watch Radio Interviews on YouTube */}
                         {highlight.title === 'Radio' && (
                           <a
@@ -131,8 +144,8 @@ const About = () => {
                           </a>
                         )}
                         
-                        {/* 1:1 Life Coaching - Contact Chelsea */}
-                        {highlight.title === '1:1 Life Coaching' && (
+                        {/* Christ-centred Life Transformation Coaching - Contact Chelsea */}
+                        {highlight.title === 'Christ-centred Life Transformation Coaching' && (
                           <Button
                             onClick={() => scrollToSection('contact')}
                             size="sm"
