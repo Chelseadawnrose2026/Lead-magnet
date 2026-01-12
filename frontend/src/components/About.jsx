@@ -32,12 +32,12 @@ const About = () => {
                 alt="Chelsea Flynn"
                 className="w-full h-full object-cover"
               />
-              {/* Scripture overlay on lower portion */}
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/60 to-transparent pt-24 pb-8 px-6">
+              {/* Solid scripture banner through middle */}
+              <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 py-6 px-4" style={{ backgroundColor: '#7B3B3B' }}>
                 <p className="text-white text-center text-lg md:text-xl italic font-medium leading-relaxed">
-                  "...while we were yet sinners,<br />Christ died for us."
+                  "...while we were yet sinners, Christ died for us."
                 </p>
-                <p className="text-white/80 text-center text-sm mt-2 font-medium">
+                <p className="text-white/90 text-center text-sm mt-1 font-medium">
                   Romans 5:8
                 </p>
               </div>
