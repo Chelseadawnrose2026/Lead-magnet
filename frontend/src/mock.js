@@ -22,6 +22,14 @@ export const mockData = {
       {
         title: "Radio",
         description: "Sharing faith-based insights and inspiration through regular radio show appearances."
+      },
+      {
+        title: "Charity",
+        description: "Chair and Founder of Autism Acceptance Cayman Islands, a registered not-for-profit organisation dedicated to supporting families affected by autism."
+      },
+      {
+        title: "1:1 Life Coaching",
+        description: "Personal transformation coaching rooted in Christ, helping you navigate life's challenges and discover your God-given purpose."
       }
     ],
     image: "https://customer-assets.emergentagent.com/job_messiah-message/artifacts/koxq98ie_IMG_4937.JPG"
