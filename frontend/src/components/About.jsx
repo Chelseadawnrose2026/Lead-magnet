@@ -24,11 +24,11 @@ const About = () => {
   return (
     <section id="about" className="py-20 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: '#F9F9F9' }}>
       <div className="max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-12 items-start">
           {/* Left - Image */}
-          <div className="relative">
+          <div className="relative lg:sticky lg:top-24">
             <div className="absolute -top-6 -left-6 w-full h-full rounded-2xl" style={{ backgroundColor: '#E0C4C0', opacity: 0.3 }}></div>
-            <div className="relative rounded-2xl shadow-xl w-full h-[600px] overflow-hidden">
+            <div className="relative rounded-2xl shadow-xl w-full aspect-[3/4] overflow-hidden">
               <img
                 src={about.image}
                 alt="Chelsea Flynn"
