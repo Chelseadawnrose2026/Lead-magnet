@@ -113,7 +113,7 @@ async def send_notification_email(subject: str, html_content: str):
     """Send email notification using Resend"""
     try:
         params = {
-            "from": "Chelsea Flynn Website <onboarding@resend.dev>",
+            "from": "Chelsea Flynn Website <noreply@chelseaflynn.com>",
             "to": [NOTIFICATION_EMAIL],
             "subject": subject,
             "html": html_content
