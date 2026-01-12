@@ -51,7 +51,7 @@ export const mockData = {
       icon: "mountain"
     },
     {
-      title: "1:1 Life Coaching",
+      title: "1:1 Life Transformation Coaching",
       description: "Personal transformation coaching rooted in Christ, helping you navigate life's challenges and discover your God-given purpose.",
       icon: "heart"
     }
