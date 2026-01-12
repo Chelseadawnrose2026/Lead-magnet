@@ -22,6 +22,23 @@ const RadioShows = () => {
             <Radio className="w-5 h-5 inline-block mr-2" style={{ color: '#7B3B3B' }} />
             Tune in every Saturday from 11am-1pm EST on Bobo FM 103.1
           </p>
+          <div className="mt-4">
+            <a
+              href="https://www.bobofm.ky"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button
+                size="lg"
+                style={{ backgroundColor: '#7B3B3B' }}
+                className="hover:opacity-90 transition-opacity duration-200"
+                data-testid="listen-live-cta"
+              >
+                <Radio className="w-5 h-5 mr-2" />
+                Listen Live on Bobo FM
+              </Button>
+            </a>
+          </div>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -79,25 +96,6 @@ const RadioShows = () => {
               </div>
             </Card>
           ))}
-        </div>
-
-        {/* Listen Live CTA */}
-        <div className="text-center mt-12">
-          <a
-            href="https://www.bobofm.ky"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Button
-              size="lg"
-              style={{ backgroundColor: '#7B3B3B' }}
-              className="hover:opacity-90 transition-opacity duration-200 text-lg px-8 py-6"
-              data-testid="listen-live-cta"
-            >
-              <Radio className="w-5 h-5 mr-2" />
-              Listen Live on Bobo FM
-            </Button>
-          </a>
         </div>
       </div>
     </section>
