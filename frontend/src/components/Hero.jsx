@@ -54,7 +54,7 @@ const Hero = () => {
 
           {/* Tagline */}
           <p className="text-2xl md:text-3xl lg:text-5xl italic font-bold max-w-5xl mx-auto leading-tight px-4" style={{ color: '#7B3B3B' }}>
-            He turns your mess into a message, your tests into testimonies
+            He turns our mess into a message, our tests into testimonies
           </p>
 
           {/* Description */}
