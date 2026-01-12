@@ -109,6 +109,20 @@ async def get_status_checks():
     return status_checks
 
 # Contact Form Endpoints
+async def send_notification_email(subject: str, html_content: str):
+    """Send email notification using Resend"""
+    try:
+        params = {
+            "from": "Chelsea Flynn Website <onboarding@resend.dev>",
+            "to": [NOTIFICATION_EMAIL],
+            "subject": subject,
+            "html": html_content
+        }
+        await asyncio.to_thread(resend.Emails.send, params)
+        logger.info(f"Notification email sent to {NOTIFICATION_EMAIL}")
+    except Exception as e:
+        logger.error(f"Failed to send notification email: {str(e)}")
+
 @api_router.post("/contact", response_model=ContactSubmission)
 async def submit_contact_form(input: ContactSubmissionCreate):
     try:
@@ -121,6 +135,22 @@ async def submit_contact_form(input: ContactSubmissionCreate):
         
         await db.contact_submissions.insert_one(doc)
         logger.info(f"Contact form submitted: {contact_obj.name} - {contact_obj.email}")
+        
+        # Send email notification
+        html_content = f"""
+        <h2>New Contact Form Submission</h2>
+        <p><strong>Name:</strong> {contact_obj.name}</p>
+        <p><strong>Email:</strong> {contact_obj.email}</p>
+        <p><strong>Phone:</strong> {contact_obj.phone or 'Not provided'}</p>
+        <p><strong>Message:</strong></p>
+        <p>{contact_obj.message}</p>
+        <hr>
+        <p style="color: #666; font-size: 12px;">Submitted on {datetime.now(timezone.utc).strftime('%B %d, %Y at %I:%M %p UTC')}</p>
+        """
+        await send_notification_email(
+            subject=f"New Contact: {contact_obj.name}",
+            html_content=html_content
+        )
         
         return contact_obj
     except Exception as e:
