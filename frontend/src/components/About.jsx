@@ -26,11 +26,22 @@ const About = () => {
           {/* Left - Image */}
           <div className="relative">
             <div className="absolute -top-6 -left-6 w-full h-full rounded-2xl" style={{ backgroundColor: '#E0C4C0', opacity: 0.3 }}></div>
-            <img
-              src={about.image}
-              alt="Chelsea Flynn"
-              className="relative rounded-2xl shadow-xl w-full h-[600px] object-cover"
-            />
+            <div className="relative rounded-2xl shadow-xl w-full h-[600px] overflow-hidden">
+              <img
+                src={about.image}
+                alt="Chelsea Flynn"
+                className="w-full h-full object-cover"
+              />
+              {/* Scripture overlay on lower portion */}
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/60 to-transparent pt-24 pb-8 px-6">
+                <p className="text-white text-center text-lg md:text-xl italic font-medium leading-relaxed">
+                  "...while we were yet sinners,<br />Christ died for us."
+                </p>
+                <p className="text-white/80 text-center text-sm mt-2 font-medium">
+                  Romans 5:8
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Right - Content */}
