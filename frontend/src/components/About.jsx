@@ -108,10 +108,10 @@ const About = () => {
                           </Button>
                         )}
                         
-                        {/* Radio - Watch Radio Interviews on YouTube */}
+                        {/* Radio - Watch Radio Interviews */}
                         {highlight.title === 'Radio' && (
                           <a
-                            href="https://www.youtube.com/@ChelseaFlynn1111"
+                            href="https://radio.securenetsystems.net/cwa/index.cfm?CFID=66b53e03-1e79-4b37-b6a3-ea8900f4bb68&CFTOKEN=0&stationCallSign=BOBO891"
                             target="_blank"
                             rel="noopener noreferrer"
                           >
@@ -129,7 +129,7 @@ const About = () => {
                         {/* Charity - Autism Acceptance */}
                         {highlight.title === 'Charity' && (
                           <a
-                            href="https://www.autismacceptancecayman.org"
+                            href="https://autismacceptance.ky/"
                             target="_blank"
                             rel="noopener noreferrer"
                           >
