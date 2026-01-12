@@ -32,14 +32,16 @@ const About = () => {
                 alt="Chelsea Flynn"
                 className="w-full h-full object-cover"
               />
-              {/* Solid scripture banner through middle */}
-              <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 py-6 px-4" style={{ backgroundColor: '#7B3B3B' }}>
-                <p className="text-white text-center text-lg md:text-xl italic font-medium leading-relaxed">
-                  "...while we were yet sinners, Christ died for us."
-                </p>
-                <p className="text-white/90 text-center text-sm mt-1 font-medium">
-                  Romans 5:8
-                </p>
+              {/* Scripture text box - sized to text only */}
+              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                <div className="py-4 px-6 rounded-lg" style={{ backgroundColor: '#7B3B3B' }}>
+                  <p className="text-white text-center text-base md:text-lg italic font-medium leading-relaxed">
+                    "...while we were yet sinners,<br />Christ died for us."
+                  </p>
+                  <p className="text-white/90 text-center text-sm mt-1 font-medium">
+                    Romans 5:8
+                  </p>
+                </div>
               </div>
             </div>
           </div>
