@@ -1,6 +1,6 @@
 import React from 'react';
 import { mockData } from '../mock';
-import { Users, Mountain, Heart } from 'lucide-react';
+import { Users, Mountain, Heart, Youtube, HandHeart, Sparkles } from 'lucide-react';
 import { Button } from './ui/button';
 
 const About = () => {
@@ -9,7 +9,9 @@ const About = () => {
   const iconMap = {
     'Catholic Convert': Users,
     'Mother of Three': Heart,
-    'Radio': Mountain
+    'Radio': Youtube,
+    'Charity': HandHeart,
+    '1:1 Life Coaching': Sparkles
   };
 
   const scrollToSection = (id) => {
@@ -79,14 +81,66 @@ const About = () => {
                         <p className="text-gray-600 leading-relaxed mb-3">
                           {highlight.description}
                         </p>
-                        {highlight.title === 'Radio' && (
+                        
+                        {/* Catholic Convert - Book Discovery Call */}
+                        {highlight.title === 'Catholic Convert' && (
                           <Button
-                            onClick={() => scrollToSection('radio')}
+                            onClick={() => scrollToSection('booking')}
                             size="sm"
                             style={{ backgroundColor: '#7B3B3B' }}
                             className="hover:opacity-90 transition-opacity duration-200 mt-2"
+                            data-testid="catholic-convert-cta"
                           >
-                            Listen to Radio Show
+                            Book Discovery Call
+                          </Button>
+                        )}
+                        
+                        {/* Radio - Watch Radio Interviews on YouTube */}
+                        {highlight.title === 'Radio' && (
+                          <a
+                            href="https://www.youtube.com/@ChelseaFlynn1111"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <Button
+                              size="sm"
+                              style={{ backgroundColor: '#7B3B3B' }}
+                              className="hover:opacity-90 transition-opacity duration-200 mt-2"
+                              data-testid="radio-youtube-cta"
+                            >
+                              Watch Radio Interviews
+                            </Button>
+                          </a>
+                        )}
+                        
+                        {/* Charity - Autism Acceptance */}
+                        {highlight.title === 'Charity' && (
+                          <a
+                            href="https://www.autismacceptancecayman.org"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <Button
+                              size="sm"
+                              style={{ backgroundColor: '#7B3B3B' }}
+                              className="hover:opacity-90 transition-opacity duration-200 mt-2"
+                              data-testid="charity-cta"
+                            >
+                              Autism Acceptance
+                            </Button>
+                          </a>
+                        )}
+                        
+                        {/* 1:1 Life Coaching - Contact Chelsea */}
+                        {highlight.title === '1:1 Life Coaching' && (
+                          <Button
+                            onClick={() => scrollToSection('contact')}
+                            size="sm"
+                            style={{ backgroundColor: '#7B3B3B' }}
+                            className="hover:opacity-90 transition-opacity duration-200 mt-2"
+                            data-testid="coaching-contact-cta"
+                          >
+                            Contact Chelsea
                           </Button>
                         )}
                       </div>
