@@ -17,149 +17,179 @@
             font-family: 'Open Sans', sans-serif;
             background: white;
             color: #333;
-            max-width: 8.5in;
-            min-height: 11in;
+            width: 8.5in;
+            height: 11in;
             margin: 0 auto;
-            position: relative;
+            padding: 0.5in;
         }
         
         .page {
-            padding: 0.4in;
-            position: relative;
-            min-height: 11in;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
         }
         
         /* Header Section */
         .header {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 25px;
-            margin-bottom: 20px;
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+            align-items: flex-start;
         }
         
-        .photo-section {
+        .photo-container {
+            width: 160px;
+            flex-shrink: 0;
             position: relative;
         }
         
         .photo {
-            width: 100%;
-            aspect-ratio: 3/4;
+            width: 160px;
+            height: 200px;
             object-fit: cover;
-            border-radius: 12px;
-            box-shadow: 0 8px 30px rgba(123, 59, 59, 0.2);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(123, 59, 59, 0.2);
+        }
+        
+        .scripture-overlay {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background: #7B3B3B;
+            padding: 8px 12px;
+            border-radius: 6px;
+            text-align: center;
+            width: 140px;
+        }
+        
+        .scripture-overlay p {
+            color: white;
+            font-style: italic;
+            font-size: 9px;
+            margin: 0;
+            line-height: 1.3;
+        }
+        
+        .scripture-overlay .verse {
+            color: rgba(255,255,255,0.85);
+            font-size: 8px;
+            margin-top: 2px;
+            font-style: normal;
         }
         
         .name-section {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            flex: 1;
+            text-align: center;
         }
         
         h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 42px;
+            font-size: 32px;
             color: #7B3B3B;
-            margin-bottom: 5px;
-            letter-spacing: 2px;
+            margin-bottom: 3px;
+            letter-spacing: 1px;
         }
         
         .title {
-            font-size: 16px;
+            font-size: 12px;
             color: #666;
-            margin-bottom: 15px;
-            font-weight: 400;
+            margin-bottom: 8px;
         }
         
         .tagline {
             font-family: 'Playfair Display', serif;
             font-style: italic;
-            font-size: 18px;
+            font-size: 14px;
             color: #7B3B3B;
-            margin-bottom: 15px;
-            line-height: 1.4;
+            margin-bottom: 10px;
         }
         
         .bio {
-            font-size: 13px;
-            line-height: 1.7;
+            font-size: 11px;
+            line-height: 1.5;
             color: #444;
+            text-align: center;
         }
         
         /* Credentials Bar */
         .credentials-bar {
             background: linear-gradient(135deg, #7B3B3B 0%, #5a2a2a 100%);
             color: white;
-            padding: 12px 20px;
+            padding: 10px 15px;
             border-radius: 8px;
             display: flex;
             justify-content: space-around;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         
         .credential {
             text-align: center;
-            font-size: 11px;
+            font-size: 9px;
         }
         
         .credential strong {
             display: block;
-            font-size: 13px;
-            margin-bottom: 2px;
+            font-size: 10px;
+            margin-bottom: 1px;
         }
         
-        /* Main Content Grid */
+        /* Main Content */
         .main-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+            display: flex;
             gap: 20px;
+            flex: 1;
         }
         
-        .section {
-            margin-bottom: 15px;
+        .column {
+            flex: 1;
         }
         
         h2 {
             font-family: 'Playfair Display', serif;
-            font-size: 16px;
+            font-size: 13px;
             color: #7B3B3B;
-            margin-bottom: 10px;
-            padding-bottom: 5px;
+            margin-bottom: 8px;
+            padding-bottom: 4px;
             border-bottom: 2px solid #E0C4C0;
+            text-align: center;
         }
         
         /* Talk Topics */
         .talk-item {
             background: #F9F5F4;
-            padding: 10px 12px;
-            border-radius: 8px;
-            margin-bottom: 8px;
+            padding: 8px 10px;
+            border-radius: 6px;
+            margin-bottom: 6px;
             border-left: 3px solid #7B3B3B;
         }
         
         .talk-item h3 {
-            font-size: 13px;
+            font-size: 11px;
             color: #7B3B3B;
-            margin-bottom: 3px;
-            font-weight: 600;
+            margin-bottom: 2px;
         }
         
         .talk-item p {
-            font-size: 11px;
+            font-size: 9px;
             color: #666;
-            line-height: 1.4;
+            line-height: 1.3;
         }
         
         /* Ideal For */
         .ideal-list {
             list-style: none;
-            font-size: 12px;
+            font-size: 10px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3px 10px;
         }
         
         .ideal-list li {
-            padding: 6px 0;
-            padding-left: 20px;
+            padding: 4px 0;
+            padding-left: 15px;
             position: relative;
-            border-bottom: 1px solid #f0f0f0;
         }
         
         .ideal-list li:before {
@@ -168,26 +198,27 @@
             left: 0;
             color: #7B3B3B;
             font-weight: bold;
+            font-size: 9px;
         }
         
-        /* Testimonial */
+        /* Testimonials */
         .testimonial {
             background: linear-gradient(135deg, #7B3B3B 0%, #9B5B5B 100%);
             color: white;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 10px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
         }
         
         .testimonial p {
             font-style: italic;
-            font-size: 12px;
-            line-height: 1.6;
-            margin-bottom: 8px;
+            font-size: 9px;
+            line-height: 1.4;
+            margin-bottom: 5px;
         }
         
         .testimonial .author {
-            font-size: 11px;
+            font-size: 8px;
             opacity: 0.9;
             font-style: normal;
         }
@@ -195,46 +226,44 @@
         /* Quote Box */
         .quote-box {
             background: #F9F5F4;
-            padding: 15px;
-            border-radius: 10px;
+            padding: 10px;
+            border-radius: 8px;
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
         
         .quote-box p {
             font-family: 'Playfair Display', serif;
             font-style: italic;
-            font-size: 14px;
+            font-size: 10px;
             color: #7B3B3B;
-            line-height: 1.5;
+            line-height: 1.4;
         }
         
         /* Contact Footer */
         .contact-footer {
             background: #7B3B3B;
             color: white;
-            padding: 15px 20px;
-            border-radius: 10px;
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
+            padding: 12px 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
             align-items: center;
-            margin-top: 15px;
+            margin-top: auto;
         }
         
         .contact-info {
-            font-size: 12px;
+            font-size: 10px;
         }
         
         .contact-info h3 {
             font-family: 'Playfair Display', serif;
-            font-size: 16px;
-            margin-bottom: 8px;
+            font-size: 13px;
+            margin-bottom: 5px;
         }
         
         .contact-info p {
-            margin: 4px 0;
-            opacity: 0.95;
+            margin: 2px 0;
         }
         
         .contact-info a {
@@ -242,95 +271,73 @@
             text-decoration: none;
         }
         
-        .qr-section {
+        .social-links {
+            display: flex;
+            gap: 8px;
+            margin-top: 5px;
+        }
+        
+        .social-links span {
+            background: rgba(255,255,255,0.2);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 9px;
+        }
+        
+        .contact-right {
             text-align: center;
         }
         
-        .qr-placeholder {
-            width: 80px;
-            height: 80px;
-            background: white;
-            border-radius: 8px;
-            margin: 0 auto 5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            color: #7B3B3B;
+        .contact-right p {
+            font-size: 9px;
+            margin-top: 5px;
         }
         
-        .qr-section span {
-            font-size: 10px;
-            opacity: 0.8;
+        .media-section {
+            text-align: center;
+            margin-bottom: 10px;
         }
         
-        /* Social Icons */
-        .social-links {
-            display: flex;
-            gap: 10px;
-            margin-top: 8px;
-        }
-        
-        .social-links a {
-            background: rgba(255,255,255,0.2);
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 10px;
-            color: white;
-            text-decoration: none;
-        }
-        
-        /* Media Section */
         .media-logos {
             display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-top: 10px;
-            font-size: 11px;
-            color: #666;
+            justify-content: center;
+            gap: 10px;
+            font-size: 9px;
         }
         
         .media-logos span {
-            background: #f5f5f5;
-            padding: 5px 10px;
-            border-radius: 5px;
+            background: #F9F5F4;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: #666;
         }
         
         @media print {
             body {
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
-            }
-            .page {
-                padding: 0.3in;
+                padding: 0.5in;
             }
         }
     </style>
 </head>
 <body>
     <div class="page">
-        <!-- Header with Photo and Bio -->
+        <!-- Header -->
         <div class="header">
-            <div class="photo-section">
-                <div style="position: relative; width: 100%;">
-                    <img src="https://customer-assets.emergentagent.com/job_messiah-message/artifacts/koxq98ie_IMG_4937.JPG" alt="Chelsea Flynn" class="photo">
-                    <!-- Scripture text box overlay -->
-                    <div style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #7B3B3B; padding: 10px 15px; border-radius: 8px; text-align: center;">
-                        <p style="color: white; font-style: italic; font-size: 11px; margin: 0; line-height: 1.4;">"...while we were yet sinners,<br>Christ died for us."</p>
-                        <p style="color: rgba(255,255,255,0.85); font-size: 9px; margin-top: 3px;">Romans 5:8</p>
-                    </div>
+            <div class="photo-container">
+                <img src="https://customer-assets.emergentagent.com/job_messiah-message/artifacts/koxq98ie_IMG_4937.JPG" alt="Chelsea Flynn" class="photo">
+                <div class="scripture-overlay">
+                    <p>"...while we were yet sinners, Christ died for us."</p>
+                    <p class="verse">Romans 5:8</p>
                 </div>
-            </div>
             </div>
             <div class="name-section">
                 <h1>CHELSEA FLYNN</h1>
                 <p class="title">Catholic Speaker • Life Transformation Coach • Radio Host</p>
                 <p class="tagline">"He turns our mess into a message, our tests into testimonies"</p>
                 <p class="bio">
-                    Chelsea Flynn is a Catholic convert whose powerful testimony speaks to the heart of anyone searching for belonging, healing, and purpose. Raised without faith in a chaotic home, Chelsea spent years searching for fulfillment in worldly success—only to discover that true transformation comes through Christ.
-                </p>
-                <p class="bio" style="margin-top: 8px;">
-                    Her story of walking into a Catholic church and encountering the Father she never knew has moved audiences across parishes, retreats, and conferences. As a mother of three (including a child with autism), founder of Autism Acceptance Cayman Islands, and weekly radio host on BOBO FM 103.1, Chelsea brings authenticity, energy, and deep faith to every engagement.
+                    Chelsea Flynn is a Catholic convert whose powerful testimony speaks to anyone searching for belonging, healing, and purpose. Raised without faith, Chelsea spent years searching for fulfillment—only to discover that true transformation comes through Christ. Her story of walking into a Catholic church and encountering the Father she never knew has moved audiences across parishes, retreats, and conferences. As a mother of three (including a child with autism), founder of Autism Acceptance Cayman Islands, and weekly radio host, Chelsea brings authenticity, energy, and deep faith to every engagement.
                 </p>
             </div>
         </div>
@@ -362,66 +369,60 @@
         <!-- Main Content -->
         <div class="main-content">
             <!-- Left Column -->
-            <div>
-                <div class="section">
-                    <h2>SIGNATURE TALKS</h2>
-                    
-                    <div class="talk-item">
-                        <h3>From Chaos to Christ</h3>
-                        <p>Chelsea's powerful conversion testimony—how God met her in her mess and transformed her life. Perfect for OCIA groups, parish missions, and evangelization events.</p>
-                    </div>
-                    
-                    <div class="talk-item">
-                        <h3>Boundaries & Burnout</h3>
-                        <p>A practical, faith-filled approach to setting boundaries and avoiding burnout. Ideal for women's retreats and ministry leader gatherings.</p>
-                    </div>
-                    
-                    <div class="talk-item">
-                        <h3>When God Rewrites Your Story</h3>
-                        <p>Embracing God's plan when life doesn't go as expected. For those navigating hardship, loss, or unexpected detours.</p>
-                    </div>
-                    
-                    <div class="talk-item">
-                        <h3>The Convert's Perspective</h3>
-                        <p>What drew a non-believer to Catholicism? A fresh look at the faith for those in OCIA or cradle Catholics seeking renewal.</p>
-                    </div>
+            <div class="column">
+                <h2>SIGNATURE TALKS</h2>
+                
+                <div class="talk-item">
+                    <h3>From Chaos to Christ</h3>
+                    <p>Chelsea's powerful conversion testimony—how God met her in her mess and transformed her life. Perfect for OCIA groups, parish missions, and evangelization events.</p>
                 </div>
                 
-                <div class="section">
-                    <h2>IDEAL FOR</h2>
-                    <ul class="ideal-list">
-                        <li>OCIA/RCIA Programs</li>
-                        <li>Parish Missions & Retreats</li>
-                        <li>Women's Ministry Events</li>
-                        <li>Catholic Conferences</li>
-                        <li>Lenten & Advent Reflections</li>
-                        <li>Young Adult Gatherings</li>
-                        <li>Prayer Breakfasts</li>
-                        <li>Diocesan Events</li>
-                    </ul>
+                <div class="talk-item">
+                    <h3>Boundaries & Burnout</h3>
+                    <p>A practical, faith-filled approach to setting boundaries and avoiding burnout. Ideal for women's retreats and ministry leader gatherings.</p>
                 </div>
+                
+                <div class="talk-item">
+                    <h3>When God Rewrites Your Story</h3>
+                    <p>Embracing God's plan when life doesn't go as expected. For those navigating hardship, loss, or unexpected detours.</p>
+                </div>
+                
+                <div class="talk-item">
+                    <h3>The Convert's Perspective</h3>
+                    <p>What drew a non-believer to Catholicism? A fresh look at the faith for OCIA or cradle Catholics seeking renewal.</p>
+                </div>
+                
+                <h2 style="margin-top: 12px;">IDEAL FOR</h2>
+                <ul class="ideal-list">
+                    <li>OCIA/RCIA Programs</li>
+                    <li>Parish Missions</li>
+                    <li>Women's Ministry</li>
+                    <li>Catholic Conferences</li>
+                    <li>Lenten Reflections</li>
+                    <li>Advent Programs</li>
+                    <li>Youth/Young Adult</li>
+                    <li>Diocesan Events</li>
+                </ul>
             </div>
             
             <!-- Right Column -->
-            <div>
+            <div class="column">
                 <div class="quote-box">
                     <p>"When I walked into that Catholic church and looked up at that cross, Christ spoke to me. He was the Father I'd never known. He was who I had been searching for my whole life."</p>
                 </div>
                 
-                <div class="section">
-                    <h2>WHAT AUDIENCES SAY</h2>
-                    <div class="testimonial">
-                        <p>"Chelsea understands that faith is central to who I am and how I show up in every space. It's incredibly refreshing to work with someone who also deeply values her faith. It's truly inspiring and comforting!"</p>
-                        <span class="author">— Samantha Pedley-Dorman, Coaching Client</span>
-                    </div>
-                    
-                    <div class="testimonial" style="margin-top: 10px; background: linear-gradient(135deg, #5a2a2a 0%, #7B3B3B 100%);">
-                        <p>"When you're a Christian and you find someone who shares your faith and truly understands your journey, it feels like a blessing you didn't even know you needed. Working with Chelsea has been a gold mine."</p>
-                        <span class="author">— Fanell Verway-Massiah, Coaching Client</span>
-                    </div>
+                <h2>WHAT AUDIENCES SAY</h2>
+                <div class="testimonial">
+                    <p>"Chelsea understands that faith is central to who I am and how I show up in every space. It's incredibly refreshing to work with someone who also deeply values her faith. Truly inspiring!"</p>
+                    <span class="author">— Samantha Pedley-Dorman</span>
                 </div>
                 
-                <div class="section">
+                <div class="testimonial" style="background: linear-gradient(135deg, #5a2a2a 0%, #7B3B3B 100%);">
+                    <p>"When you find someone who shares your faith and truly understands your journey, it feels like a blessing you didn't know you needed. Working with Chelsea has been a gold mine."</p>
+                    <span class="author">— Fanell Verway-Massiah</span>
+                </div>
+                
+                <div class="media-section" style="margin-top: 12px;">
                     <h2>AS HEARD ON</h2>
                     <div class="media-logos">
                         <span>📻 BOBO FM 103.1</span>
@@ -436,40 +437,17 @@
         <div class="contact-footer">
             <div class="contact-info">
                 <h3>Book Chelsea for Your Event</h3>
-                <p>📧 <a href="mailto:transform@chelseaflynncoaching.com">transform@chelseaflynncoaching.com</a></p>
+                <p>📧 transform@chelseaflynncoaching.com</p>
                 <p>📞 +1 (345) 325-3924</p>
-                <p>🌐 <a href="https://www.chelseaflynn.com">www.chelseaflynn.com</a></p>
+                <p>🌐 www.chelseaflynn.com</p>
                 <div class="social-links">
-                    <a href="https://www.youtube.com/@ChelseaFlynn1111">YouTube</a>
-                    <a href="https://www.instagram.com/chelseaflynncoaching">Instagram</a>
-                    <a href="https://www.facebook.com/profile.php?id=61576592120345">Facebook</a>
+                    <span>YouTube</span>
+                    <span>Instagram</span>
+                    <span>Facebook</span>
                 </div>
             </div>
-            <div class="qr-section">
-                <div class="qr-placeholder">
-                    <svg width="60" height="60" viewBox="0 0 60 60">
-                        <rect fill="#7B3B3B" x="5" y="5" width="15" height="15"/>
-                        <rect fill="#7B3B3B" x="40" y="5" width="15" height="15"/>
-                        <rect fill="#7B3B3B" x="5" y="40" width="15" height="15"/>
-                        <rect fill="#7B3B3B" x="25" y="5" width="5" height="5"/>
-                        <rect fill="#7B3B3B" x="25" y="15" width="5" height="5"/>
-                        <rect fill="#7B3B3B" x="25" y="25" width="10" height="10"/>
-                        <rect fill="#7B3B3B" x="40" y="25" width="5" height="5"/>
-                        <rect fill="#7B3B3B" x="50" y="25" width="5" height="5"/>
-                        <rect fill="#7B3B3B" x="25" y="40" width="5" height="5"/>
-                        <rect fill="#7B3B3B" x="35" y="40" width="5" height="5"/>
-                        <rect fill="#7B3B3B" x="45" y="40" width="5" height="5"/>
-                        <rect fill="#7B3B3B" x="25" y="50" width="5" height="5"/>
-                        <rect fill="#7B3B3B" x="40" y="50" width="15" height="5"/>
-                        <rect fill="white" x="8" y="8" width="9" height="9"/>
-                        <rect fill="white" x="43" y="8" width="9" height="9"/>
-                        <rect fill="white" x="8" y="43" width="9" height="9"/>
-                        <rect fill="#7B3B3B" x="10" y="10" width="5" height="5"/>
-                        <rect fill="#7B3B3B" x="45" y="10" width="5" height="5"/>
-                        <rect fill="#7B3B3B" x="10" y="45" width="5" height="5"/>
-                    </svg>
-                </div>
-                <span>Scan to visit website</span>
+            <div class="contact-right">
+                <p style="font-size: 11px; font-style: italic;">"He turns our mess into a message,<br>our tests into testimonies"</p>
             </div>
         </div>
     </div>
