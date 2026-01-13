@@ -15,17 +15,15 @@
         
         body {
             font-family: 'Open Sans', sans-serif;
-            background: #1a1a1a;
+            background: white;
             color: white;
         }
         
         .slide {
-            width: 100%;
-            max-width: 960px;
-            height: 540px;
-            margin: 20px auto;
+            width: 10in;
+            height: 7.5in;
+            margin: 0 auto;
             background: linear-gradient(135deg, #7B3B3B 0%, #5a2a2a 100%);
-            border-radius: 8px;
             overflow: hidden;
             position: relative;
             display: flex;
@@ -33,7 +31,8 @@
             justify-content: center;
             align-items: center;
             padding: 60px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            page-break-after: always;
+            page-break-inside: avoid;
         }
         
         .slide.light {
