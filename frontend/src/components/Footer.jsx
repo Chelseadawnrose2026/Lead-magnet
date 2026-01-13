@@ -94,7 +94,7 @@ const Footer = () => {
                   <Facebook className="w-6 h-6" />
                 </a>
                 <a
-                  href="https://www.youtube.com/@chelseaflynncoaching"
+                  href="https://www.youtube.com/@ChelseaFlynn1111"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-white/80 hover:text-white transition-colors duration-200"
