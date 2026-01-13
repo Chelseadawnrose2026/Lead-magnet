@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from './ui/button';
-import { MapPin, Globe } from 'lucide-react';
+import { Globe } from 'lucide-react';
 import { mockData } from '../mock';
 
 const Hero = () => {
@@ -33,12 +33,6 @@ const Hero = () => {
         <div className="text-center space-y-5 mb-12 pt-8">
           {/* Location Badge */}
           <div className="flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-3">
-            <div className="inline-flex items-center px-4 py-2 rounded-full" style={{ backgroundColor: '#E0C4C0' }}>
-              <MapPin className="w-4 h-4 mr-2" style={{ color: '#7B3B3B' }} />
-              <span className="text-sm font-medium" style={{ color: '#7B3B3B' }}>
-                Based in Cayman Islands
-              </span>
-            </div>
             <div className="inline-flex items-center px-4 py-2 rounded-full" style={{ backgroundColor: '#E0C4C0' }}>
               <Globe className="w-4 h-4 mr-2" style={{ color: '#7B3B3B' }} />
               <span className="text-sm font-medium" style={{ color: '#7B3B3B' }}>
