@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boundaries & Burnout - Slide Deck | Chelsea Flynn</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Open+Sans:wght@300;400;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: #1a1a1a;
+            color: white;
+        }
+        
+        .slide {
+            width: 100%;
+            max-width: 960px;
+            height: 540px;
+            margin: 20px auto;
+            background: linear-gradient(135deg, #7B3B3B 0%, #5a2a2a 100%);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        
+        .slide.light {
+            background: linear-gradient(135deg, #F9F5F4 0%, #fff 100%);
+            color: #333;
+        }
+        
+        .slide.gradient-alt {
+            background: linear-gradient(135deg, #2c1810 0%, #7B3B3B 100%);
+        }
+        
+        .slide.image-bg {
+            background: linear-gradient(135deg, rgba(123, 59, 59, 0.95) 0%, rgba(90, 42, 42, 0.95) 100%);
+        }
+        
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 52px;
+            text-align: center;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 42px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            margin-bottom: 25px;
+        }
+        
+        .subtitle {
+            font-size: 24px;
+            opacity: 0.9;
+            text-align: center;
+            font-weight: 300;
+        }
+        
+        .tagline {
+            font-style: italic;
+            font-size: 20px;
+            opacity: 0.8;
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .slide-number {
+            position: absolute;
+            bottom: 20px;
+            right: 30px;
+            font-size: 14px;
+            opacity: 0.5;
+        }
+        
+        .logo-area {
+            position: absolute;
+            bottom: 20px;
+            left: 30px;
+            font-family: 'Playfair Display', serif;
+            font-size: 16px;
+            opacity: 0.7;
+        }
+        
+        .quote {
+            font-size: 36px;
+            font-style: italic;
+            text-align: center;
+            max-width: 800px;
+            line-height: 1.5;
+        }
+        
+        .quote-author {
+            margin-top: 20px;
+            font-size: 18px;
+            opacity: 0.7;
+        }
+        
+        .content-left {
+            align-items: flex-start;
+            text-align: left;
+        }
+        
+        ul {
+            list-style: none;
+            font-size: 24px;
+            line-height: 2;
+        }
+        
+        ul li {
+            padding-left: 30px;
+            position: relative;
+            margin: 10px 0;
+        }
+        
+        ul li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #E0C4C0;
+        }
+        
+        .slide.light ul li:before {
+            color: #7B3B3B;
+        }
+        
+        .big-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 120px;
+            font-weight: 700;
+            opacity: 0.3;
+            position: absolute;
+            top: 30px;
+            left: 40px;
+        }
+        
+        .framework-item {
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0;
+            font-size: 22px;
+        }
+        
+        .framework-letter {
+            background: #E0C4C0;
+            color: #7B3B3B;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 24px;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+        
+        .slide.light .framework-letter {
+            background: #7B3B3B;
+            color: white;
+        }
+        
+        .activity-badge {
+            background: #E0C4C0;
+            color: #7B3B3B;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+        
+        .three-columns {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            width: 100%;
+        }
+        
+        .column-box {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .slide.light .column-box {
+            background: rgba(123, 59, 59, 0.1);
+        }
+        
+        .column-box h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #E0C4C0;
+        }
+        
+        .slide.light .column-box h4 {
+            color: #7B3B3B;
+        }
+        
+        .column-box p {
+            font-size: 16px;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+        
+        .question-list {
+            font-size: 22px;
+            line-height: 2.2;
+        }
+        
+        .question-list li {
+            padding-left: 40px;
+        }
+        
+        .question-list li:before {
+            content: "?";
+            background: #E0C4C0;
+            color: #7B3B3B;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+        
+        .highlight-text {
+            color: #E0C4C0;
+            font-weight: 600;
+        }
+        
+        .slide.light .highlight-text {
+            color: #7B3B3B;
+        }
+        
+        .cta-box {
+            background: rgba(255,255,255,0.15);
+            padding: 30px 50px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .divider {
+            width: 80px;
+            height: 3px;
+            background: #E0C4C0;
+            margin: 20px auto;
+        }
+        
+        .slide.light .divider {
+            background: #7B3B3B;
+        }
+        
+        @media print {
+            .slide {
+                page-break-after: always;
+                margin: 0;
+                border-radius: 0;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- SLIDE 1: Title -->
+<div class="slide">
+    <h1>BOUNDARIES & BURNOUT</h1>
+    <p class="subtitle">From Chaos to Clarity</p>
+    <div class="divider"></div>
+    <p class="tagline">"He turns our mess into a message, our tests into testimonies"</p>
+    <div class="logo-area">Chelsea Flynn</div>
+    <div class="slide-number">1</div>
+</div>
+
+<!-- SLIDE 2: Opening Question -->
+<div class="slide gradient-alt">
+    <p class="quote">"Raise your hand if you've ever been on a rescue mission where someone didn't follow protocol..."</p>
+    <div class="slide-number">2</div>
+</div>
+
+<!-- SLIDE 3: Key Truth -->
+<div class="slide">
+    <h2>The Truth</h2>
+    <p class="quote" style="font-size: 42px;">You cannot rescue anyone<br>if you are drowning yourself.</p>
+    <div class="slide-number">3</div>
+</div>
+
+<!-- SLIDE 4: My Story -->
+<div class="slide light content-left">
+    <h2 style="text-align: left; color: #7B3B3B;">My Burnout Moment</h2>
+    <ul>
+        <li>Mother of three (including child with autism)</li>
+        <li>Running a business</li>
+        <li>Saying yes to everything</li>
+        <li>47 unread messages... and nothing but dread</li>
+    </ul>
+    <div class="logo-area" style="color: #7B3B3B;">Chelsea Flynn</div>
+    <div class="slide-number" style="color: #7B3B3B;">4</div>
+</div>
+
+<!-- SLIDE 5: Key Insight -->
+<div class="slide">
+    <p class="quote" style="font-size: 48px;"><span class="highlight-text">Boundaries</span> aren't selfish.<br><br>They're <span class="highlight-text">survival equipment.</span></p>
+    <div class="slide-number">5</div>
+</div>
+
+<!-- SLIDE 6: Activity 1 Header -->
+<div class="slide gradient-alt">
+    <div class="activity-badge">Interactive Activity</div>
+    <h1>The Oxygen Mask Check</h1>
+    <p class="subtitle">Stand up. Be honest. Step back if true.</p>
+    <div class="slide-number">6</div>
+</div>
+
+<!-- SLIDE 7: Activity 1 Questions -->
+<div class="slide light content-left">
+    <h3 style="color: #7B3B3B;">Step backward if this is TRUE for you:</h3>
+    <ul style="font-size: 20px; line-height: 2.4;">
+        <li>I have trouble sleeping because my mind won't stop</li>
+        <li>I can't remember the last time I did something for fun</li>
+        <li>I feel guilty when I take time for myself</li>
+        <li>I've snapped at someone I love recently</li>
+        <li>I've said "I'm fine" when I wasn't</li>
+        <li>I'm running on fumes but keep going</li>
+        <li>I've neglected basic self-care because I was "too busy"</li>
+    </ul>
+    <div class="slide-number" style="color: #7B3B3B;">7</div>
+</div>
+
+<!-- SLIDE 8: 3 B's Title -->
+<div class="slide">
+    <h1>The 3 B's of Burnout</h1>
+    <div class="divider"></div>
+    <p class="subtitle">Where we hemorrhage our energy</p>
+    <div class="slide-number">8</div>
+</div>
+
+<!-- SLIDE 9: 3 B's Content -->
+<div class="slide light">
+    <div class="three-columns">
+        <div class="column-box">
+            <h4>1. BLURRED</h4>
+            <p>Boundaries</p>
+            <p style="margin-top: 10px; font-size: 14px;">Can't tell where you end and others begin</p>
+        </div>
+        <div class="column-box">
+            <h4>2. BURIED</h4>
+            <p>Needs</p>
+            <p style="margin-top: 10px; font-size: 14px;">Pushing your needs so far down you forget they exist</p>
+        </div>
+        <div class="column-box">
+            <h4>3. BROKEN</h4>
+            <p>Boundaries</p>
+            <p style="margin-top: 10px; font-size: 14px;">Setting boundaries then immediately violating them</p>
+        </div>
+    </div>
+    <div class="slide-number" style="color: #7B3B3B;">9</div>
+</div>
+
+<!-- SLIDE 10: Which B? -->
+<div class="slide">
+    <h2>Which B resonates<br>most with you?</h2>
+    <p class="tagline">Hold that thought...</p>
+    <div class="slide-number">10</div>
+</div>
+
+<!-- SLIDE 11: Activity 2 Header -->
+<div class="slide gradient-alt">
+    <div class="activity-badge">Interactive Activity</div>
+    <h1>Boundary Audit</h1>
+    <p class="subtitle">Pair up. 5 minutes each. Listen only—no fixing.</p>
+    <div class="slide-number">11</div>
+</div>
+
+<!-- SLIDE 12: Activity 2 Questions -->
+<div class="slide light content-left">
+    <h3 style="color: #7B3B3B;">Answer with your partner:</h3>
+    <ul style="font-size: 24px; line-height: 2.5;">
+        <li><strong>What boundary do I KNOW I need to set?</strong></li>
+        <li><strong>What am I afraid will happen if I set it?</strong></li>
+        <li><strong>What is ALREADY happening because I haven't?</strong></li>
+    </ul>
+    <div class="slide-number" style="color: #7B3B3B;">12</div>
+</div>
+
+<!-- SLIDE 13: RESCUE Framework Title -->
+<div class="slide">
+    <h1>The R.E.S.C.U.E.<br>Framework</h1>
+    <div class="divider"></div>
+    <p class="subtitle">Your Personal Rescue Plan</p>
+    <div class="slide-number">13</div>
+</div>
+
+<!-- SLIDE 14: RESCUE Part 1 -->
+<div class="slide light content-left">
+    <div class="framework-item">
+        <div class="framework-letter">R</div>
+        <div><strong>RECOGNIZE</strong> the warning signs<br><span style="opacity: 0.7; font-size: 18px;">Know YOUR red flags</span></div>
+    </div>
+    <div class="framework-item">
+        <div class="framework-letter">E</div>
+        <div><strong>ESTABLISH</strong> your non-negotiables<br><span style="opacity: 0.7; font-size: 18px;">What 2-3 things must you protect?</span></div>
+    </div>
+    <div class="framework-item">
+        <div class="framework-letter">S</div>
+        <div><strong>SPEAK</strong> your boundaries out loud<br><span style="opacity: 0.7; font-size: 18px;">A boundary in your head is just a wish</span></div>
+    </div>
+    <div class="slide-number" style="color: #7B3B3B;">14</div>
+</div>
+
+<!-- SLIDE 15: RESCUE Part 2 -->
+<div class="slide light content-left">
+    <div class="framework-item">
+        <div class="framework-letter">C</div>
+        <div><strong>CREATE</strong> accountability<br><span style="opacity: 0.7; font-size: 18px;">Tell someone. Write it down. Make it visible.</span></div>
+    </div>
+    <div class="framework-item">
+        <div class="framework-letter">U</div>
+        <div><strong>UNDERSTAND</strong> maintenance is required<br><span style="opacity: 0.7; font-size: 18px;">Reinforce daily</span></div>
+    </div>
+    <div class="framework-item">
+        <div class="framework-letter">E</div>
+        <div><strong>EXPECT</strong> pushback<br><span style="opacity: 0.7; font-size: 18px;">People who benefited won't celebrate your new boundaries</span></div>
+    </div>
+    <div class="slide-number" style="color: #7B3B3B;">15</div>
+</div>
+
+<!-- SLIDE 16: Activity 3 -->
+<div class="slide gradient-alt">
+    <div class="activity-badge">Interactive Activity</div>
+    <h1>Your Non-Negotiables</h1>
+    <p class="subtitle">Write THREE things you commit to protect—starting TODAY</p>
+    <div class="slide-number">16</div>
+</div>
+
+<!-- SLIDE 17: Examples -->
+<div class="slide light content-left">
+    <h3 style="color: #7B3B3B;">Examples:</h3>
+    <ul style="font-size: 26px; line-height: 2.2;">
+        <li>"I will not answer work calls after 8pm"</li>
+        <li>"I will take my full lunch break"</li>
+        <li>"I will ask for help when overwhelmed"</li>
+    </ul>
+    <div class="cta-box" style="background: rgba(123,59,59,0.1); margin-top: 30px;">
+        <p style="font-size: 20px; color: #7B3B3B;"><strong>Your turn:</strong> Write your 3 non-negotiables now</p>
+    </div>
+    <div class="slide-number" style="color: #7B3B3B;">17</div>
+</div>
+
+<!-- SLIDE 18: The Challenge -->
+<div class="slide">
+    <h2>The Challenge</h2>
+    <p class="quote" style="font-size: 32px;">This week, enforce <span class="highlight-text">ONE</span> boundary.<br><br>Just one.</p>
+    <div class="slide-number">18</div>
+</div>
+
+<!-- SLIDE 19: When the voice -->
+<div class="slide gradient-alt">
+    <p class="quote">When that voice says<br><em>"Who do you think you are?"</em></p>
+    <div class="divider"></div>
+    <p class="quote" style="margin-top: 20px;">Answer:<br><strong>"I am someone worth rescuing too."</strong></p>
+    <div class="slide-number">19</div>
+</div>
+
+<!-- SLIDE 20: Closing Quote -->
+<div class="slide">
+    <p class="quote">"He turns our mess into a message,<br>our tests into testimonies."</p>
+    <div class="divider"></div>
+    <p class="subtitle">Your burnout doesn't have to be the end.<br>It can be the beginning.</p>
+    <div class="slide-number">20</div>
+</div>
+
+<!-- SLIDE 21: Final Slide -->
+<div class="slide">
+    <h1>Now go rescue yourselves.</h1>
+    <p class="subtitle" style="margin-top: 20px;">You've earned it.</p>
+    <div class="divider"></div>
+    <p style="margin-top: 40px; font-size: 18px;">
+        <strong>Chelsea Flynn</strong><br>
+        Catholic Speaker & Life Transformation Coach<br>
+        www.chelseaflynn.com
+    </p>
+    <div class="slide-number">21</div>
+</div>
+
+<!-- SLIDE 22: Contact -->
+<div class="slide light">
+    <h2 style="color: #7B3B3B;">Let's Connect</h2>
+    <div class="divider"></div>
+    <p style="font-size: 22px; margin: 30px 0; color: #333;">
+        <strong>Website:</strong> www.chelseaflynn.com<br><br>
+        <strong>Email:</strong> transform@chelseaflynncoaching.com<br><br>
+        <strong>Book a Discovery Call:</strong> calendly.com/chelseaflynncoaching
+    </p>
+    <p class="tagline" style="color: #7B3B3B;">"He turns our mess into a message, our tests into testimonies"</p>
+    <div class="slide-number" style="color: #7B3B3B;">22</div>
+</div>
+
+</body>
+</html>
