@@ -8,7 +8,7 @@ export const mockData = {
     location: "Based in Cayman Islands • Available Globally"
   },
   about: {
-    title: "From Conversion to Calling",
+    title: "Conversion to Calling",
     description: "As a Catholic convert, I understand the transformative power of faith. My journey from searching to finding has equipped me with unique insights to guide others on their spiritual path.",
     highlights: [
       {
@@ -21,7 +21,7 @@ export const mockData = {
       },
       {
         title: "Radio",
-        description: "Sharing faith-based insights and inspiration through regular radio show appearances every Saturday between 11am-1pm EST."
+        description: "Sharing faith-based insights and inspiration through regular radio show appearances every Saturday between 11am-1pm EST on BOBO FM 103.1."
       },
       {
         title: "Charity",
@@ -65,7 +65,7 @@ export const mockData = {
       date: "March 2025"
     },
     {
-      title: "Turning Tests Into Testimonies",
+      title: "Outgrowing Your Old Environment",
       description: "How hardships become our greatest witness",
       videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
       duration: "32:10",

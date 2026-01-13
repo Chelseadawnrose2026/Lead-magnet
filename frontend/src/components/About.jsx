@@ -121,7 +121,7 @@ const About = () => {
                               className="hover:opacity-90 transition-opacity duration-200 mt-2"
                               data-testid="radio-youtube-cta"
                             >
-                              Watch Radio Interviews
+                              Listen In
                             </Button>
                           </a>
                         )}
