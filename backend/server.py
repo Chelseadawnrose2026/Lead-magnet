@@ -223,6 +223,14 @@ async def download_slides():
         filename="Boundaries-Burnout-Slides.pdf"
     )
 
+@api_router.get("/download/onesheet")
+async def download_onesheet():
+    return FileResponse(
+        ROOT_DIR / "onesheet_download.pdf",
+        media_type="application/pdf",
+        filename="Chelsea-Flynn-Speaker-OneSheet.pdf"
+    )
+
 # Include the router in the main app
 app.include_router(api_router)
 
