@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boundaries & Burnout - Keynote Guide | Chelsea Flynn</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 8.5in;
+            margin: 0 auto;
+            padding: 0.5in;
+            background: white;
+        }
+        
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            color: #7B3B3B;
+        }
+        
+        h1 {
+            font-size: 28px;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .tagline {
+            text-align: center;
+            color: #7B3B3B;
+            font-style: italic;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+        
+        .header-info {
+            background: #F9F5F4;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            font-size: 12px;
+        }
+        
+        .header-info div {
+            text-align: center;
+        }
+        
+        .header-info strong {
+            color: #7B3B3B;
+            display: block;
+            margin-bottom: 3px;
+        }
+        
+        h2 {
+            font-size: 18px;
+            margin: 25px 0 12px 0;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #E0C4C0;
+        }
+        
+        h3 {
+            font-size: 15px;
+            margin: 18px 0 8px 0;
+        }
+        
+        .timing-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 12px;
+        }
+        
+        .timing-table th {
+            background: #7B3B3B;
+            color: white;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        .timing-table td {
+            padding: 8px;
+            border-bottom: 1px solid #E0C4C0;
+        }
+        
+        .timing-table tr:nth-child(even) {
+            background: #F9F5F4;
+        }
+        
+        .section {
+            margin-bottom: 20px;
+            page-break-inside: avoid;
+        }
+        
+        .script-box {
+            background: #F9F5F4;
+            border-left: 4px solid #7B3B3B;
+            padding: 12px 15px;
+            margin: 10px 0;
+            font-size: 13px;
+        }
+        
+        .stage-direction {
+            color: #7B3B3B;
+            font-style: italic;
+            font-size: 12px;
+        }
+        
+        .framework-box {
+            background: linear-gradient(135deg, #7B3B3B 0%, #9B5B5B 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .framework-box h3 {
+            color: white;
+            margin-top: 0;
+        }
+        
+        .framework-item {
+            margin: 8px 0;
+            padding-left: 10px;
+            font-size: 13px;
+        }
+        
+        .framework-item strong {
+            color: #E0C4C0;
+        }
+        
+        .activity-box {
+            border: 2px solid #E0C4C0;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            background: white;
+        }
+        
+        .activity-box h3 {
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .activity-badge {
+            background: #7B3B3B;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-family: 'Open Sans', sans-serif;
+        }
+        
+        ul, ol {
+            margin: 10px 0 10px 25px;
+            font-size: 13px;
+        }
+        
+        li {
+            margin: 5px 0;
+        }
+        
+        .checklist {
+            list-style: none;
+            margin-left: 0;
+        }
+        
+        .checklist li {
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .checklist li:before {
+            content: "☐";
+            position: absolute;
+            left: 0;
+            color: #7B3B3B;
+        }
+        
+        .quote {
+            text-align: center;
+            font-style: italic;
+            color: #7B3B3B;
+            font-size: 14px;
+            margin: 20px 0;
+            padding: 15px;
+            background: #F9F5F4;
+            border-radius: 8px;
+        }
+        
+        .page-break {
+            page-break-after: always;
+        }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .notes-section {
+            background: #FFF9E6;
+            border: 1px solid #E6D9A6;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 2px solid #E0C4C0;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .footer strong {
+            color: #7B3B3B;
+        }
+        
+        @media print {
+            body {
+                padding: 0.3in;
+            }
+            .page-break {
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- PAGE 1: Cover & Overview -->
+    <h1>BOUNDARIES & BURNOUT</h1>
+    <p class="subtitle">From Chaos to Clarity</p>
+    <p class="tagline">"He turns our mess into a message, our tests into testimonies"</p>
+    
+    <div class="header-info">
+        <div>
+            <strong>Audience</strong>
+            40 Women in Search & Rescue
+        </div>
+        <div>
+            <strong>Duration</strong>
+            60 Minutes
+        </div>
+        <div>
+            <strong>Format</strong>
+            Interactive Keynote
+        </div>
+        <div>
+            <strong>Speaker</strong>
+            Chelsea Flynn
+        </div>
+    </div>
+    
+    <h2>⏱️ Session Timeline</h2>
+    <table class="timing-table">
+        <tr>
+            <th>Time</th>
+            <th>Segment</th>
+            <th>Type</th>
+        </tr>
+        <tr>
+            <td>0:00 - 0:05</td>
+            <td>Opening Hook & Welcome</td>
+            <td>Speaking</td>
+        </tr>
+        <tr>
+            <td>0:05 - 0:13</td>
+            <td>Personal Story: My Burnout Moment</td>
+            <td>Speaking</td>
+        </tr>
+        <tr>
+            <td>0:13 - 0:20</td>
+            <td>Activity #1: The Oxygen Mask Check</td>
+            <td>Group Activity</td>
+        </tr>
+        <tr>
+            <td>0:20 - 0:30</td>
+            <td>Teaching: The 3 B's of Burnout</td>
+            <td>Speaking</td>
+        </tr>
+        <tr>
+            <td>0:30 - 0:40</td>
+            <td>Activity #2: Boundary Audit</td>
+            <td>Paired Exercise</td>
+        </tr>
+        <tr>
+            <td>0:40 - 0:48</td>
+            <td>Teaching: The R.E.S.C.U.E. Framework</td>
+            <td>Speaking</td>
+        </tr>
+        <tr>
+            <td>0:48 - 0:55</td>
+            <td>Activity #3: The Non-Negotiables</td>
+            <td>Individual + Share</td>
+        </tr>
+        <tr>
+            <td>0:55 - 1:00</td>
+            <td>Closing & Call to Action</td>
+            <td>Speaking</td>
+        </tr>
+    </table>
+    
+    <h2>📋 Materials Checklist</h2>
+    <ul class="checklist">
+        <li>Index cards (40+)</li>
+        <li>Pens for all participants (40)</li>
+        <li>Flip chart or whiteboard</li>
+        <li>Markers (dark colors)</li>
+        <li>Timer (phone works)</li>
+        <li>Slide deck loaded & tested</li>
+        <li>Handouts printed (optional)</li>
+        <li>Business cards / QR code for follow-up</li>
+    </ul>
+    
+    <div class="page-break"></div>
+    
+    <!-- PAGE 2: Opening & Personal Story -->
+    <h2>🎤 OPENING HOOK (5 minutes)</h2>
+    
+    <div class="script-box">
+        <p class="stage-direction">[Walk to center stage, pause, make eye contact]</p>
+        <p><strong>"Raise your hand if you've ever been on a rescue mission where someone didn't follow protocol... and it nearly cost them everything."</strong></p>
+        <p class="stage-direction">[Pause for hands]</p>
+        <p><strong>"Now keep your hand up if YOU have ever been that person... not on a mission, but in your own life. Running on empty. Ignoring the warning signs. Telling yourself 'I'm fine' when everything inside is screaming 'MAYDAY.'"</strong></p>
+    </div>
+    
+    <div class="script-box">
+        <p>"My name is Chelsea Flynn. I'm a Catholic speaker, a life transformation coach, a mother of three—including a child with special needs—and a woman who once thought burnout was a badge of honor."</p>
+        <p><strong>"You cannot rescue anyone if you are drowning yourself."</strong></p>
+    </div>
+    
+    <h2>💔 PERSONAL STORY: My Burnout Moment (8 minutes)</h2>
+    
+    <div class="script-box">
+        <p>"Let me take you back to my chaos moment. Picture this: I'm a mother of three. My youngest has autism—beautiful, brilliant, and requiring constant attention. I'm running a business. I'm saying yes to every request because I thought that's what strong women do."</p>
+        <p class="stage-direction">[Pause, connect with audience]</p>
+        <p>"One morning, I woke up and couldn't get out of bed. Not 'didn't want to'—COULDN'T. My body had finally staged a full rebellion. I looked at my phone—47 unread messages—and felt nothing but dread."</p>
+        <p><strong>"I had become so good at rescuing everyone else that I had completely abandoned myself."</strong></p>
+    </div>
+    
+    <div class="quote">
+        "Boundaries aren't selfish. They're survival equipment."
+    </div>
+    
+    <div class="page-break"></div>
+    
+    <!-- PAGE 3: Activity 1 & 3 B's -->
+    <div class="activity-box">
+        <h3><span class="activity-badge">ACTIVITY #1</span> The Oxygen Mask Check (7 min)</h3>
+        <p><strong>Instructions:</strong> Everyone stands. Read statements below. If TRUE for them right now, they step backward. If false, stay put.</p>
+        
+        <ol>
+            <li>"I have trouble falling asleep because my mind won't stop."</li>
+            <li>"I can't remember the last time I did something purely for fun."</li>
+            <li>"I feel guilty when I take time for myself."</li>
+            <li>"I've snapped at someone I love recently because I was overwhelmed."</li>
+            <li>"I've said 'I'm fine' in the past week when I wasn't."</li>
+            <li>"I feel like I'm running on fumes but keep going anyway."</li>
+            <li>"I've neglected basic self-care because I was 'too busy.'"</li>
+        </ol>
+        
+        <p class="stage-direction">[After: "Look around. This isn't shame—this is awareness. You can't rescue yourself from a building you don't know you're trapped in."]</p>
+    </div>
+    
+    <h2>📚 THE 3 B'S OF BURNOUT (10 minutes)</h2>
+    
+    <div class="framework-box">
+        <h3>The 3 B's of Burnout</h3>
+        <div class="framework-item">
+            <strong>1. BLURRED BOUNDARIES</strong><br>
+            When we can't tell where we end and everyone else begins. We take on others' emergencies as our own.
+        </div>
+        <div class="framework-item">
+            <strong>2. BURIED NEEDS</strong><br>
+            When we push our own needs so far down we forget they exist. When's the last time you asked: What do I need?
+        </div>
+        <div class="framework-item">
+            <strong>3. BROKEN BOUNDARIES</strong><br>
+            The boundaries we set and immediately violate. "No emails after 6pm" → checks at 6:01.
+        </div>
+    </div>
+    
+    <div class="page-break"></div>
+    
+    <!-- PAGE 4: Activity 2 & R.E.S.C.U.E. Framework -->
+    <div class="activity-box">
+        <h3><span class="activity-badge">ACTIVITY #2</span> Boundary Audit (10 min)</h3>
+        <p><strong>Instructions:</strong> Pair up. 5 minutes each person. Partner ONLY listens—no fixing, no advice.</p>
+        
+        <p><strong>Questions to answer:</strong></p>
+        <ol>
+            <li><strong>"What is one boundary I KNOW I need to set but haven't?"</strong></li>
+            <li><strong>"What am I afraid will happen if I set this boundary?"</strong></li>
+            <li><strong>"What is ALREADY happening because I HAVEN'T set this boundary?"</strong></li>
+        </ol>
+        
+        <p class="stage-direction">[Set timer 5 min → announce switch → 5 min more]</p>
+        <p class="stage-direction">[After: "Sometimes just saying it out loud makes it real. And when it's real, we can change it."]</p>
+    </div>
+    
+    <h2>🚁 THE R.E.S.C.U.E. FRAMEWORK (8 minutes)</h2>
+    
+    <div class="framework-box">
+        <h3>Personal Rescue Plan</h3>
+        <div class="framework-item">
+            <strong>R - RECOGNIZE</strong> the warning signs<br>
+            <em>What does YOUR burnout look like? Know your red flags.</em>
+        </div>
+        <div class="framework-item">
+            <strong>E - ESTABLISH</strong> your non-negotiables<br>
+            <em>What are 2-3 things you MUST protect?</em>
+        </div>
+        <div class="framework-item">
+            <strong>S - SPEAK</strong> your boundaries out loud<br>
+            <em>A boundary in your head isn't a boundary. It's a wish.</em>
+        </div>
+        <div class="framework-item">
+            <strong>C - CREATE</strong> accountability<br>
+            <em>Tell someone. Write it down. Make it visible.</em>
+        </div>
+        <div class="framework-item">
+            <strong>U - UNDERSTAND</strong> maintenance is required<br>
+            <em>Boundaries need daily reinforcement.</em>
+        </div>
+        <div class="framework-item">
+            <strong>E - EXPECT</strong> pushback<br>
+            <em>People who benefited from your lack of boundaries won't celebrate new ones.</em>
+        </div>
+    </div>
+    
+    <div class="page-break"></div>
+    
+    <!-- PAGE 5: Activity 3 & Closing -->
+    <div class="activity-box">
+        <h3><span class="activity-badge">ACTIVITY #3</span> The Non-Negotiables (7 min)</h3>
+        <p><strong>Instructions:</strong> On index card, write THREE non-negotiables—things you commit to protect starting TODAY.</p>
+        
+        <p><strong>Examples:</strong></p>
+        <ul>
+            <li>"I will not answer work calls after 8pm"</li>
+            <li>"I will take my full lunch break"</li>
+            <li>"I will ask for help when overwhelmed"</li>
+        </ul>
+        
+        <p class="stage-direction">[Give 3 minutes to write]</p>
+        <p class="stage-direction">[Ask for 3 volunteers to share ONE non-negotiable with the room]</p>
+        <p><strong>Key point:</strong> "When we speak our boundaries out loud, they become real."</p>
+    </div>
+    
+    <h2>🎬 CLOSING & CALL TO ACTION (5 minutes)</h2>
+    
+    <div class="script-box">
+        <p>"You are women who run toward danger when everyone else runs away. You are the ones who show up at 3am. You are the calm in someone else's worst moment. <strong>That is extraordinary.</strong>"</p>
+        <p>"But you are also human beings who need rest. Who need joy. Who need boundaries."</p>
+    </div>
+    
+    <div class="quote">
+        <strong>THE CHALLENGE:</strong><br>
+        "This week, enforce ONE boundary. Just one. And when that voice says 'Who do you think you are?'—answer: <strong>'I am someone worth rescuing too.'"</strong>
+    </div>
+    
+    <div class="script-box">
+        <p><strong>Closing line:</strong> "Remember: He turns our mess into a message, our tests into testimonies. Your burnout doesn't have to be the end of your story. It can be the beginning of a new chapter."</p>
+        <p class="stage-direction">[Pause]</p>
+        <p><strong>"Now go rescue yourselves. You've earned it."</strong></p>
+    </div>
+    
+    <div class="page-break"></div>
+    
+    <!-- PAGE 6: Speaker Notes & Follow-up -->
+    <h2>💡 Speaker Notes</h2>
+    
+    <div class="two-column">
+        <div class="notes-section">
+            <h3>Energy Management</h3>
+            <ul>
+                <li>Start high energy, vary throughout</li>
+                <li>Lower voice for emotional moments</li>
+                <li>Use movement—don't stay behind podium</li>
+                <li>Make eye contact with different sections</li>
+            </ul>
+        </div>
+        
+        <div class="notes-section">
+            <h3>Audience Connection</h3>
+            <ul>
+                <li>These women have seen trauma—be respectful</li>
+                <li>Acknowledge their sacrifice early</li>
+                <li>Use "we" language throughout</li>
+                <li>Humor helps but keep it relatable</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="notes-section">
+        <h3>Flexibility Tips</h3>
+        <ul>
+            <li>If an activity runs long, shorten speaking sections</li>
+            <li>If energy is low, add more movement or call-and-response</li>
+            <li>Read the room—adjust depth of personal sharing accordingly</li>
+            <li>Have business cards or QR code ready for those wanting coaching</li>
+        </ul>
+    </div>
+    
+    <h2>📧 Post-Event Follow-Up Email</h2>
+    
+    <div class="script-box">
+        <p><strong>Subject:</strong> You showed up for yourself yesterday 🙌</p>
+        <p>Hi [Name],</p>
+        <p>Thank you for being part of yesterday's session on Boundaries & Burnout. It takes courage to show up, be honest, and commit to change.</p>
+        <p><strong>A few things to support your journey:</strong></p>
+        <ol>
+            <li>Your non-negotiables matter. Stick to them this week.</li>
+            <li>You're not alone—every woman in that room is fighting the same battle.</li>
+            <li>If you want support going deeper, I offer 1:1 coaching—reply to book a free discovery call.</li>
+        </ol>
+        <p>Remember: You cannot rescue others from a place of empty. Fill your tank first.</p>
+        <p>With love,<br><strong>Chelsea Flynn</strong></p>
+    </div>
+    
+    <div class="footer">
+        <strong>Chelsea Flynn</strong> | Catholic Speaker & Life Transformation Coach<br>
+        www.chelseaflynn.com | transform@chelseaflynncoaching.com<br><br>
+        <em>"He turns our mess into a message, our tests into testimonies"</em>
+    </div>
+</body>
+</html>
