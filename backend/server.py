@@ -214,6 +214,15 @@ async def get_all_bookings():
     
     return bookings
 
+# PDF Download endpoints
+@api_router.get("/download/slides")
+async def download_slides():
+    return FileResponse(
+        ROOT_DIR / "slides_download.pdf",
+        media_type="application/pdf",
+        filename="Boundaries-Burnout-Slides.pdf"
+    )
+
 # Include the router in the main app
 app.include_router(api_router)
 
