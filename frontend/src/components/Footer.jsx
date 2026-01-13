@@ -85,7 +85,7 @@ const Footer = () => {
                   <Instagram className="w-6 h-6" />
                 </a>
                 <a
-                  href="https://l.facebook.com/l.php?u=http%3A%2F%2Fwww.chelseaflynncoaching.com%2F%3Ffbclid%3DIwZXh0bgNhZW0CMTAAYnJpZBExbnBacjlxVXVjUXp2VzlGRnNydGMGYXBwX2lkEDIyMjAzOTE3ODgyMDA4OTIAAR7LVp8T27AaFSV51lP_yG0MwZAIAhrFURIFCoe3YLPFP2x2C8gOZwQL25HJPw_aem_mZZ-6pqH7er2QQlVynGmfQ&h=AT374EokpU-breOzPoOSXlRPI9hwnZcDczP6zlavP7kU3HSHm0g_CZMtsi6xJU98qPScrRZaacfhwzNsLYZHtP-l4H_sxgAknNHk0GXuOHl5r-ifM6lYefP---ZgUDxJH9Sv"
+                  href="https://www.facebook.com/profile.php?id=61576592120345"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-white/80 hover:text-white transition-colors duration-200"
