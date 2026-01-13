@@ -36,9 +36,9 @@ ul li:before { content: "→ "; color: #E0C4C0; }
 .badge { background: #E0C4C0; color: #7B3B3B; padding: 12px 30px; border-radius: 25px; font-size: 16px; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 25px; font-family: Arial, sans-serif; }
 .letter { background: #E0C4C0; color: #7B3B3B; width: 50px; height: 50px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; font-size: 28px; margin-right: 20px; }
 .s.light .letter { background: #7B3B3B; color: white; }
-.framework { text-align: left; font-size: 26px; margin: 15px 0; display: flex; align-items: center; }
+.framework { text-align: left; font-size: 24px; margin: 12px 0; display: flex; align-items: center; }
 .photo { width: 250px; height: 250px; border-radius: 50%; object-fit: cover; border: 5px solid #E0C4C0; margin: 20px; }
-.photo-rect { width: 100%; max-width: 400px; height: 280px; object-fit: cover; border-radius: 15px; border: 4px solid #E0C4C0; }
+.photo-rect { width: 100%; max-width: 400px; height: 280px; object-fit: cover; object-position: center top; border-radius: 15px; border: 4px solid #E0C4C0; }
 .two-col { display: flex; align-items: center; gap: 50px; width: 100%; }
 .two-col .text { flex: 1; text-align: left; }
 .two-col .img { flex: 0 0 350px; }
@@ -47,45 +47,55 @@ ul li:before { content: "→ "; color: #E0C4C0; }
 </head>
 <body>
 
-<div class="s" style="background-image: url('file:///app/img3.jpg'); background-size: cover; background-position: center;">
-<div style="position:absolute;inset:0;background:rgba(123,59,59,0.8);"></div>
-<div style="position:relative;z-index:1;text-align:center;">
-<h1>BOUNDARIES & BURNOUT</h1>
-<p class="subtitle">From Chaos to Clarity</p>
+<!-- SLIDE 1 -->
+<div class="s" style="background-image: url('file:///app/img3.jpg'); background-size: cover; background-position: center; position: relative;">
+<div style="position:absolute;inset:0;background:rgba(90,42,42,0.65);"></div>
+<div style="position:relative;z-index:1;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+<h1 style="margin-bottom:15px;">BOUNDARIES & BURNOUT</h1>
+<p class="subtitle" style="margin:0;">From Chaos to Clarity</p>
 <div class="divider"></div>
-<p class="tagline">"He turns our mess into a message, our tests into testimonies"</p>
-<p style="margin-top:40px;font-size:24px;">Chelsea Flynn</p>
+<p style="font-style:italic;font-size:26px;margin:0;">He turns our mess into a message, our tests into testimonies</p>
+<p style="margin-top:50px;font-size:28px;font-weight:bold;">Chelsea Flynn</p>
+<p style="font-size:22px;margin-top:10px;">Catholic Speaker & Life Transformation Coach</p>
+<p style="font-size:20px;margin-top:8px;">www.chelseaflynn.com</p>
 </div>
 </div>
 
-<div class="s alt"><p style="font-size:42px; font-style:italic;">"Raise your hand if you've ever been on a rescue mission where someone didn't follow protocol..."</p></div>
+<!-- SLIDE 2 -->
+<div class="s alt"><p style="font-size:42px; font-style:italic;">Raise your hand if you've ever been on a rescue mission where someone didn't follow protocol... or where something didn't go to plan.</p></div>
 
+<!-- SLIDE 3 -->
 <div class="s">
 <h2>The Truth</h2>
 <p style="font-size:48px;">You cannot rescue anyone<br>if you are drowning yourself.</p>
 </div>
 
+<!-- SLIDE 4 -->
 <div class="s light">
 <div class="two-col">
 <div class="text">
 <h2 style="color:#7B3B3B;">My Burnout Moment</h2>
-<ul style="font-size:26px;">
-<li>Mother of three (including child with autism)</li>
+<ul style="font-size:24px;">
+<li>Mother of three, one child who is autistic</li>
+<li>Founder and Chair of Autism Acceptance</li>
 <li>Running a business</li>
 <li>Saying yes to everything</li>
 <li>47 unread messages... and nothing but dread</li>
 </ul>
 </div>
 <div class="img">
-<img src="file:///app/img4.jpg" class="photo-rect">
+<img src="file:///app/img4.jpg" class="photo-rect" style="object-position: center 20%;">
 </div>
 </div>
 </div>
 
+<!-- SLIDE 5 -->
 <div class="s"><p style="font-size:52px;"><span style="color:#E0C4C0;">Boundaries</span> aren't selfish.<br><br>They're <span style="color:#E0C4C0;">survival equipment.</span></p></div>
 
+<!-- SLIDE 6 -->
 <div class="s alt"><div class="badge">Interactive Activity</div><h1>The Oxygen Mask Check</h1><p class="subtitle">Stand up. Be honest. Step back if true.</p></div>
 
+<!-- SLIDE 7 -->
 <div class="s light">
 <h3 style="color:#7B3B3B;font-size:32px;">Step backward if this is TRUE for you:</h3>
 <ul style="font-size:26px;margin-top:20px;">
@@ -99,8 +109,10 @@ ul li:before { content: "→ "; color: #E0C4C0; }
 </ul>
 </div>
 
+<!-- SLIDE 8 -->
 <div class="s"><h1>The 3 B's of Burnout</h1><div class="divider"></div><p class="subtitle">Where we hemorrhage our energy</p></div>
 
+<!-- SLIDE 9 -->
 <div class="s light">
 <div class="cols">
 <div class="box">
@@ -121,10 +133,13 @@ ul li:before { content: "→ "; color: #E0C4C0; }
 </div>
 </div>
 
+<!-- SLIDE 10 -->
 <div class="s"><h2>Which B resonates<br>most with you?</h2><p class="tagline">Hold that thought...</p></div>
 
-<div class="s alt"><div class="badge">Interactive Activity</div><h1>Boundary Audit</h1><p class="subtitle">Pair up. 5 minutes each. Listen only—no fixing.</p></div>
+<!-- SLIDE 11 -->
+<div class="s alt"><div class="badge">Interactive Activity</div><h1>Boundary Audit</h1><p class="subtitle">Pair up. 5 minutes each. Listen only, no fixing.</p></div>
 
+<!-- SLIDE 12 -->
 <div class="s light">
 <div class="two-col">
 <div class="img">
@@ -141,22 +156,23 @@ ul li:before { content: "→ "; color: #E0C4C0; }
 </div>
 </div>
 
+<!-- SLIDE 13 -->
 <div class="s"><h1 style="font-size:56px;">The R.E.S.C.U.E.<br>Framework</h1><div class="divider"></div><p class="subtitle">Your Personal Rescue Plan</p></div>
 
+<!-- SLIDE 14 - ALL RESCUE LETTERS -->
 <div class="s light">
-<div class="framework"><span class="letter">R</span><div><strong>RECOGNIZE</strong> the warning signs<br><span style="opacity:0.7;font-size:22px;">Know YOUR red flags</span></div></div>
-<div class="framework"><span class="letter">E</span><div><strong>ESTABLISH</strong> your non-negotiables<br><span style="opacity:0.7;font-size:22px;">What 2-3 things must you protect?</span></div></div>
-<div class="framework"><span class="letter">S</span><div><strong>SPEAK</strong> your boundaries out loud<br><span style="opacity:0.7;font-size:22px;">A boundary in your head is just a wish</span></div></div>
+<div class="framework"><span class="letter">R</span><div><strong>RECOGNIZE</strong> the warning signs, know YOUR red flags</div></div>
+<div class="framework"><span class="letter">E</span><div><strong>ESTABLISH</strong> your non-negotiables, what 2-3 things must you protect?</div></div>
+<div class="framework"><span class="letter">S</span><div><strong>SPEAK</strong> your boundaries out loud, a boundary in your head is just a wish</div></div>
+<div class="framework"><span class="letter">C</span><div><strong>CREATE</strong> accountability, tell someone, write it down, make it visible</div></div>
+<div class="framework"><span class="letter">U</span><div><strong>UNDERSTAND</strong> maintenance is required, reinforce daily</div></div>
+<div class="framework"><span class="letter">E</span><div><strong>EXPECT</strong> pushback, people who benefited won't celebrate your new boundaries</div></div>
 </div>
 
-<div class="s light">
-<div class="framework"><span class="letter">C</span><div><strong>CREATE</strong> accountability<br><span style="opacity:0.7;font-size:22px;">Tell someone. Write it down. Make it visible.</span></div></div>
-<div class="framework"><span class="letter">U</span><div><strong>UNDERSTAND</strong> maintenance is required<br><span style="opacity:0.7;font-size:22px;">Reinforce daily</span></div></div>
-<div class="framework"><span class="letter">E</span><div><strong>EXPECT</strong> pushback<br><span style="opacity:0.7;font-size:22px;">People who benefited won't celebrate your new boundaries</span></div></div>
-</div>
+<!-- SLIDE 15 -->
+<div class="s alt"><div class="badge">Interactive Activity</div><h1>Your Non-Negotiables</h1><p class="subtitle">Write THREE things you commit to protect, starting TODAY</p></div>
 
-<div class="s alt"><div class="badge">Interactive Activity</div><h1>Your Non-Negotiables</h1><p class="subtitle">Write THREE things you commit to protect—starting TODAY</p></div>
-
+<!-- SLIDE 16 -->
 <div class="s light">
 <h3 style="color:#7B3B3B;font-size:36px;">Examples:</h3>
 <ul style="font-size:30px;margin-top:20px;">
@@ -169,25 +185,30 @@ ul li:before { content: "→ "; color: #E0C4C0; }
 </div>
 </div>
 
+<!-- SLIDE 17 -->
 <div class="s"><h2>The Challenge</h2><p style="font-size:40px;">This week, enforce <span style="color:#E0C4C0;">ONE</span> boundary.<br><br>Just one.</p></div>
 
+<!-- SLIDE 18 -->
 <div class="s alt">
 <p style="font-size:36px;">When that voice says<br><em>"Who do you think you are?"</em></p>
 <div class="divider"></div>
 <p style="font-size:36px;margin-top:20px;">Answer:<br><strong>"I am someone worth rescuing too."</strong></p>
 </div>
 
-<div class="s" style="background-image: url('file:///app/img2.jpg'); background-size: cover; background-position: center;">
-<div style="position:absolute;inset:0;background:rgba(123,59,59,0.8);"></div>
+<!-- SLIDE 19 -->
+<div class="s" style="background-image: url('file:///app/img2.jpg'); background-size: cover; background-position: center; position: relative;">
+<div style="position:absolute;inset:0;background:rgba(90,42,42,0.7);"></div>
 <div style="position:relative;z-index:1;">
-<p style="font-size:36px;font-style:italic;">"He turns our mess into a message,<br>our tests into testimonies."</p>
+<p style="font-size:36px;font-style:italic;">He turns our mess into a message,<br>our tests into testimonies.</p>
 <div class="divider"></div>
 <p class="subtitle">Your burnout doesn't have to be the end.<br>It can be the beginning.</p>
 </div>
 </div>
 
+<!-- SLIDE 20 -->
 <div class="s"><h1>Now go rescue yourselves.</h1><p class="subtitle" style="margin-top:25px;font-size:32px;">You've earned it.</p><div class="divider"></div><p style="margin-top:40px;font-size:22px;"><strong>Chelsea Flynn</strong><br>Catholic Speaker & Life Transformation Coach<br>www.chelseaflynn.com</p></div>
 
+<!-- SLIDE 21 -->
 <div class="s light">
 <h2 style="color:#7B3B3B;">Let's Connect</h2>
 <div class="divider" style="background:#7B3B3B;"></div>
@@ -198,7 +219,7 @@ ul li:before { content: "→ "; color: #E0C4C0; }
 <strong>Email:</strong> transform@chelseaflynncoaching.com<br><br>
 <strong>Book a Discovery Call:</strong><br>calendly.com/chelseaflynncoaching
 </p>
-<p class="tagline" style="color:#7B3B3B;margin-top:30px;">"He turns our mess into a message,<br>our tests into testimonies"</p>
+<p class="tagline" style="color:#7B3B3B;margin-top:30px;">He turns our mess into a message,<br>our tests into testimonies</p>
 </div>
 <div class="img">
 <img src="file:///app/img4.jpg" class="photo">
