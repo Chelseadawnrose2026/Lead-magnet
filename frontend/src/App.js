@@ -11,6 +11,7 @@ import Contact from "./components/Contact";
 import Booking from "./components/Booking";
 import Footer from "./components/Footer";
 import Admin from "./components/Admin";
+import WhatsAppButton from "./components/WhatsAppButton";
 import { Toaster } from "./components/ui/sonner";
 
 const Home = () => {
@@ -27,6 +28,7 @@ const Home = () => {
         <Contact />
       </main>
       <Footer />
+      <WhatsAppButton />
       <Toaster />
     </div>
   );
