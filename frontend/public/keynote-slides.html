@@ -278,11 +278,20 @@
         }
         
         @media print {
+            body {
+                background: white;
+            }
             .slide {
                 page-break-after: always;
+                page-break-inside: avoid;
                 margin: 0;
                 border-radius: 0;
                 box-shadow: none;
+                width: 10in;
+                height: 7.5in;
+            }
+            .slide:last-child {
+                page-break-after: avoid;
             }
         }
     </style>
