@@ -58,6 +58,25 @@ const CRMDashboard = () => {
     }
   };
 
+  const processAuthCallback = async (sessionId) => {
+    try {
+      const response = await axios.post(
+        `${API_URL}/api/crm/auth/session`,
+        { session_id: sessionId },
+        { withCredentials: true }
+      );
+      setUser(response.data.user);
+      setLoading(false);
+      // Clear the hash from URL
+      window.history.replaceState(null, '', '/crm');
+      loadDashboard();
+    } catch (error) {
+      console.error('Auth callback error:', error);
+      setLoading(false);
+      navigate('/crm/login');
+    }
+  };
+
   const checkAuth = async () => {
     try {
       const response = await axios.get(`${API_URL}/api/crm/auth/me`, {
@@ -83,8 +102,14 @@ const CRMDashboard = () => {
 
   // Check auth on mount
   useEffect(() => {
-    if (location.hash?.includes('session_id=')) {
-      return; // Let AuthCallback handle this
+    // Check if this is an OAuth callback with session_id
+    const hash = location.hash;
+    const sessionIdMatch = hash.match(/session_id=([^&]+)/);
+    
+    if (sessionIdMatch) {
+      const sessionId = sessionIdMatch[1];
+      processAuthCallback(sessionId);
+      return;
     }
     
     if (!user) {
