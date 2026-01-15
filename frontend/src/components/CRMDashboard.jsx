@@ -123,7 +123,7 @@ const CRMDashboard = () => {
         <nav className="flex-1 space-y-2">
           {[
             { id: 'dashboard', icon: BarChart3, label: 'Dashboard' },
-            { id: 'pipeline', icon: Kanban, label: 'Pipeline' },
+            { id: 'pipeline', icon: LayoutGrid, label: 'Pipeline' },
             { id: 'contacts', icon: Users, label: 'Contacts' },
             { id: 'emails', icon: Mail, label: 'Emails' },
             { id: 'todos', icon: CheckSquare, label: 'To-Do List' },
