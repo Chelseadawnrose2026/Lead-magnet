@@ -960,7 +960,7 @@ async def create_invoice(invoice_data: InvoiceCreate, request: Request):
     doc = invoice.model_dump()
     doc['created_at'] = doc['created_at'].isoformat()
     await db.crm_invoices.insert_one(doc)
-    
+    doc.pop('_id', None)
     return doc
 
 # ==================== CRM AGREEMENT ENDPOINTS ====================
