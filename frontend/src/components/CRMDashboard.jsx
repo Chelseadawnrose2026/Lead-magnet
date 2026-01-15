@@ -745,7 +745,7 @@ const EmailsView = ({ contacts, onSendEmail }) => {
 
   useEffect(() => {
     loadTemplates();
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const toggleContact = (contact) => {
@@ -903,7 +903,7 @@ const DocumentsView = ({ contacts }) => {
 
   useEffect(() => {
     loadDocuments();
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
