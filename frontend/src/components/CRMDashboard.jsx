@@ -922,6 +922,7 @@ const ContactsView = ({
               {isColumnVisible('country') && <th className="px-3 py-3">Country</th>}
               {isColumnVisible('follow_up') && <th className="px-3 py-3">Follow-up</th>}
               {isColumnVisible('last_contacted') && <th className="px-3 py-3">Last Contacted</th>}
+              {isColumnVisible('last_activity') && <th className="px-3 py-3">Last Activity</th>}
               {isColumnVisible('notes') && <th className="px-3 py-3">Notes</th>}
               {isColumnVisible('documents') && <th className="px-3 py-3">Documents</th>}
               {isColumnVisible('actions') && <th className="px-3 py-3">Actions</th>}
