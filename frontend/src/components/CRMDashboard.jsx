@@ -627,7 +627,7 @@ const ALL_COLUMNS = [
 const ContactsView = ({ 
   contacts, searchTerm, setSearchTerm, stageFilter, setStageFilter,
   onAddContact, onEditContact, onEmailContact, onDeleteContact, onStageChange,
-  onImportCSV, onMassEmail
+  onImportCSV, onMassEmail, onAddActivity
 }) => {
   const fileInputRef = React.useRef(null);
   const [selectedContacts, setSelectedContacts] = useState([]);
