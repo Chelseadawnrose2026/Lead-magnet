@@ -593,6 +593,220 @@ const DashboardView = ({ dashboard, contacts, todos, onContactClick, onTodoToggl
   );
 };
 
+// KPIs View Component
+const KPIsView = ({ contacts }) => {
+  const [timeRange, setTimeRange] = useState('month'); // week, month, quarter, year
+  
+  // Calculate date ranges
+  const now = new Date();
+  const getDateRange = () => {
+    const end = now;
+    let start;
+    switch(timeRange) {
+      case 'week':
+        start = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        break;
+      case 'month':
+        start = new Date(now.getFullYear(), now.getMonth(), 1);
+        break;
+      case 'quarter':
+        start = new Date(now.getFullYear(), Math.floor(now.getMonth() / 3) * 3, 1);
+        break;
+      case 'year':
+        start = new Date(now.getFullYear(), 0, 1);
+        break;
+      default:
+        start = new Date(now.getFullYear(), now.getMonth(), 1);
+    }
+    return { start, end };
+  };
+  
+  const { start } = getDateRange();
+  
+  // Calculate KPIs
+  const newContacts = contacts.filter(c => {
+    const created = new Date(c.created_at);
+    return created >= start;
+  }).length;
+  
+  const proposalsSent = contacts.filter(c => c.stage === 'Proposal Sent').length;
+  const bookings = contacts.filter(c => c.stage === 'Booked' || c.stage === 'Completed').length;
+  const newBookingsThisPeriod = contacts.filter(c => {
+    const created = new Date(c.created_at);
+    return created >= start && (c.stage === 'Booked' || c.stage === 'Completed');
+  }).length;
+  
+  const conversionRate = contacts.length > 0 
+    ? ((bookings / contacts.length) * 100).toFixed(1) 
+    : 0;
+  
+  // Group contacts by organization
+  const orgGroups = contacts.reduce((acc, c) => {
+    const org = c.organization_name || 'No Organization';
+    if (!acc[org]) acc[org] = [];
+    acc[org].push(c);
+    return acc;
+  }, {});
+  
+  // Stage breakdown
+  const stageBreakdown = Object.keys(STAGE_COLORS).map(stage => ({
+    stage,
+    count: contacts.filter(c => c.stage === stage).length,
+    color: STAGE_COLORS[stage]
+  }));
+  
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold" style={{ color: '#7B3B3B' }}>KPI Dashboard</h2>
+        <select
+          value={timeRange}
+          onChange={(e) => setTimeRange(e.target.value)}
+          className="px-4 py-2 border rounded-lg"
+        >
+          <option value="week">This Week</option>
+          <option value="month">This Month</option>
+          <option value="quarter">This Quarter</option>
+          <option value="year">This Year</option>
+        </select>
+      </div>
+      
+      {/* Main KPI Cards */}
+      <div className="grid grid-cols-4 gap-4">
+        <Card className="p-6">
+          <div className="flex items-center gap-4">
+            <div className="p-3 rounded-xl" style={{ backgroundColor: '#E0C4C0' }}>
+              <UserPlus className="w-6 h-6" style={{ color: '#7B3B3B' }} />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">New Contacts</p>
+              <p className="text-3xl font-bold" style={{ color: '#7B3B3B' }}>{newContacts}</p>
+              <p className="text-xs text-gray-400">this {timeRange}</p>
+            </div>
+          </div>
+        </Card>
+        
+        <Card className="p-6">
+          <div className="flex items-center gap-4">
+            <div className="p-3 rounded-xl" style={{ backgroundColor: '#E0C4C0' }}>
+              <Send className="w-6 h-6" style={{ color: '#7B3B3B' }} />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Proposals Sent</p>
+              <p className="text-3xl font-bold" style={{ color: '#6366F1' }}>{proposalsSent}</p>
+              <p className="text-xs text-gray-400">pending response</p>
+            </div>
+          </div>
+        </Card>
+        
+        <Card className="p-6">
+          <div className="flex items-center gap-4">
+            <div className="p-3 rounded-xl" style={{ backgroundColor: '#E0C4C0' }}>
+              <Target className="w-6 h-6" style={{ color: '#7B3B3B' }} />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Total Bookings</p>
+              <p className="text-3xl font-bold" style={{ color: '#059669' }}>{bookings}</p>
+              <p className="text-xs text-gray-400">{newBookingsThisPeriod} this {timeRange}</p>
+            </div>
+          </div>
+        </Card>
+        
+        <Card className="p-6">
+          <div className="flex items-center gap-4">
+            <div className="p-3 rounded-xl" style={{ backgroundColor: '#E0C4C0' }}>
+              <TrendingUp className="w-6 h-6" style={{ color: '#7B3B3B' }} />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Conversion Rate</p>
+              <p className="text-3xl font-bold" style={{ color: '#7B3B3B' }}>{conversionRate}%</p>
+              <p className="text-xs text-gray-400">leads to bookings</p>
+            </div>
+          </div>
+        </Card>
+      </div>
+      
+      {/* Pipeline Breakdown */}
+      <div className="grid grid-cols-2 gap-6">
+        <Card className="p-6">
+          <h3 className="text-lg font-semibold mb-4" style={{ color: '#7B3B3B' }}>Pipeline Breakdown</h3>
+          <div className="space-y-3">
+            {stageBreakdown.map(item => (
+              <div key={item.stage} className="flex items-center gap-3">
+                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
+                <span className="flex-1 text-sm">{item.stage}</span>
+                <span className="font-semibold">{item.count}</span>
+                <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full rounded-full" 
+                    style={{ 
+                      backgroundColor: item.color,
+                      width: `${contacts.length > 0 ? (item.count / contacts.length) * 100 : 0}%`
+                    }} 
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+        
+        <Card className="p-6">
+          <h3 className="text-lg font-semibold mb-4" style={{ color: '#7B3B3B' }}>Contacts by Organization</h3>
+          <div className="space-y-2 max-h-64 overflow-auto">
+            {Object.entries(orgGroups)
+              .sort((a, b) => b[1].length - a[1].length)
+              .slice(0, 10)
+              .map(([org, orgContacts]) => (
+                <div key={org} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                  <span className="text-sm truncate flex-1">{org}</span>
+                  <span className="text-sm font-semibold ml-2" style={{ color: '#7B3B3B' }}>
+                    {orgContacts.length} contact{orgContacts.length > 1 ? 's' : ''}
+                  </span>
+                </div>
+              ))
+            }
+          </div>
+        </Card>
+      </div>
+      
+      {/* Quick Stats */}
+      <Card className="p-6">
+        <h3 className="text-lg font-semibold mb-4" style={{ color: '#7B3B3B' }}>Quick Stats</h3>
+        <div className="grid grid-cols-5 gap-4 text-center">
+          <div className="p-4 bg-gray-50 rounded-lg">
+            <p className="text-2xl font-bold" style={{ color: '#7B3B3B' }}>{contacts.length}</p>
+            <p className="text-xs text-gray-500">Total Contacts</p>
+          </div>
+          <div className="p-4 bg-gray-50 rounded-lg">
+            <p className="text-2xl font-bold" style={{ color: '#3B82F6' }}>
+              {contacts.filter(c => c.stage === 'New Lead').length}
+            </p>
+            <p className="text-xs text-gray-500">New Leads</p>
+          </div>
+          <div className="p-4 bg-gray-50 rounded-lg">
+            <p className="text-2xl font-bold" style={{ color: '#10B981' }}>
+              {contacts.filter(c => c.stage === 'Meeting Scheduled').length}
+            </p>
+            <p className="text-xs text-gray-500">Meetings Scheduled</p>
+          </div>
+          <div className="p-4 bg-gray-50 rounded-lg">
+            <p className="text-2xl font-bold" style={{ color: '#EF4444' }}>
+              {contacts.filter(c => c.stage === 'Declined').length}
+            </p>
+            <p className="text-xs text-gray-500">Declined</p>
+          </div>
+          <div className="p-4 bg-gray-50 rounded-lg">
+            <p className="text-2xl font-bold" style={{ color: '#22C55E' }}>
+              {contacts.filter(c => c.stage === 'Completed').length}
+            </p>
+            <p className="text-xs text-gray-500">Completed</p>
+          </div>
+        </div>
+      </Card>
+    </div>
+  );
+};
+
 // Kanban Pipeline View Component
 const KanbanView = ({ contacts, onEditContact, onStageChange }) => {
   const stages = Object.keys(STAGE_COLORS);
