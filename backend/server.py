@@ -1017,7 +1017,7 @@ By signing below, both parties agree to the terms of this Agreement.
     doc = agreement.model_dump()
     doc['created_at'] = doc['created_at'].isoformat()
     await db.crm_agreements.insert_one(doc)
-    
+    doc.pop('_id', None)
     return doc
 
 # ==================== INCLUDE ROUTERS ====================
