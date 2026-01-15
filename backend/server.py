@@ -735,6 +735,7 @@ async def create_activity(activity: ActivityCreate, request: Request):
     doc = activity_obj.model_dump()
     doc['created_at'] = doc['created_at'].isoformat()
     await db.crm_activities.insert_one(doc)
+    doc.pop('_id', None)
     return doc
 
 # ==================== CRM TODO ENDPOINTS ====================
