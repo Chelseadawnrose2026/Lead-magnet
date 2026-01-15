@@ -836,13 +836,21 @@ async def send_single_email(request: Request):
     result = await send_crm_email(to_email, subject, email_body, attach_onesheet)
     
     if result["success"] and contact_id:
+        # Update last_contacted date
+        today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        await db.crm_contacts.update_one(
+            {"id": contact_id}, 
+            {"$set": {"last_contacted": today, "updated_at": datetime.now(timezone.utc).isoformat()}}
+        )
         # Log activity
         activity = Activity(
             contact_id=contact_id,
             activity_type="email_sent",
             description=f"Email sent: {subject}"
         )
-        await db.crm_activities.insert_one(activity.model_dump())
+        activity_doc = activity.model_dump()
+        activity_doc['created_at'] = activity_doc['created_at'].isoformat()
+        await db.crm_activities.insert_one(activity_doc)
     
     return result
 
