@@ -13,6 +13,8 @@ import Footer from "./components/Footer";
 import Admin from "./components/Admin";
 import WhatsAppButton from "./components/WhatsAppButton";
 import { Toaster } from "./components/ui/sonner";
+import CRMDashboard from "./components/CRMDashboard";
+import { CRMLogin, CRMAuthCallback } from "./components/CRMAuth";
 
 const Home = () => {
   return (
@@ -41,8 +43,13 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/admin" element={<Admin />} />
+          {/* CRM Routes */}
+          <Route path="/crm" element={<CRMDashboard />} />
+          <Route path="/crm/login" element={<CRMLogin />} />
+          <Route path="/crm/callback" element={<CRMAuthCallback />} />
         </Routes>
       </BrowserRouter>
+      <Toaster />
     </div>
   );
 }
