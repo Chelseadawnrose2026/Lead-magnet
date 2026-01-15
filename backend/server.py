@@ -164,8 +164,9 @@ class Activity(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     contact_id: str
-    activity_type: str  # email_sent, call, meeting, note, stage_change
+    activity_type: str  # email_sent, email_received, call, meeting, note, stage_change, follow_up, other
     description: str
+    activity_date: Optional[str] = None  # Date of the activity
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     created_by: str = "admin"
 
@@ -173,6 +174,7 @@ class ActivityCreate(BaseModel):
     contact_id: str
     activity_type: str
     description: str
+    activity_date: Optional[str] = None
 
 # To-Do items
 class TodoItem(BaseModel):
