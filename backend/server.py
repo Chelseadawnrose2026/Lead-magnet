@@ -624,8 +624,12 @@ async def create_contact(contact: CRMContactCreate, request: Request):
         activity_type="created",
         description=f"Contact created: {contact_obj.first_name} {contact_obj.last_name}"
     )
-    await db.crm_activities.insert_one(activity.model_dump())
+    activity_doc = activity.model_dump()
+    activity_doc['created_at'] = activity_doc['created_at'].isoformat()
+    await db.crm_activities.insert_one(activity_doc)
     
+    # Remove _id before returning (MongoDB adds it after insert)
+    doc.pop('_id', None)
     return doc
 
 @crm_router.put("/contacts/{contact_id}")
