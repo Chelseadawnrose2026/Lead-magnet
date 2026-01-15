@@ -1035,6 +1035,13 @@ const ContactsView = ({
                           <Edit className="w-4 h-4 text-gray-600" />
                         </button>
                         <button
+                          onClick={() => onAddActivity(contact)}
+                          className="p-1.5 hover:bg-gray-100 rounded"
+                          title="Add Activity"
+                        >
+                          <MessageSquare className="w-4 h-4 text-blue-600" />
+                        </button>
+                        <button
                           onClick={() => onEmailContact(contact)}
                           className="p-1.5 hover:bg-gray-100 rounded"
                           title="Send Email"
