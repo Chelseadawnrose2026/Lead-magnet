@@ -802,6 +802,7 @@ async def create_email_template(template: EmailTemplateCreate, request: Request)
     doc = template_obj.model_dump()
     doc['created_at'] = doc['created_at'].isoformat()
     await db.crm_email_templates.insert_one(doc)
+    doc.pop('_id', None)
     return doc
 
 @crm_router.delete("/email-templates/{template_id}")
