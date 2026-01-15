@@ -443,23 +443,143 @@ const DashboardView = ({ dashboard, contacts, todos, onContactClick, onTodoToggl
   );
 };
 
+// Kanban Pipeline View Component
+const KanbanView = ({ contacts, onEditContact, onStageChange }) => {
+  const stages = Object.keys(STAGE_COLORS);
+  
+  const handleDragStart = (e, contact) => {
+    e.dataTransfer.setData('contactId', contact.id);
+    e.dataTransfer.setData('currentStage', contact.stage);
+  };
+  
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+  
+  const handleDrop = (e, newStage) => {
+    e.preventDefault();
+    const contactId = e.dataTransfer.getData('contactId');
+    const currentStage = e.dataTransfer.getData('currentStage');
+    
+    if (currentStage !== newStage) {
+      const contact = contacts.find(c => c.id === contactId);
+      if (contact) {
+        onStageChange(contact, newStage);
+      }
+    }
+  };
+  
+  return (
+    <div className="space-y-6">
+      <h2 className="text-2xl font-bold" style={{ color: '#7B3B3B' }}>Sales Pipeline</h2>
+      <p className="text-gray-500 text-sm">Drag contacts between stages to update their status</p>
+      
+      <div className="flex gap-4 overflow-x-auto pb-4">
+        {stages.map(stage => {
+          const stageContacts = contacts.filter(c => c.stage === stage);
+          return (
+            <div
+              key={stage}
+              className="flex-shrink-0 w-72 bg-gray-50 rounded-xl p-4"
+              onDragOver={handleDragOver}
+              onDrop={(e) => handleDrop(e, stage)}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <div 
+                    className="w-3 h-3 rounded-full"
+                    style={{ backgroundColor: STAGE_COLORS[stage] }}
+                  />
+                  <h3 className="font-semibold text-sm">{stage}</h3>
+                </div>
+                <span className="text-xs bg-gray-200 px-2 py-1 rounded-full">
+                  {stageContacts.length}
+                </span>
+              </div>
+              
+              <div className="space-y-3 min-h-[200px]">
+                {stageContacts.map(contact => (
+                  <div
+                    key={contact.id}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, contact)}
+                    onClick={() => onEditContact(contact)}
+                    className="bg-white p-3 rounded-lg shadow-sm cursor-move hover:shadow-md transition border-l-4"
+                    style={{ borderLeftColor: STAGE_COLORS[stage] }}
+                  >
+                    <p className="font-medium text-sm">
+                      {contact.first_name} {contact.last_name}
+                    </p>
+                    {contact.organization_name && (
+                      <p className="text-xs text-gray-500 mt-1">{contact.organization_name}</p>
+                    )}
+                    {contact.follow_up_date && (
+                      <div className="flex items-center gap-1 mt-2 text-xs text-gray-400">
+                        <Calendar className="w-3 h-3" />
+                        {contact.follow_up_date}
+                      </div>
+                    )}
+                  </div>
+                ))}
+                {stageContacts.length === 0 && (
+                  <div className="text-center text-gray-400 text-sm py-8">
+                    Drop contacts here
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
 // Contacts View Component
 const ContactsView = ({ 
   contacts, searchTerm, setSearchTerm, stageFilter, setStageFilter,
-  onAddContact, onEditContact, onEmailContact, onDeleteContact, onStageChange 
+  onAddContact, onEditContact, onEmailContact, onDeleteContact, onStageChange,
+  onImportCSV
 }) => {
+  const fileInputRef = React.useRef(null);
+  
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      await onImportCSV(file);
+      e.target.value = '';
+    }
+  };
+  
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold" style={{ color: '#7B3B3B' }}>Contacts</h2>
-        <Button 
-          onClick={onAddContact}
-          style={{ backgroundColor: '#7B3B3B' }}
-          data-testid="add-contact-btn"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Add Contact
-        </Button>
+        <div className="flex gap-2">
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            accept=".csv"
+            className="hidden"
+          />
+          <Button 
+            variant="outline"
+            onClick={() => fileInputRef.current?.click()}
+            data-testid="import-csv-btn"
+          >
+            <Upload className="w-4 h-4 mr-2" />
+            Import CSV
+          </Button>
+          <Button 
+            onClick={onAddContact}
+            style={{ backgroundColor: '#7B3B3B' }}
+            data-testid="add-contact-btn"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add Contact
+          </Button>
+        </div>
       </div>
 
       {/* Filters */}
