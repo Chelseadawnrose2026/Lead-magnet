@@ -634,6 +634,53 @@ const KanbanView = ({ contacts, onEditContact, onStageChange }) => {
   );
 };
 
+// Expandable Notes Cell Component
+const NotesCell = ({ notes }) => {
+  const [expanded, setExpanded] = useState(false);
+  
+  if (!notes) {
+    return <td className="px-3 py-2 text-gray-400">-</td>;
+  }
+  
+  const isLong = notes.length > 50;
+  
+  return (
+    <td className="px-3 py-2 max-w-[200px] relative">
+      {expanded ? (
+        <div className="fixed inset-0 bg-black/30 z-40 flex items-center justify-center p-4" onClick={() => setExpanded(false)}>
+          <div 
+            className="bg-white rounded-lg shadow-xl p-4 max-w-lg max-h-[80vh] overflow-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-3">
+              <h4 className="font-semibold text-gray-700">Notes</h4>
+              <button 
+                onClick={() => setExpanded(false)}
+                className="p-1 hover:bg-gray-100 rounded"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <p className="text-sm text-gray-600 whitespace-pre-wrap">{notes}</p>
+          </div>
+        </div>
+      ) : null}
+      <div 
+        className={`text-sm ${isLong ? 'cursor-pointer hover:bg-gray-50 rounded p-1 -m-1' : ''}`}
+        onClick={() => isLong && setExpanded(true)}
+      >
+        <span className="block truncate">
+          {notes.substring(0, 50)}
+          {isLong && '...'}
+        </span>
+        {isLong && (
+          <span className="text-xs text-blue-500 hover:underline">Click to expand</span>
+        )}
+      </div>
+    </td>
+  );
+};
+
 // All available columns for contacts table
 const ALL_COLUMNS = [
   { id: 'select', label: '', alwaysVisible: true },
