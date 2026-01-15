@@ -5,7 +5,8 @@ import {
   Users, BarChart3, Mail, CheckSquare, FileText, 
   Plus, Search, Filter, MoreVertical, Phone, MapPin,
   Calendar, Clock, ChevronRight, LogOut, Settings,
-  Edit, Trash2, Send, Paperclip, X, Check, AlertCircle
+  Edit, Trash2, Send, Paperclip, X, Check, AlertCircle,
+  Upload, Kanban
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
