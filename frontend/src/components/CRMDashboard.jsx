@@ -265,6 +265,10 @@ const CRMDashboard = () => {
                 toast.error('Error importing contacts');
               }
             }}
+            onMassEmail={(selectedContacts) => {
+              setSelectedContact(selectedContacts);
+              setShowEmailModal(true);
+            }}
           />
         )}
         
