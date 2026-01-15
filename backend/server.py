@@ -110,6 +110,7 @@ class CRMContact(BaseModel):
     notes: Optional[str] = None
     follow_up_date: Optional[str] = None
     last_contacted: Optional[str] = None  # Date of last contact
+    last_activity: Optional[str] = None  # Summary of last activity
     # Tags
     tags: List[str] = []
     # Documents attached to this contact
@@ -134,6 +135,7 @@ class CRMContactCreate(BaseModel):
     notes: Optional[str] = None
     follow_up_date: Optional[str] = None
     last_contacted: Optional[str] = None
+    last_activity: Optional[str] = None
     tags: List[str] = []
     documents: List[Dict[str, Any]] = []
 
@@ -153,6 +155,7 @@ class CRMContactUpdate(BaseModel):
     notes: Optional[str] = None
     follow_up_date: Optional[str] = None
     last_contacted: Optional[str] = None
+    last_activity: Optional[str] = None
     tags: Optional[List[str]] = None
     documents: Optional[List[Dict[str, Any]]] = None
 
