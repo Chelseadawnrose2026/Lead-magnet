@@ -1060,31 +1060,6 @@ const ContactsView = ({
     </div>
   );
 };
-                      <button
-                        onClick={() => onEmailContact(contact)}
-                        className="p-2 hover:bg-gray-100 rounded"
-                        title="Send Email"
-                      >
-                        <Mail className="w-4 h-4 text-gray-600" />
-                      </button>
-                      <button
-                        onClick={() => onDeleteContact(contact)}
-                        className="p-2 hover:bg-gray-100 rounded"
-                        title="Delete"
-                      >
-                        <Trash2 className="w-4 h-4 text-red-500" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </Card>
-    </div>
-  );
-};
 
 // Emails View Component
 const EmailsView = ({ contacts, onSendEmail }) => {
