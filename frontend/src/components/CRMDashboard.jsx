@@ -887,10 +887,6 @@ const DocumentsView = ({ contacts }) => {
   const [invoices, setInvoices] = useState([]);
   const [agreements, setAgreements] = useState([]);
 
-  useEffect(() => {
-    loadDocuments();
-  }, []);
-
   const loadDocuments = async () => {
     try {
       const [invRes, agrRes] = await Promise.all([
@@ -903,6 +899,10 @@ const DocumentsView = ({ contacts }) => {
       console.error('Error loading documents:', error);
     }
   };
+
+  useEffect(() => {
+    loadDocuments();
+  }, []);
 
   return (
     <div className="space-y-6">
