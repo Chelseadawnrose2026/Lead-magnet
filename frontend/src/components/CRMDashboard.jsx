@@ -270,6 +270,10 @@ const CRMDashboard = () => {
               setSelectedContact(selectedContacts);
               setShowEmailModal(true);
             }}
+            onAddActivity={(contact) => {
+              setSelectedContact(contact);
+              setShowActivityModal(true);
+            }}
           />
         )}
         
