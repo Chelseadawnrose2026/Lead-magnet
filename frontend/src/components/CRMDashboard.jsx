@@ -719,9 +719,6 @@ const ALL_COLUMNS = [
   { id: 'documents', label: 'Documents', default: false },
   { id: 'actions', label: 'Actions', alwaysVisible: true },
 ];
-  { id: 'documents', label: 'Documents', default: false },
-  { id: 'actions', label: 'Actions', alwaysVisible: true },
-];
 
 // Contacts View Component
 const ContactsView = ({ 
