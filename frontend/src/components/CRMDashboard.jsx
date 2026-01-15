@@ -1302,7 +1302,9 @@ const ContactModal = ({ contact, onClose, onSave }) => {
     stage: 'New Lead',
     notes: '',
     follow_up_date: '',
-    tags: []
+    last_contacted: '',
+    tags: [],
+    documents: []
   });
 
   return (
