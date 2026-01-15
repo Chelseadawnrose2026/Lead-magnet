@@ -1452,6 +1452,15 @@ const ContactModal = ({ contact, onClose, onSave }) => {
               className="w-full px-3 py-2 border rounded-lg"
             />
           </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Last Contacted</label>
+            <input
+              type="date"
+              value={formData.last_contacted || ''}
+              onChange={(e) => setFormData({...formData, last_contacted: e.target.value})}
+              className="w-full px-3 py-2 border rounded-lg"
+            />
+          </div>
           <div className="col-span-2">
             <label className="block text-sm font-medium mb-1">Notes</label>
             <textarea
