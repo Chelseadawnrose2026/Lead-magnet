@@ -919,6 +919,21 @@ const ContactsView = ({
                     <X className="w-4 h-4" />
                   </button>
                 </div>
+                {/* Show All / Hide All buttons */}
+                <div className="flex gap-2 mb-2 pb-2 border-b">
+                  <button
+                    onClick={() => setVisibleColumns(ALL_COLUMNS.map(c => c.id))}
+                    className="flex-1 text-xs py-1 px-2 bg-gray-100 hover:bg-gray-200 rounded"
+                  >
+                    Show All
+                  </button>
+                  <button
+                    onClick={() => setVisibleColumns(ALL_COLUMNS.filter(c => c.alwaysVisible).map(c => c.id))}
+                    className="flex-1 text-xs py-1 px-2 bg-gray-100 hover:bg-gray-200 rounded"
+                  >
+                    Hide All
+                  </button>
+                </div>
                 {ALL_COLUMNS.filter(c => !c.alwaysVisible).map(col => (
                   <label key={col.id} className="flex items-center gap-2 py-1 cursor-pointer hover:bg-gray-50 px-2 rounded">
                     <input
