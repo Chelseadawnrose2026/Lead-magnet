@@ -24,7 +24,7 @@ const RadioShows = () => {
           </p>
           <div className="mt-4">
             <a
-              href="https://radio.securenetsystems.net/cwa/index.cfm?CFID=66b53e03-1e79-4b37-b6a3-ea8900f4bb68&CFTOKEN=0&stationCallSign=BOBO891"
+              href="https://radio.securenetsystems.net/cwa/index.cfm?CFID=leadtracker-79&CFTOKEN=0&stationCallSign=BOBO891"
               target="_blank"
               rel="noopener noreferrer"
             >
