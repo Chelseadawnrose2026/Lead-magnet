@@ -182,6 +182,21 @@ const CRMDashboard = () => {
           />
         )}
         
+        {activeTab === 'pipeline' && (
+          <KanbanView 
+            contacts={contacts}
+            onEditContact={(c) => { setSelectedContact(c); setShowContactModal(true); }}
+            onStageChange={async (contact, newStage) => {
+              await axios.put(`${API_URL}/api/crm/contacts/${contact.id}`, 
+                { stage: newStage }, 
+                { withCredentials: true }
+              );
+              loadDashboard();
+              toast.success('Stage updated');
+            }}
+          />
+        )}
+        
         {activeTab === 'contacts' && (
           <ContactsView 
             contacts={filteredContacts}
