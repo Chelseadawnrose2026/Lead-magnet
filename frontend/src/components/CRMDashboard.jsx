@@ -1734,4 +1734,93 @@ const TodoModal = ({ contacts, onClose, onSave }) => {
   );
 };
 
+// Activity Modal Component
+const ActivityModal = ({ contact, onClose, onSave }) => {
+  const [formData, setFormData] = useState({
+    activity_type: 'email_received',
+    description: '',
+    activity_date: new Date().toISOString().split('T')[0]
+  });
+
+  const activityTypes = [
+    { value: 'email_received', label: 'Email Received (Reply from contact)' },
+    { value: 'email_sent', label: 'Email Sent (Via Gmail/other)' },
+    { value: 'call', label: 'Phone Call' },
+    { value: 'meeting', label: 'Meeting' },
+    { value: 'note', label: 'General Note' },
+    { value: 'follow_up', label: 'Follow-up Completed' },
+    { value: 'other', label: 'Other' }
+  ];
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-xl p-6 w-full max-w-lg max-h-[90vh] overflow-auto">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h3 className="text-xl font-bold" style={{ color: '#7B3B3B' }}>Log Activity</h3>
+            <p className="text-sm text-gray-500">
+              {contact.first_name} {contact.last_name}
+            </p>
+          </div>
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">Activity Type *</label>
+            <select
+              value={formData.activity_type}
+              onChange={(e) => setFormData({...formData, activity_type: e.target.value})}
+              className="w-full px-3 py-2 border rounded-lg"
+            >
+              {activityTypes.map(type => (
+                <option key={type.value} value={type.value}>{type.label}</option>
+              ))}
+            </select>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium mb-1">Date</label>
+            <input
+              type="date"
+              value={formData.activity_date}
+              onChange={(e) => setFormData({...formData, activity_date: e.target.value})}
+              className="w-full px-3 py-2 border rounded-lg"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium mb-1">Details / Notes *</label>
+            <textarea
+              value={formData.description}
+              onChange={(e) => setFormData({...formData, description: e.target.value})}
+              className="w-full px-3 py-2 border rounded-lg"
+              rows={6}
+              placeholder="Paste email content, call notes, or any relevant details here..."
+              required
+            />
+            <p className="text-xs text-gray-400 mt-1">
+              Tip: Copy & paste email replies from Gmail here for record keeping
+            </p>
+          </div>
+        </div>
+
+        <div className="flex justify-end gap-3 mt-6">
+          <Button variant="outline" onClick={onClose}>Cancel</Button>
+          <Button 
+            onClick={() => onSave(formData)}
+            style={{ backgroundColor: '#7B3B3B' }}
+            disabled={!formData.description}
+          >
+            <History className="w-4 h-4 mr-2" />
+            Log Activity
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default CRMDashboard;
