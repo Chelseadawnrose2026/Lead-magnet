@@ -222,6 +222,23 @@ const CRMDashboard = () => {
               loadDashboard();
               toast.success('Stage updated');
             }}
+            onImportCSV={async (file) => {
+              const formData = new FormData();
+              formData.append('file', file);
+              try {
+                const response = await axios.post(`${API_URL}/api/crm/contacts/import`, formData, {
+                  withCredentials: true,
+                  headers: { 'Content-Type': 'multipart/form-data' }
+                });
+                toast.success(`Imported ${response.data.imported} contacts`);
+                if (response.data.errors?.length > 0) {
+                  toast.warning(`${response.data.errors.length} rows had errors`);
+                }
+                loadDashboard();
+              } catch (error) {
+                toast.error('Error importing contacts');
+              }
+            }}
           />
         )}
         
