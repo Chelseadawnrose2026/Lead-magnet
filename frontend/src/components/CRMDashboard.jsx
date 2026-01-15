@@ -6,7 +6,8 @@ import {
   Plus, Search, Filter, MoreVertical, Phone, MapPin,
   Calendar, Clock, ChevronRight, LogOut, Settings,
   Edit, Trash2, Send, Paperclip, X, Check, AlertCircle,
-  Upload, LayoutGrid, MessageSquare, History
+  Upload, LayoutGrid, MessageSquare, History, ChevronLeft,
+  TrendingUp, Target, UserPlus
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
