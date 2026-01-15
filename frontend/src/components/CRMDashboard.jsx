@@ -1495,9 +1495,9 @@ const EmailModal = ({ contacts, onClose, onSend }) => {
   });
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl p-6 w-full max-w-2xl">
-        <div className="flex items-center justify-between mb-6">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-xl p-6 w-full max-w-2xl max-h-[90vh] flex flex-col">
+        <div className="flex items-center justify-between mb-4 flex-shrink-0">
           <h3 className="text-xl font-bold" style={{ color: '#7B3B3B' }}>
             Send Email ({contacts.length} recipient{contacts.length > 1 ? 's' : ''})
           </h3>
@@ -1506,12 +1506,12 @@ const EmailModal = ({ contacts, onClose, onSend }) => {
           </button>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-4 overflow-y-auto flex-1 pr-2">
           <div>
             <label className="block text-sm font-medium mb-1">To:</label>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto p-2 bg-gray-50 rounded-lg">
               {contacts.map(c => (
-                <span key={c.id} className="px-2 py-1 bg-gray-100 rounded text-sm">
+                <span key={c.id} className="px-2 py-1 bg-white border rounded text-sm">
                   {c.first_name} {c.last_name} ({c.email})
                 </span>
               ))}
@@ -1536,7 +1536,7 @@ const EmailModal = ({ contacts, onClose, onSend }) => {
               value={formData.body}
               onChange={(e) => setFormData({...formData, body: e.target.value})}
               className="w-full px-3 py-2 border rounded-lg"
-              rows={8}
+              rows={6}
               placeholder="Type your message here..."
               required
             />
@@ -1552,23 +1552,23 @@ const EmailModal = ({ contacts, onClose, onSend }) => {
             <span className="text-sm">Attach Speaker One-Sheet PDF</span>
           </label>
 
-          <div className="p-4 bg-gray-50 rounded-lg text-sm text-gray-600">
+          <div className="p-3 bg-gray-50 rounded-lg text-sm text-gray-600">
             <p className="font-medium mb-2">Email Signature Preview:</p>
             <div className="flex gap-3">
               <img 
                 src="https://customer-assets.emergentagent.com/job_faith-speaker/artifacts/betujzmz_CL-23.jpg" 
                 alt="Chelsea"
-                className="w-12 h-12 rounded-full object-cover"
+                className="w-10 h-10 rounded-full object-cover"
               />
               <div>
-                <p className="font-bold" style={{ color: '#7B3B3B' }}>Chelsea Flynn</p>
-                <p className="text-gray-500">Catholic Speaker & Coach</p>
+                <p className="font-bold text-sm" style={{ color: '#7B3B3B' }}>Chelsea Flynn</p>
+                <p className="text-gray-500 text-xs">Catholic Speaker & Coach</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="flex justify-end gap-3 mt-6">
+        <div className="flex justify-end gap-3 mt-4 pt-4 border-t flex-shrink-0">
           <Button variant="outline" onClick={onClose}>Cancel</Button>
           <Button 
             onClick={() => onSend(formData)}
