@@ -384,6 +384,36 @@ const CRMDashboard = () => {
           }}
         />
       )}
+
+      {showActivityModal && selectedContact && (
+        <ActivityModal 
+          contact={selectedContact}
+          onClose={() => { setShowActivityModal(false); setSelectedContact(null); }}
+          onSave={async (data) => {
+            try {
+              await axios.post(`${API_URL}/api/crm/activities`, {
+                contact_id: selectedContact.id,
+                ...data
+              }, { withCredentials: true });
+              
+              // Update last_activity on the contact
+              await axios.put(`${API_URL}/api/crm/contacts/${selectedContact.id}`, {
+                last_activity: `${data.activity_type}: ${data.description.substring(0, 50)}`,
+                last_contacted: data.activity_type === 'email_received' || data.activity_type === 'call' 
+                  ? new Date().toISOString().split('T')[0] 
+                  : undefined
+              }, { withCredentials: true });
+              
+              toast.success('Activity logged');
+              loadDashboard();
+              setShowActivityModal(false);
+              setSelectedContact(null);
+            } catch (error) {
+              toast.error('Error logging activity');
+            }
+          }}
+        />
+      )}
     </div>
   );
 };
