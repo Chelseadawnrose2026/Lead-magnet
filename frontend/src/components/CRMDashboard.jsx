@@ -745,6 +745,7 @@ const EmailsView = ({ contacts, onSendEmail }) => {
 
   useEffect(() => {
     loadTemplates();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
   }, []);
 
   const toggleContact = (contact) => {
