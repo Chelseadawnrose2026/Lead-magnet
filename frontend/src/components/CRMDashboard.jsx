@@ -869,20 +869,35 @@ const ContactsView = ({
             Columns
           </Button>
           {showColumnSettings && (
-            <div className="absolute right-0 top-full mt-2 bg-white border rounded-lg shadow-lg p-3 z-50 w-56 max-h-80 overflow-auto">
-              <p className="font-semibold text-sm mb-2 text-gray-600">Show/Hide Columns</p>
-              {ALL_COLUMNS.filter(c => !c.alwaysVisible).map(col => (
-                <label key={col.id} className="flex items-center gap-2 py-1 cursor-pointer hover:bg-gray-50 px-2 rounded">
-                  <input
-                    type="checkbox"
-                    checked={visibleColumns.includes(col.id)}
-                    onChange={() => toggleColumn(col.id)}
-                    className="w-4 h-4"
-                  />
-                  <span className="text-sm">{col.label}</span>
-                </label>
-              ))}
-            </div>
+            <>
+              {/* Invisible overlay to catch clicks outside */}
+              <div 
+                className="fixed inset-0 z-40" 
+                onClick={() => setShowColumnSettings(false)}
+              />
+              <div className="absolute right-0 top-full mt-2 bg-white border rounded-lg shadow-lg p-3 z-50 w-56 max-h-80 overflow-auto">
+                <div className="flex justify-between items-center mb-2">
+                  <p className="font-semibold text-sm text-gray-600">Show/Hide Columns</p>
+                  <button 
+                    onClick={() => setShowColumnSettings(false)}
+                    className="p-1 hover:bg-gray-100 rounded"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+                {ALL_COLUMNS.filter(c => !c.alwaysVisible).map(col => (
+                  <label key={col.id} className="flex items-center gap-2 py-1 cursor-pointer hover:bg-gray-50 px-2 rounded">
+                    <input
+                      type="checkbox"
+                      checked={visibleColumns.includes(col.id)}
+                      onChange={() => toggleColumn(col.id)}
+                      className="w-4 h-4"
+                    />
+                    <span className="text-sm">{col.label}</span>
+                  </label>
+                ))}
+              </div>
+            </>
           )}
         </div>
 
