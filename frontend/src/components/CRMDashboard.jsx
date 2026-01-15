@@ -968,11 +968,108 @@ const ALL_COLUMNS = [
   { id: 'actions', label: 'Actions', alwaysVisible: true },
 ];
 
+// Bulk Organization Assign Component
+const BulkOrganizationAssign = ({ selectedContacts, allContacts, onAssign }) => {
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [newOrg, setNewOrg] = useState('');
+  const [newOrgType, setNewOrgType] = useState('');
+  
+  // Get unique organizations from existing contacts
+  const existingOrgs = [...new Set(allContacts.map(c => c.organization_name).filter(Boolean))];
+  
+  return (
+    <div className="relative">
+      <Button 
+        size="sm"
+        variant="outline"
+        onClick={() => setShowDropdown(!showDropdown)}
+      >
+        <Users className="w-4 h-4 mr-2" />
+        Assign to Org
+      </Button>
+      
+      {showDropdown && (
+        <>
+          <div className="fixed inset-0 z-40" onClick={() => setShowDropdown(false)} />
+          <div className="absolute left-0 top-full mt-2 bg-white border rounded-lg shadow-lg p-3 z-50 w-72">
+            <div className="flex justify-between items-center mb-2">
+              <p className="font-semibold text-sm text-gray-600">Assign to Organization</p>
+              <button onClick={() => setShowDropdown(false)} className="p-1 hover:bg-gray-100 rounded">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            
+            {existingOrgs.length > 0 && (
+              <div className="mb-3">
+                <p className="text-xs text-gray-500 mb-1">Existing Organizations:</p>
+                <div className="max-h-32 overflow-auto space-y-1">
+                  {existingOrgs.map(org => (
+                    <button
+                      key={org}
+                      onClick={() => {
+                        onAssign(selectedContacts.map(c => c.id), org, null);
+                        setShowDropdown(false);
+                      }}
+                      className="w-full text-left px-2 py-1 text-sm hover:bg-gray-100 rounded truncate"
+                    >
+                      {org}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            <div className="border-t pt-2">
+              <p className="text-xs text-gray-500 mb-1">Or create new:</p>
+              <input
+                type="text"
+                value={newOrg}
+                onChange={(e) => setNewOrg(e.target.value)}
+                placeholder="Organization name"
+                className="w-full px-2 py-1 border rounded text-sm mb-2"
+              />
+              <select
+                value={newOrgType}
+                onChange={(e) => setNewOrgType(e.target.value)}
+                className="w-full px-2 py-1 border rounded text-sm mb-2"
+              >
+                <option value="">Select type...</option>
+                <option value="Parish">Parish</option>
+                <option value="Conference">Conference</option>
+                <option value="Diocese">Diocese</option>
+                <option value="Retreat Center">Retreat Center</option>
+                <option value="School">School</option>
+                <option value="Other">Other</option>
+              </select>
+              <Button 
+                size="sm"
+                onClick={() => {
+                  if (newOrg) {
+                    onAssign(selectedContacts.map(c => c.id), newOrg, newOrgType);
+                    setShowDropdown(false);
+                    setNewOrg('');
+                    setNewOrgType('');
+                  }
+                }}
+                disabled={!newOrg}
+                className="w-full"
+                style={{ backgroundColor: '#7B3B3B' }}
+              >
+                Assign to New Org
+              </Button>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
 // Contacts View Component
 const ContactsView = ({ 
   contacts, searchTerm, setSearchTerm, stageFilter, setStageFilter,
   onAddContact, onEditContact, onEmailContact, onDeleteContact, onStageChange,
-  onImportCSV, onMassEmail, onAddActivity
+  onImportCSV, onMassEmail, onAddActivity, onBulkAssignOrg
 }) => {
   const fileInputRef = React.useRef(null);
   const [selectedContacts, setSelectedContacts] = useState([]);
