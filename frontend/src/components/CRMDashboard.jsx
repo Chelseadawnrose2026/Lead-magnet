@@ -595,13 +595,42 @@ const KanbanView = ({ contacts, onEditContact, onStageChange }) => {
   );
 };
 
+// All available columns for contacts table
+const ALL_COLUMNS = [
+  { id: 'select', label: '', alwaysVisible: true },
+  { id: 'number', label: '#', alwaysVisible: true },
+  { id: 'name', label: 'Name', default: true },
+  { id: 'email', label: 'Email', default: true },
+  { id: 'phone', label: 'Phone', default: true },
+  { id: 'organization', label: 'Organization', default: true },
+  { id: 'organization_type', label: 'Org Type', default: false },
+  { id: 'role', label: 'Role', default: true },
+  { id: 'stage', label: 'Stage', default: true },
+  { id: 'address', label: 'Address', default: false },
+  { id: 'city', label: 'City', default: false },
+  { id: 'state', label: 'State', default: false },
+  { id: 'country', label: 'Country', default: false },
+  { id: 'follow_up', label: 'Follow-up', default: true },
+  { id: 'last_contacted', label: 'Last Contacted', default: true },
+  { id: 'notes', label: 'Notes', default: false },
+  { id: 'documents', label: 'Documents', default: false },
+  { id: 'actions', label: 'Actions', alwaysVisible: true },
+];
+
 // Contacts View Component
 const ContactsView = ({ 
   contacts, searchTerm, setSearchTerm, stageFilter, setStageFilter,
   onAddContact, onEditContact, onEmailContact, onDeleteContact, onStageChange,
-  onImportCSV
+  onImportCSV, onMassEmail
 }) => {
   const fileInputRef = React.useRef(null);
+  const [selectedContacts, setSelectedContacts] = useState([]);
+  const [visibleColumns, setVisibleColumns] = useState(
+    ALL_COLUMNS.filter(c => c.default || c.alwaysVisible).map(c => c.id)
+  );
+  const [showColumnSettings, setShowColumnSettings] = useState(false);
+  const [columnFilters, setColumnFilters] = useState({});
+  const [showFilters, setShowFilters] = useState(false);
   
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
@@ -610,9 +639,68 @@ const ContactsView = ({
       e.target.value = '';
     }
   };
+
+  const toggleSelectAll = () => {
+    if (selectedContacts.length === filteredContacts.length) {
+      setSelectedContacts([]);
+    } else {
+      setSelectedContacts(filteredContacts.map(c => c.id));
+    }
+  };
+
+  const toggleSelectContact = (contactId) => {
+    setSelectedContacts(prev => 
+      prev.includes(contactId) 
+        ? prev.filter(id => id !== contactId)
+        : [...prev, contactId]
+    );
+  };
+
+  const toggleColumn = (columnId) => {
+    setVisibleColumns(prev => 
+      prev.includes(columnId)
+        ? prev.filter(id => id !== columnId)
+        : [...prev, columnId]
+    );
+  };
+
+  // Apply column filters
+  const filteredContacts = contacts.filter(contact => {
+    // Check column-specific filters
+    for (const [key, value] of Object.entries(columnFilters)) {
+      if (!value) continue;
+      const filterValue = value.toLowerCase();
+      
+      switch(key) {
+        case 'city':
+          if (!contact.city?.toLowerCase().includes(filterValue)) return false;
+          break;
+        case 'state':
+          if (!contact.state?.toLowerCase().includes(filterValue)) return false;
+          break;
+        case 'country':
+          if (!contact.country?.toLowerCase().includes(filterValue)) return false;
+          break;
+        case 'organization_type':
+          if (!contact.organization_type?.toLowerCase().includes(filterValue)) return false;
+          break;
+        case 'role':
+          if (!contact.role?.toLowerCase().includes(filterValue)) return false;
+          break;
+        default:
+          break;
+      }
+    }
+    return true;
+  });
+
+  const selectedContactObjects = contacts.filter(c => selectedContacts.includes(c.id));
+
+  const isColumnVisible = (colId) => visibleColumns.includes(colId);
   
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
+      {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold" style={{ color: '#7B3B3B' }}>Contacts</h2>
         <div className="flex gap-2">
@@ -642,9 +730,9 @@ const ContactsView = ({
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="flex gap-4">
-        <div className="flex-1 relative">
+      {/* Search, Filters, and Column Settings Row */}
+      <div className="flex flex-wrap gap-3 items-center">
+        <div className="flex-1 min-w-[200px] relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
           <input
             type="text"
@@ -652,7 +740,6 @@ const ContactsView = ({
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2"
-            style={{ focusRing: '#7B3B3B' }}
             data-testid="search-contacts"
           />
         </div>
@@ -667,67 +754,312 @@ const ContactsView = ({
             <option key={stage} value={stage}>{stage}</option>
           ))}
         </select>
+        
+        {/* Column Settings Button */}
+        <div className="relative">
+          <Button 
+            variant="outline" 
+            onClick={() => setShowColumnSettings(!showColumnSettings)}
+            className="flex items-center gap-2"
+          >
+            <Settings className="w-4 h-4" />
+            Columns
+          </Button>
+          {showColumnSettings && (
+            <div className="absolute right-0 top-full mt-2 bg-white border rounded-lg shadow-lg p-3 z-50 w-56 max-h-80 overflow-auto">
+              <p className="font-semibold text-sm mb-2 text-gray-600">Show/Hide Columns</p>
+              {ALL_COLUMNS.filter(c => !c.alwaysVisible).map(col => (
+                <label key={col.id} className="flex items-center gap-2 py-1 cursor-pointer hover:bg-gray-50 px-2 rounded">
+                  <input
+                    type="checkbox"
+                    checked={visibleColumns.includes(col.id)}
+                    onChange={() => toggleColumn(col.id)}
+                    className="w-4 h-4"
+                  />
+                  <span className="text-sm">{col.label}</span>
+                </label>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Filters Toggle */}
+        <Button 
+          variant="outline" 
+          onClick={() => setShowFilters(!showFilters)}
+          className="flex items-center gap-2"
+        >
+          <Filter className="w-4 h-4" />
+          Filters
+        </Button>
       </div>
 
+      {/* Column Filters */}
+      {showFilters && (
+        <Card className="p-4">
+          <p className="font-semibold text-sm mb-3 text-gray-600">Filter by Column</p>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+            <div>
+              <label className="text-xs text-gray-500">City</label>
+              <input
+                type="text"
+                value={columnFilters.city || ''}
+                onChange={(e) => setColumnFilters({...columnFilters, city: e.target.value})}
+                className="w-full px-2 py-1 border rounded text-sm"
+                placeholder="Filter city..."
+              />
+            </div>
+            <div>
+              <label className="text-xs text-gray-500">State</label>
+              <input
+                type="text"
+                value={columnFilters.state || ''}
+                onChange={(e) => setColumnFilters({...columnFilters, state: e.target.value})}
+                className="w-full px-2 py-1 border rounded text-sm"
+                placeholder="Filter state..."
+              />
+            </div>
+            <div>
+              <label className="text-xs text-gray-500">Country</label>
+              <input
+                type="text"
+                value={columnFilters.country || ''}
+                onChange={(e) => setColumnFilters({...columnFilters, country: e.target.value})}
+                className="w-full px-2 py-1 border rounded text-sm"
+                placeholder="Filter country..."
+              />
+            </div>
+            <div>
+              <label className="text-xs text-gray-500">Org Type</label>
+              <input
+                type="text"
+                value={columnFilters.organization_type || ''}
+                onChange={(e) => setColumnFilters({...columnFilters, organization_type: e.target.value})}
+                className="w-full px-2 py-1 border rounded text-sm"
+                placeholder="Filter org type..."
+              />
+            </div>
+            <div>
+              <label className="text-xs text-gray-500">Role</label>
+              <input
+                type="text"
+                value={columnFilters.role || ''}
+                onChange={(e) => setColumnFilters({...columnFilters, role: e.target.value})}
+                className="w-full px-2 py-1 border rounded text-sm"
+                placeholder="Filter role..."
+              />
+            </div>
+            <div className="flex items-end">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => setColumnFilters({})}
+              >
+                Clear Filters
+              </Button>
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {/* Selected Actions Bar */}
+      {selectedContacts.length > 0 && (
+        <div className="flex items-center gap-4 p-3 rounded-lg" style={{ backgroundColor: '#E0C4C0' }}>
+          <span className="font-medium" style={{ color: '#7B3B3B' }}>
+            {selectedContacts.length} contact{selectedContacts.length > 1 ? 's' : ''} selected
+          </span>
+          <Button 
+            size="sm"
+            onClick={() => onMassEmail(selectedContactObjects)}
+            style={{ backgroundColor: '#7B3B3B' }}
+          >
+            <Mail className="w-4 h-4 mr-2" />
+            Email Selected
+          </Button>
+          <Button 
+            variant="outline"
+            size="sm"
+            onClick={() => setSelectedContacts([])}
+          >
+            Clear Selection
+          </Button>
+        </div>
+      )}
+
       {/* Contacts Table */}
-      <Card className="overflow-hidden">
-        <table className="w-full">
+      <Card className="overflow-x-auto">
+        <table className="w-full text-sm">
           <thead style={{ backgroundColor: '#7B3B3B' }}>
             <tr className="text-white text-left">
-              <th className="px-4 py-3">Name</th>
-              <th className="px-4 py-3">Organization</th>
-              <th className="px-4 py-3">Email</th>
-              <th className="px-4 py-3">Stage</th>
-              <th className="px-4 py-3">Follow-up</th>
-              <th className="px-4 py-3">Actions</th>
+              {isColumnVisible('select') && (
+                <th className="px-3 py-3 w-10">
+                  <input
+                    type="checkbox"
+                    checked={selectedContacts.length === filteredContacts.length && filteredContacts.length > 0}
+                    onChange={toggleSelectAll}
+                    className="w-4 h-4 cursor-pointer"
+                    title="Select All"
+                  />
+                </th>
+              )}
+              {isColumnVisible('number') && <th className="px-2 py-3 w-10">#</th>}
+              {isColumnVisible('name') && <th className="px-3 py-3">Name</th>}
+              {isColumnVisible('email') && <th className="px-3 py-3">Email</th>}
+              {isColumnVisible('phone') && <th className="px-3 py-3">Phone</th>}
+              {isColumnVisible('organization') && <th className="px-3 py-3">Organization</th>}
+              {isColumnVisible('organization_type') && <th className="px-3 py-3">Org Type</th>}
+              {isColumnVisible('role') && <th className="px-3 py-3">Role</th>}
+              {isColumnVisible('stage') && <th className="px-3 py-3">Stage</th>}
+              {isColumnVisible('address') && <th className="px-3 py-3">Address</th>}
+              {isColumnVisible('city') && <th className="px-3 py-3">City</th>}
+              {isColumnVisible('state') && <th className="px-3 py-3">State</th>}
+              {isColumnVisible('country') && <th className="px-3 py-3">Country</th>}
+              {isColumnVisible('follow_up') && <th className="px-3 py-3">Follow-up</th>}
+              {isColumnVisible('last_contacted') && <th className="px-3 py-3">Last Contacted</th>}
+              {isColumnVisible('notes') && <th className="px-3 py-3">Notes</th>}
+              {isColumnVisible('documents') && <th className="px-3 py-3">Documents</th>}
+              {isColumnVisible('actions') && <th className="px-3 py-3">Actions</th>}
             </tr>
           </thead>
           <tbody>
-            {contacts.length === 0 ? (
+            {filteredContacts.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
+                <td colSpan={visibleColumns.length} className="px-4 py-8 text-center text-gray-500">
                   No contacts found
                 </td>
               </tr>
             ) : (
-              contacts.map(contact => (
-                <tr key={contact.id} className="border-b hover:bg-gray-50">
-                  <td className="px-4 py-3">
-                    <p className="font-medium">{contact.first_name} {contact.last_name}</p>
-                    <p className="text-sm text-gray-500">{contact.role}</p>
-                  </td>
-                  <td className="px-4 py-3">
-                    <p>{contact.organization_name}</p>
-                    <p className="text-sm text-gray-500">{contact.organization_type}</p>
-                  </td>
-                  <td className="px-4 py-3">
-                    <p>{contact.email}</p>
-                    {contact.phone && <p className="text-sm text-gray-500">{contact.phone}</p>}
-                  </td>
-                  <td className="px-4 py-3">
-                    <select
-                      value={contact.stage}
-                      onChange={(e) => onStageChange(contact, e.target.value)}
-                      className="px-2 py-1 rounded text-sm text-white"
-                      style={{ backgroundColor: STAGE_COLORS[contact.stage] }}
-                    >
-                      {Object.keys(STAGE_COLORS).map(stage => (
-                        <option key={stage} value={stage}>{stage}</option>
-                      ))}
-                    </select>
-                  </td>
-                  <td className="px-4 py-3 text-sm">
-                    {contact.follow_up_date || '-'}
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => onEditContact(contact)}
-                        className="p-2 hover:bg-gray-100 rounded"
-                        title="Edit"
+              filteredContacts.map((contact, index) => (
+                <tr 
+                  key={contact.id} 
+                  className={`border-b hover:bg-gray-50 ${selectedContacts.includes(contact.id) ? 'bg-rose-50' : ''}`}
+                >
+                  {isColumnVisible('select') && (
+                    <td className="px-3 py-2">
+                      <input
+                        type="checkbox"
+                        checked={selectedContacts.includes(contact.id)}
+                        onChange={() => toggleSelectContact(contact.id)}
+                        className="w-4 h-4 cursor-pointer"
+                      />
+                    </td>
+                  )}
+                  {isColumnVisible('number') && (
+                    <td className="px-2 py-2 text-gray-500">{index + 1}</td>
+                  )}
+                  {isColumnVisible('name') && (
+                    <td className="px-3 py-2">
+                      <p className="font-medium">{contact.first_name} {contact.last_name}</p>
+                    </td>
+                  )}
+                  {isColumnVisible('email') && (
+                    <td className="px-3 py-2">{contact.email}</td>
+                  )}
+                  {isColumnVisible('phone') && (
+                    <td className="px-3 py-2">{contact.phone || '-'}</td>
+                  )}
+                  {isColumnVisible('organization') && (
+                    <td className="px-3 py-2">{contact.organization_name || '-'}</td>
+                  )}
+                  {isColumnVisible('organization_type') && (
+                    <td className="px-3 py-2">{contact.organization_type || '-'}</td>
+                  )}
+                  {isColumnVisible('role') && (
+                    <td className="px-3 py-2">{contact.role || '-'}</td>
+                  )}
+                  {isColumnVisible('stage') && (
+                    <td className="px-3 py-2">
+                      <select
+                        value={contact.stage}
+                        onChange={(e) => onStageChange(contact, e.target.value)}
+                        className="px-2 py-1 rounded text-xs text-white cursor-pointer"
+                        style={{ backgroundColor: STAGE_COLORS[contact.stage] }}
                       >
-                        <Edit className="w-4 h-4 text-gray-600" />
-                      </button>
+                        {Object.keys(STAGE_COLORS).map(stage => (
+                          <option key={stage} value={stage}>{stage}</option>
+                        ))}
+                      </select>
+                    </td>
+                  )}
+                  {isColumnVisible('address') && (
+                    <td className="px-3 py-2 max-w-[150px] truncate" title={contact.address}>
+                      {contact.address || '-'}
+                    </td>
+                  )}
+                  {isColumnVisible('city') && (
+                    <td className="px-3 py-2">{contact.city || '-'}</td>
+                  )}
+                  {isColumnVisible('state') && (
+                    <td className="px-3 py-2">{contact.state || '-'}</td>
+                  )}
+                  {isColumnVisible('country') && (
+                    <td className="px-3 py-2">{contact.country || '-'}</td>
+                  )}
+                  {isColumnVisible('follow_up') && (
+                    <td className="px-3 py-2">{contact.follow_up_date || '-'}</td>
+                  )}
+                  {isColumnVisible('last_contacted') && (
+                    <td className="px-3 py-2">{contact.last_contacted || '-'}</td>
+                  )}
+                  {isColumnVisible('notes') && (
+                    <td className="px-3 py-2 max-w-[150px]">
+                      {contact.notes ? (
+                        <span className="truncate block" title={contact.notes}>
+                          {contact.notes.substring(0, 30)}{contact.notes.length > 30 ? '...' : ''}
+                        </span>
+                      ) : '-'}
+                    </td>
+                  )}
+                  {isColumnVisible('documents') && (
+                    <td className="px-3 py-2">
+                      {contact.documents?.length > 0 ? (
+                        <span className="text-xs bg-gray-100 px-2 py-1 rounded">
+                          {contact.documents.length} file{contact.documents.length > 1 ? 's' : ''}
+                        </span>
+                      ) : '-'}
+                    </td>
+                  )}
+                  {isColumnVisible('actions') && (
+                    <td className="px-3 py-2">
+                      <div className="flex gap-1">
+                        <button
+                          onClick={() => onEditContact(contact)}
+                          className="p-1.5 hover:bg-gray-100 rounded"
+                          title="Edit"
+                        >
+                          <Edit className="w-4 h-4 text-gray-600" />
+                        </button>
+                        <button
+                          onClick={() => onEmailContact(contact)}
+                          className="p-1.5 hover:bg-gray-100 rounded"
+                          title="Send Email"
+                        >
+                          <Mail className="w-4 h-4 text-gray-600" />
+                        </button>
+                        <button
+                          onClick={() => onDeleteContact(contact)}
+                          className="p-1.5 hover:bg-gray-100 rounded"
+                          title="Delete"
+                        >
+                          <Trash2 className="w-4 h-4 text-red-500" />
+                        </button>
+                      </div>
+                    </td>
+                  )}
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </Card>
+      
+      {/* Footer Summary */}
+      <div className="text-sm text-gray-500">
+        Showing {filteredContacts.length} of {contacts.length} contacts
+      </div>
+    </div>
+  );
+};
                       <button
                         onClick={() => onEmailContact(contact)}
                         className="p-2 hover:bg-gray-100 rounded"
