@@ -391,17 +391,34 @@ const CRMDashboard = () => {
           onClose={() => { setShowActivityModal(false); setSelectedContact(null); }}
           onSave={async (data) => {
             try {
+              // Create timestamped note entry
+              const timestamp = new Date().toLocaleString();
+              const activityLabel = {
+                'email_received': '📧 Email Received',
+                'email_sent': '📤 Email Sent',
+                'call': '📞 Phone Call',
+                'meeting': '🤝 Meeting',
+                'note': '📝 Note',
+                'follow_up': '✅ Follow-up',
+                'other': '📌 Other'
+              }[data.activity_type] || '📌 Activity';
+              
+              const newNote = `[${timestamp}] ${activityLabel}:\n${data.description}\n\n`;
+              const existingNotes = selectedContact.notes || '';
+              const updatedNotes = newNote + existingNotes;
+              
+              // Update contact with appended notes
+              await axios.put(`${API_URL}/api/crm/contacts/${selectedContact.id}`, {
+                notes: updatedNotes,
+                last_contacted: data.activity_type === 'email_received' || data.activity_type === 'call' || data.activity_type === 'meeting'
+                  ? new Date().toISOString().split('T')[0] 
+                  : selectedContact.last_contacted
+              }, { withCredentials: true });
+              
+              // Also log to activities collection for history
               await axios.post(`${API_URL}/api/crm/activities`, {
                 contact_id: selectedContact.id,
                 ...data
-              }, { withCredentials: true });
-              
-              // Update last_activity on the contact
-              await axios.put(`${API_URL}/api/crm/contacts/${selectedContact.id}`, {
-                last_activity: `${data.activity_type}: ${data.description.substring(0, 50)}`,
-                last_contacted: data.activity_type === 'email_received' || data.activity_type === 'call' 
-                  ? new Date().toISOString().split('T')[0] 
-                  : undefined
               }, { withCredentials: true });
               
               toast.success('Activity logged');
