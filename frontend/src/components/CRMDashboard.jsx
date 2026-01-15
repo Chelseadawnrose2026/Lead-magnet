@@ -651,8 +651,10 @@ const ALL_COLUMNS = [
   { id: 'country', label: 'Country', default: false },
   { id: 'follow_up', label: 'Follow-up', default: true },
   { id: 'last_contacted', label: 'Last Contacted', default: true },
-  { id: 'last_activity', label: 'Last Activity', default: true },
-  { id: 'notes', label: 'Notes', default: false },
+  { id: 'notes', label: 'Notes', default: true },
+  { id: 'documents', label: 'Documents', default: false },
+  { id: 'actions', label: 'Actions', alwaysVisible: true },
+];
   { id: 'documents', label: 'Documents', default: false },
   { id: 'actions', label: 'Actions', alwaysVisible: true },
 ];
