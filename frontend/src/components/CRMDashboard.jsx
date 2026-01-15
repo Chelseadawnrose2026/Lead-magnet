@@ -308,6 +308,20 @@ const CRMDashboard = () => {
               setSelectedContact(contact);
               setShowActivityModal(true);
             }}
+            onBulkAssignOrg={async (contactIds, orgName, orgType) => {
+              try {
+                await Promise.all(contactIds.map(id => 
+                  axios.put(`${API_URL}/api/crm/contacts/${id}`, {
+                    organization_name: orgName,
+                    ...(orgType && { organization_type: orgType })
+                  }, { withCredentials: true })
+                ));
+                toast.success(`Assigned ${contactIds.length} contacts to ${orgName}`);
+                loadDashboard();
+              } catch (error) {
+                toast.error('Error assigning contacts');
+              }
+            }}
           />
         )}
         
