@@ -1,5 +1,5 @@
-from fastapi import FastAPI, APIRouter
-from fastapi.responses import FileResponse
+from fastapi import FastAPI, APIRouter, HTTPException, Request, Response, Depends, UploadFile, File
+from fastapi.responses import FileResponse, JSONResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -7,15 +7,21 @@ import os
 import logging
 import asyncio
 from pathlib import Path
-from pydantic import BaseModel, Field, ConfigDict
-from typing import List
+from pydantic import BaseModel, Field, ConfigDict, EmailStr
+from typing import List, Optional, Dict, Any
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import resend
-
+import csv
+import io
+import base64
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
@@ -26,17 +32,17 @@ db = client[os.environ['DB_NAME']]
 resend.api_key = os.environ.get('RESEND_API_KEY')
 NOTIFICATION_EMAIL = os.environ.get('NOTIFICATION_EMAIL', 'transform@chelseaflynncoaching.com')
 
-# Create the main app without a prefix
+# Create the main app
 app = FastAPI()
 
-# Create a router with the /api prefix
+# Create routers
 api_router = APIRouter(prefix="/api")
+crm_router = APIRouter(prefix="/api/crm")
 
+# ==================== EXISTING MODELS ====================
 
-# Define Models
 class StatusCheck(BaseModel):
-    model_config = ConfigDict(extra="ignore")  # Ignore MongoDB's _id field
-    
+    model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     client_name: str
     timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
@@ -44,72 +50,258 @@ class StatusCheck(BaseModel):
 class StatusCheckCreate(BaseModel):
     client_name: str
 
-# Contact Form Models
 class ContactSubmission(BaseModel):
     model_config = ConfigDict(extra="ignore")
-    
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     name: str
     email: str
-    phone: str = ""
+    phone: Optional[str] = None
     message: str
     timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class ContactSubmissionCreate(BaseModel):
     name: str
     email: str
-    phone: str = ""
+    phone: Optional[str] = None
     message: str
 
-# Booking Request Models
 class BookingRequest(BaseModel):
     model_config = ConfigDict(extra="ignore")
-    
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     name: str
     email: str
-    phone: str = ""
+    phone: Optional[str] = None
+    booking_type: str
     message: str
-    booking_type: str = "Virtual Meeting"
     timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class BookingRequestCreate(BaseModel):
     name: str
     email: str
-    phone: str = ""
+    phone: Optional[str] = None
+    booking_type: str
     message: str
-    booking_type: str = "Virtual Meeting"
 
-# Add your routes to the router instead of directly to app
-@api_router.get("/")
-async def root():
-    return {"message": "Hello World"}
+# ==================== CRM MODELS ====================
 
-@api_router.post("/status", response_model=StatusCheck)
-async def create_status_check(input: StatusCheckCreate):
-    status_dict = input.model_dump()
-    status_obj = StatusCheck(**status_dict)
-    
-    # Convert to dict and serialize datetime to ISO string for MongoDB
-    doc = status_obj.model_dump()
-    doc['timestamp'] = doc['timestamp'].isoformat()
-    
-    _ = await db.status_checks.insert_one(doc)
-    return status_obj
+# Pipeline stages
+PIPELINE_STAGES = ["New Lead", "Contacted", "Responded", "Meeting Scheduled", "Proposal Sent", "Booked", "Completed", "Declined"]
 
-@api_router.get("/status", response_model=List[StatusCheck])
-async def get_status_checks():
-    # Exclude MongoDB's _id field from the query results
-    status_checks = await db.status_checks.find({}, {"_id": 0}).to_list(1000)
-    
-    # Convert ISO string timestamps back to datetime objects
-    for check in status_checks:
-        if isinstance(check['timestamp'], str):
-            check['timestamp'] = datetime.fromisoformat(check['timestamp'])
-    
-    return status_checks
+class CRMContact(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    # Basic info
+    first_name: str
+    last_name: str
+    email: str
+    phone: Optional[str] = None
+    # Organization
+    organization_name: Optional[str] = None  # Parish name, Conference name, etc.
+    organization_type: Optional[str] = None  # Parish, Conference, Retreat Center, Diocese, Other
+    role: Optional[str] = None  # DRE, Pastor, OCIA Coordinator, Event Planner, etc.
+    # Address
+    address: Optional[str] = None
+    city: Optional[str] = None
+    state: Optional[str] = None
+    country: Optional[str] = None
+    # Pipeline
+    stage: str = "New Lead"
+    # Notes and follow-up
+    notes: Optional[str] = None
+    follow_up_date: Optional[str] = None
+    # Tags
+    tags: List[str] = []
+    # Timestamps
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
-# Contact Form Endpoints
+class CRMContactCreate(BaseModel):
+    first_name: str
+    last_name: str
+    email: str
+    phone: Optional[str] = None
+    organization_name: Optional[str] = None
+    organization_type: Optional[str] = None
+    role: Optional[str] = None
+    address: Optional[str] = None
+    city: Optional[str] = None
+    state: Optional[str] = None
+    country: Optional[str] = None
+    stage: str = "New Lead"
+    notes: Optional[str] = None
+    follow_up_date: Optional[str] = None
+    tags: List[str] = []
+
+class CRMContactUpdate(BaseModel):
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    email: Optional[str] = None
+    phone: Optional[str] = None
+    organization_name: Optional[str] = None
+    organization_type: Optional[str] = None
+    role: Optional[str] = None
+    address: Optional[str] = None
+    city: Optional[str] = None
+    state: Optional[str] = None
+    country: Optional[str] = None
+    stage: Optional[str] = None
+    notes: Optional[str] = None
+    follow_up_date: Optional[str] = None
+    tags: Optional[List[str]] = None
+
+# Activity tracking
+class Activity(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    contact_id: str
+    activity_type: str  # email_sent, call, meeting, note, stage_change
+    description: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    created_by: str = "admin"
+
+class ActivityCreate(BaseModel):
+    contact_id: str
+    activity_type: str
+    description: str
+
+# To-Do items
+class TodoItem(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    title: str
+    description: Optional[str] = None
+    contact_id: Optional[str] = None  # Link to contact if related
+    due_date: Optional[str] = None
+    priority: str = "medium"  # low, medium, high
+    completed: bool = False
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class TodoItemCreate(BaseModel):
+    title: str
+    description: Optional[str] = None
+    contact_id: Optional[str] = None
+    due_date: Optional[str] = None
+    priority: str = "medium"
+
+class TodoItemUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    contact_id: Optional[str] = None
+    due_date: Optional[str] = None
+    priority: Optional[str] = None
+    completed: Optional[bool] = None
+
+# Email template
+class EmailTemplate(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    subject: str
+    body: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class EmailTemplateCreate(BaseModel):
+    name: str
+    subject: str
+    body: str
+
+# Mass email request
+class MassEmailRequest(BaseModel):
+    contact_ids: List[str]
+    subject: str
+    body: str
+    attach_onesheet: bool = False
+
+# CRM User (for admin access)
+class CRMUser(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    user_id: str = Field(default_factory=lambda: f"user_{uuid.uuid4().hex[:12]}")
+    email: str
+    name: str
+    picture: Optional[str] = None
+    role: str = "admin"  # admin, pa
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class CRMSession(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    session_id: str
+    user_id: str
+    session_token: str
+    expires_at: datetime
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+# Invoice model
+class Invoice(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    invoice_number: str
+    contact_id: str
+    contact_name: str
+    contact_email: str
+    organization: Optional[str] = None
+    items: List[Dict[str, Any]]  # [{description, quantity, rate, amount}]
+    subtotal: float
+    tax: float = 0
+    total: float
+    notes: Optional[str] = None
+    status: str = "draft"  # draft, sent, paid
+    due_date: Optional[str] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class InvoiceCreate(BaseModel):
+    contact_id: str
+    items: List[Dict[str, Any]]
+    tax: float = 0
+    notes: Optional[str] = None
+    due_date: Optional[str] = None
+
+# Agreement model
+class Agreement(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    contact_id: str
+    contact_name: str
+    contact_email: str
+    organization: Optional[str] = None
+    event_date: str
+    event_type: str  # Speaking engagement, Workshop, Retreat, etc.
+    event_location: str
+    fee: float
+    terms: str
+    status: str = "draft"  # draft, sent, signed
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class AgreementCreate(BaseModel):
+    contact_id: str
+    event_date: str
+    event_type: str
+    event_location: str
+    fee: float
+    terms: Optional[str] = None
+
+# ==================== EMAIL SIGNATURE ====================
+
+EMAIL_SIGNATURE = """
+<table cellpadding="0" cellspacing="0" style="font-family: Arial, sans-serif; font-size: 14px; color: #333;">
+  <tr>
+    <td style="padding-right: 15px; vertical-align: top;">
+      <img src="https://customer-assets.emergentagent.com/job_faith-speaker/artifacts/betujzmz_CL-23.jpg" 
+           alt="Chelsea Flynn" 
+           style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #7B3B3B;">
+    </td>
+    <td style="vertical-align: top;">
+      <p style="margin: 0 0 5px 0; font-size: 18px; font-weight: bold; color: #7B3B3B;">Chelsea Flynn</p>
+      <p style="margin: 0 0 10px 0; font-style: italic; color: #666;">Catholic Speaker & Coach</p>
+      <p style="margin: 0 0 3px 0;">📞 +1 345 325 3924</p>
+      <p style="margin: 0 0 3px 0;">✉️ <a href="mailto:transform@chelseaflynncoaching.com" style="color: #7B3B3B;">transform@chelseaflynncoaching.com</a></p>
+      <p style="margin: 0;">🌐 <a href="https://www.chelseaflynn.com" style="color: #7B3B3B;">www.chelseaflynn.com</a></p>
+    </td>
+  </tr>
+</table>
+"""
+
+# ==================== HELPER FUNCTIONS ====================
+
 async def send_notification_email(subject: str, html_content: str):
     """Send email notification using Resend"""
     try:
@@ -124,20 +316,111 @@ async def send_notification_email(subject: str, html_content: str):
     except Exception as e:
         logger.error(f"Failed to send notification email: {str(e)}")
 
+async def send_crm_email(to_email: str, subject: str, body: str, attach_onesheet: bool = False):
+    """Send email from CRM with signature"""
+    html_content = f"""
+    <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.6;">
+        {body.replace(chr(10), '<br>')}
+        <br><br>
+        <hr style="border: none; border-top: 1px solid #E0C4C0; margin: 20px 0;">
+        {EMAIL_SIGNATURE}
+    </div>
+    """
+    
+    try:
+        params = {
+            "from": "Chelsea Flynn <noreply@chelseaflynn.com>",
+            "to": [to_email],
+            "subject": subject,
+            "html": html_content
+        }
+        
+        # Attach one-sheet if requested
+        if attach_onesheet:
+            onesheet_path = ROOT_DIR / "onesheet_download.pdf"
+            if onesheet_path.exists():
+                with open(onesheet_path, "rb") as f:
+                    pdf_content = base64.b64encode(f.read()).decode()
+                params["attachments"] = [{
+                    "filename": "Chelsea-Flynn-Speaker-OneSheet.pdf",
+                    "content": pdf_content
+                }]
+        
+        result = await asyncio.to_thread(resend.Emails.send, params)
+        logger.info(f"CRM email sent to {to_email}")
+        return {"success": True, "id": result.get("id") if isinstance(result, dict) else str(result)}
+    except Exception as e:
+        logger.error(f"Failed to send CRM email: {str(e)}")
+        return {"success": False, "error": str(e)}
+
+def get_session_token(request: Request) -> Optional[str]:
+    """Extract session token from cookie or header"""
+    # Try cookie first
+    session_token = request.cookies.get("session_token")
+    if session_token:
+        return session_token
+    # Fallback to Authorization header
+    auth_header = request.headers.get("Authorization")
+    if auth_header and auth_header.startswith("Bearer "):
+        return auth_header[7:]
+    return None
+
+async def get_current_user(request: Request) -> CRMUser:
+    """Verify session and return current user"""
+    session_token = get_session_token(request)
+    if not session_token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    # Find session
+    session_doc = await db.crm_sessions.find_one({"session_token": session_token}, {"_id": 0})
+    if not session_doc:
+        raise HTTPException(status_code=401, detail="Invalid session")
+    
+    # Check expiry
+    expires_at = session_doc["expires_at"]
+    if isinstance(expires_at, str):
+        expires_at = datetime.fromisoformat(expires_at)
+    if expires_at.tzinfo is None:
+        expires_at = expires_at.replace(tzinfo=timezone.utc)
+    if expires_at < datetime.now(timezone.utc):
+        raise HTTPException(status_code=401, detail="Session expired")
+    
+    # Get user
+    user_doc = await db.crm_users.find_one({"user_id": session_doc["user_id"]}, {"_id": 0})
+    if not user_doc:
+        raise HTTPException(status_code=401, detail="User not found")
+    
+    return CRMUser(**user_doc)
+
+# ==================== EXISTING ENDPOINTS ====================
+
+@api_router.get("/")
+async def root():
+    return {"message": "Chelsea Flynn API"}
+
+@api_router.post("/status", response_model=StatusCheck)
+async def create_status_check(input: StatusCheckCreate):
+    status_dict = input.model_dump()
+    status_obj = StatusCheck(**status_dict)
+    await db.status_checks.insert_one(status_obj.model_dump())
+    return status_obj
+
+@api_router.get("/status", response_model=List[StatusCheck])
+async def get_status_checks():
+    checks = await db.status_checks.find({}, {"_id": 0}).to_list(1000)
+    return checks
+
+# Contact Form Endpoints
 @api_router.post("/contact", response_model=ContactSubmission)
 async def submit_contact_form(input: ContactSubmissionCreate):
     try:
         contact_dict = input.model_dump()
         contact_obj = ContactSubmission(**contact_dict)
-        
-        # Convert to dict and serialize datetime to ISO string for MongoDB
         doc = contact_obj.model_dump()
         doc['timestamp'] = doc['timestamp'].isoformat()
-        
         await db.contact_submissions.insert_one(doc)
         logger.info(f"Contact form submitted: {contact_obj.name} - {contact_obj.email}")
         
-        # Send email notification
         html_content = f"""
         <h2>New Contact Form Submission</h2>
         <p><strong>Name:</strong> {contact_obj.name}</p>
@@ -145,27 +428,19 @@ async def submit_contact_form(input: ContactSubmissionCreate):
         <p><strong>Phone:</strong> {contact_obj.phone or 'Not provided'}</p>
         <p><strong>Message:</strong></p>
         <p>{contact_obj.message}</p>
-        <hr>
-        <p style="color: #666; font-size: 12px;">Submitted on {datetime.now(timezone.utc).strftime('%B %d, %Y at %I:%M %p UTC')}</p>
         """
-        await send_notification_email(
-            subject=f"New Contact: {contact_obj.name}",
-            html_content=html_content
-        )
-        
+        await send_notification_email(f"New Contact: {contact_obj.name}", html_content)
         return contact_obj
     except Exception as e:
         logger.error(f"Error submitting contact form: {str(e)}")
         raise
 
-@api_router.get("/contacts", response_model=List[ContactSubmission])
+@api_router.get("/contact", response_model=List[ContactSubmission])
 async def get_all_contacts():
     contacts = await db.contact_submissions.find({}, {"_id": 0}).to_list(1000)
-    
     for contact in contacts:
         if isinstance(contact['timestamp'], str):
             contact['timestamp'] = datetime.fromisoformat(contact['timestamp'])
-    
     return contacts
 
 # Booking Request Endpoints
@@ -174,31 +449,20 @@ async def submit_booking_request(input: BookingRequestCreate):
     try:
         booking_dict = input.model_dump()
         booking_obj = BookingRequest(**booking_dict)
-        
-        # Convert to dict and serialize datetime to ISO string for MongoDB
         doc = booking_obj.model_dump()
         doc['timestamp'] = doc['timestamp'].isoformat()
-        
         await db.booking_requests.insert_one(doc)
         logger.info(f"Booking request submitted: {booking_obj.name} - {booking_obj.email}")
         
-        # Send email notification
         html_content = f"""
         <h2>New Booking Request</h2>
         <p><strong>Name:</strong> {booking_obj.name}</p>
         <p><strong>Email:</strong> {booking_obj.email}</p>
-        <p><strong>Phone:</strong> {booking_obj.phone or 'Not provided'}</p>
         <p><strong>Booking Type:</strong> {booking_obj.booking_type}</p>
         <p><strong>Message:</strong></p>
         <p>{booking_obj.message}</p>
-        <hr>
-        <p style="color: #666; font-size: 12px;">Submitted on {datetime.now(timezone.utc).strftime('%B %d, %Y at %I:%M %p UTC')}</p>
         """
-        await send_notification_email(
-            subject=f"New Booking Request: {booking_obj.name} - {booking_obj.booking_type}",
-            html_content=html_content
-        )
-        
+        await send_notification_email(f"New Booking: {booking_obj.name}", html_content)
         return booking_obj
     except Exception as e:
         logger.error(f"Error submitting booking request: {str(e)}")
@@ -207,11 +471,9 @@ async def submit_booking_request(input: BookingRequestCreate):
 @api_router.get("/bookings", response_model=List[BookingRequest])
 async def get_all_bookings():
     bookings = await db.booking_requests.find({}, {"_id": 0}).to_list(1000)
-    
     for booking in bookings:
         if isinstance(booking['timestamp'], str):
             booking['timestamp'] = datetime.fromisoformat(booking['timestamp'])
-    
     return bookings
 
 # PDF Download endpoints
@@ -231,23 +493,538 @@ async def download_onesheet():
         filename="Chelsea-Flynn-Speaker-OneSheet.pdf"
     )
 
-# Include the router in the main app
+# ==================== CRM AUTH ENDPOINTS ====================
+
+@crm_router.post("/auth/session")
+async def create_session(request: Request, response: Response):
+    """Process session_id from Emergent Auth and create session"""
+    try:
+        body = await request.json()
+        session_id = body.get("session_id")
+        
+        if not session_id:
+            raise HTTPException(status_code=400, detail="session_id required")
+        
+        # Exchange session_id for user data
+        import httpx
+        async with httpx.AsyncClient() as client:
+            auth_response = await client.get(
+                "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data",
+                headers={"X-Session-ID": session_id}
+            )
+            
+            if auth_response.status_code != 200:
+                raise HTTPException(status_code=401, detail="Invalid session_id")
+            
+            user_data = auth_response.json()
+        
+        # Check if user exists or create new
+        user_doc = await db.crm_users.find_one({"email": user_data["email"]}, {"_id": 0})
+        
+        if not user_doc:
+            # Create new user
+            new_user = CRMUser(
+                email=user_data["email"],
+                name=user_data["name"],
+                picture=user_data.get("picture")
+            )
+            await db.crm_users.insert_one(new_user.model_dump())
+            user_doc = new_user.model_dump()
+        
+        # Create session
+        session_token = user_data.get("session_token", f"sess_{uuid.uuid4().hex}")
+        expires_at = datetime.now(timezone.utc) + timedelta(days=7)
+        
+        session = {
+            "session_id": session_id,
+            "user_id": user_doc["user_id"],
+            "session_token": session_token,
+            "expires_at": expires_at.isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat()
+        }
+        
+        # Delete old sessions for this user
+        await db.crm_sessions.delete_many({"user_id": user_doc["user_id"]})
+        await db.crm_sessions.insert_one(session)
+        
+        # Set cookie
+        response.set_cookie(
+            key="session_token",
+            value=session_token,
+            httponly=True,
+            secure=True,
+            samesite="none",
+            path="/",
+            max_age=7 * 24 * 60 * 60  # 7 days
+        )
+        
+        return {"user": user_doc, "session_token": session_token}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Session creation error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@crm_router.get("/auth/me")
+async def get_current_user_info(request: Request):
+    """Get current authenticated user"""
+    user = await get_current_user(request)
+    return user.model_dump()
+
+@crm_router.post("/auth/logout")
+async def logout(request: Request, response: Response):
+    """Logout user"""
+    session_token = get_session_token(request)
+    if session_token:
+        await db.crm_sessions.delete_many({"session_token": session_token})
+    
+    response.delete_cookie(key="session_token", path="/")
+    return {"message": "Logged out"}
+
+# ==================== CRM CONTACTS ENDPOINTS ====================
+
+@crm_router.get("/contacts")
+async def get_contacts(request: Request, stage: Optional[str] = None):
+    """Get all CRM contacts"""
+    await get_current_user(request)
+    
+    query = {}
+    if stage:
+        query["stage"] = stage
+    
+    contacts = await db.crm_contacts.find(query, {"_id": 0}).to_list(1000)
+    return contacts
+
+@crm_router.get("/contacts/{contact_id}")
+async def get_contact(contact_id: str, request: Request):
+    """Get single contact"""
+    await get_current_user(request)
+    
+    contact = await db.crm_contacts.find_one({"id": contact_id}, {"_id": 0})
+    if not contact:
+        raise HTTPException(status_code=404, detail="Contact not found")
+    return contact
+
+@crm_router.post("/contacts")
+async def create_contact(contact: CRMContactCreate, request: Request):
+    """Create new CRM contact"""
+    await get_current_user(request)
+    
+    contact_obj = CRMContact(**contact.model_dump())
+    doc = contact_obj.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    doc['updated_at'] = doc['updated_at'].isoformat()
+    
+    await db.crm_contacts.insert_one(doc)
+    
+    # Log activity
+    activity = Activity(
+        contact_id=contact_obj.id,
+        activity_type="created",
+        description=f"Contact created: {contact_obj.first_name} {contact_obj.last_name}"
+    )
+    await db.crm_activities.insert_one(activity.model_dump())
+    
+    return doc
+
+@crm_router.put("/contacts/{contact_id}")
+async def update_contact(contact_id: str, update: CRMContactUpdate, request: Request):
+    """Update CRM contact"""
+    await get_current_user(request)
+    
+    existing = await db.crm_contacts.find_one({"id": contact_id}, {"_id": 0})
+    if not existing:
+        raise HTTPException(status_code=404, detail="Contact not found")
+    
+    update_data = {k: v for k, v in update.model_dump().items() if v is not None}
+    update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
+    
+    # Track stage change
+    if "stage" in update_data and update_data["stage"] != existing.get("stage"):
+        activity = Activity(
+            contact_id=contact_id,
+            activity_type="stage_change",
+            description=f"Stage changed from '{existing.get('stage')}' to '{update_data['stage']}'"
+        )
+        await db.crm_activities.insert_one(activity.model_dump())
+    
+    await db.crm_contacts.update_one({"id": contact_id}, {"$set": update_data})
+    
+    updated = await db.crm_contacts.find_one({"id": contact_id}, {"_id": 0})
+    return updated
+
+@crm_router.delete("/contacts/{contact_id}")
+async def delete_contact(contact_id: str, request: Request):
+    """Delete CRM contact"""
+    await get_current_user(request)
+    
+    result = await db.crm_contacts.delete_one({"id": contact_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Contact not found")
+    
+    # Delete related activities
+    await db.crm_activities.delete_many({"contact_id": contact_id})
+    
+    return {"message": "Contact deleted"}
+
+@crm_router.post("/contacts/import")
+async def import_contacts(request: Request, file: UploadFile = File(...)):
+    """Import contacts from CSV"""
+    await get_current_user(request)
+    
+    content = await file.read()
+    decoded = content.decode('utf-8')
+    reader = csv.DictReader(io.StringIO(decoded))
+    
+    imported = 0
+    errors = []
+    
+    for row in reader:
+        try:
+            contact = CRMContactCreate(
+                first_name=row.get('first_name', row.get('First Name', '')),
+                last_name=row.get('last_name', row.get('Last Name', '')),
+                email=row.get('email', row.get('Email', '')),
+                phone=row.get('phone', row.get('Phone', '')),
+                organization_name=row.get('organization_name', row.get('Organization', '')),
+                organization_type=row.get('organization_type', row.get('Type', '')),
+                role=row.get('role', row.get('Role', '')),
+                address=row.get('address', row.get('Address', '')),
+                city=row.get('city', row.get('City', '')),
+                state=row.get('state', row.get('State', '')),
+                country=row.get('country', row.get('Country', '')),
+                stage=row.get('stage', 'New Lead'),
+                notes=row.get('notes', row.get('Notes', ''))
+            )
+            
+            contact_obj = CRMContact(**contact.model_dump())
+            doc = contact_obj.model_dump()
+            doc['created_at'] = doc['created_at'].isoformat()
+            doc['updated_at'] = doc['updated_at'].isoformat()
+            await db.crm_contacts.insert_one(doc)
+            imported += 1
+        except Exception as e:
+            errors.append(f"Row error: {str(e)}")
+    
+    return {"imported": imported, "errors": errors}
+
+# ==================== CRM ACTIVITIES ENDPOINTS ====================
+
+@crm_router.get("/contacts/{contact_id}/activities")
+async def get_contact_activities(contact_id: str, request: Request):
+    """Get activities for a contact"""
+    await get_current_user(request)
+    
+    activities = await db.crm_activities.find(
+        {"contact_id": contact_id}, 
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(100)
+    return activities
+
+@crm_router.post("/activities")
+async def create_activity(activity: ActivityCreate, request: Request):
+    """Create new activity"""
+    await get_current_user(request)
+    
+    activity_obj = Activity(**activity.model_dump())
+    doc = activity_obj.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    await db.crm_activities.insert_one(doc)
+    return doc
+
+# ==================== CRM TODO ENDPOINTS ====================
+
+@crm_router.get("/todos")
+async def get_todos(request: Request, completed: Optional[bool] = None):
+    """Get all todos"""
+    await get_current_user(request)
+    
+    query = {}
+    if completed is not None:
+        query["completed"] = completed
+    
+    todos = await db.crm_todos.find(query, {"_id": 0}).sort("due_date", 1).to_list(1000)
+    return todos
+
+@crm_router.post("/todos")
+async def create_todo(todo: TodoItemCreate, request: Request):
+    """Create new todo"""
+    await get_current_user(request)
+    
+    todo_obj = TodoItem(**todo.model_dump())
+    doc = todo_obj.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    await db.crm_todos.insert_one(doc)
+    return doc
+
+@crm_router.put("/todos/{todo_id}")
+async def update_todo(todo_id: str, update: TodoItemUpdate, request: Request):
+    """Update todo"""
+    await get_current_user(request)
+    
+    update_data = {k: v for k, v in update.model_dump().items() if v is not None}
+    
+    await db.crm_todos.update_one({"id": todo_id}, {"$set": update_data})
+    
+    updated = await db.crm_todos.find_one({"id": todo_id}, {"_id": 0})
+    return updated
+
+@crm_router.delete("/todos/{todo_id}")
+async def delete_todo(todo_id: str, request: Request):
+    """Delete todo"""
+    await get_current_user(request)
+    
+    await db.crm_todos.delete_one({"id": todo_id})
+    return {"message": "Todo deleted"}
+
+# ==================== CRM EMAIL ENDPOINTS ====================
+
+@crm_router.get("/email-templates")
+async def get_email_templates(request: Request):
+    """Get all email templates"""
+    await get_current_user(request)
+    
+    templates = await db.crm_email_templates.find({}, {"_id": 0}).to_list(100)
+    return templates
+
+@crm_router.post("/email-templates")
+async def create_email_template(template: EmailTemplateCreate, request: Request):
+    """Create email template"""
+    await get_current_user(request)
+    
+    template_obj = EmailTemplate(**template.model_dump())
+    doc = template_obj.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    await db.crm_email_templates.insert_one(doc)
+    return doc
+
+@crm_router.delete("/email-templates/{template_id}")
+async def delete_email_template(template_id: str, request: Request):
+    """Delete email template"""
+    await get_current_user(request)
+    
+    await db.crm_email_templates.delete_one({"id": template_id})
+    return {"message": "Template deleted"}
+
+@crm_router.post("/send-email")
+async def send_single_email(request: Request):
+    """Send email to single contact"""
+    await get_current_user(request)
+    
+    body = await request.json()
+    to_email = body.get("to_email")
+    subject = body.get("subject")
+    email_body = body.get("body")
+    contact_id = body.get("contact_id")
+    attach_onesheet = body.get("attach_onesheet", False)
+    
+    result = await send_crm_email(to_email, subject, email_body, attach_onesheet)
+    
+    if result["success"] and contact_id:
+        # Log activity
+        activity = Activity(
+            contact_id=contact_id,
+            activity_type="email_sent",
+            description=f"Email sent: {subject}"
+        )
+        await db.crm_activities.insert_one(activity.model_dump())
+    
+    return result
+
+@crm_router.post("/send-mass-email")
+async def send_mass_email(email_request: MassEmailRequest, request: Request):
+    """Send email to multiple contacts"""
+    await get_current_user(request)
+    
+    results = []
+    for contact_id in email_request.contact_ids:
+        contact = await db.crm_contacts.find_one({"id": contact_id}, {"_id": 0})
+        if contact:
+            result = await send_crm_email(
+                contact["email"], 
+                email_request.subject, 
+                email_request.body,
+                email_request.attach_onesheet
+            )
+            results.append({"contact_id": contact_id, "email": contact["email"], **result})
+            
+            if result["success"]:
+                activity = Activity(
+                    contact_id=contact_id,
+                    activity_type="email_sent",
+                    description=f"Mass email sent: {email_request.subject}"
+                )
+                await db.crm_activities.insert_one(activity.model_dump())
+    
+    return {"results": results}
+
+# ==================== CRM DASHBOARD ENDPOINTS ====================
+
+@crm_router.get("/dashboard")
+async def get_dashboard(request: Request):
+    """Get dashboard summary"""
+    await get_current_user(request)
+    
+    # Pipeline summary
+    pipeline = []
+    for stage in PIPELINE_STAGES:
+        count = await db.crm_contacts.count_documents({"stage": stage})
+        pipeline.append({"stage": stage, "count": count})
+    
+    # Total contacts
+    total_contacts = await db.crm_contacts.count_documents({})
+    
+    # Upcoming follow-ups
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    upcoming = await db.crm_contacts.find(
+        {"follow_up_date": {"$gte": today}},
+        {"_id": 0}
+    ).sort("follow_up_date", 1).to_list(10)
+    
+    # Pending todos
+    pending_todos = await db.crm_todos.find(
+        {"completed": False},
+        {"_id": 0}
+    ).sort("due_date", 1).to_list(10)
+    
+    # Recent activity
+    recent_activities = await db.crm_activities.find(
+        {},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(10)
+    
+    return {
+        "pipeline": pipeline,
+        "total_contacts": total_contacts,
+        "upcoming_followups": upcoming,
+        "pending_todos": pending_todos,
+        "recent_activities": recent_activities
+    }
+
+@crm_router.get("/pipeline-stages")
+async def get_pipeline_stages(request: Request):
+    """Get available pipeline stages"""
+    await get_current_user(request)
+    return PIPELINE_STAGES
+
+# ==================== CRM INVOICE ENDPOINTS ====================
+
+@crm_router.get("/invoices")
+async def get_invoices(request: Request):
+    """Get all invoices"""
+    await get_current_user(request)
+    
+    invoices = await db.crm_invoices.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    return invoices
+
+@crm_router.post("/invoices")
+async def create_invoice(invoice_data: InvoiceCreate, request: Request):
+    """Create new invoice"""
+    await get_current_user(request)
+    
+    # Get contact info
+    contact = await db.crm_contacts.find_one({"id": invoice_data.contact_id}, {"_id": 0})
+    if not contact:
+        raise HTTPException(status_code=404, detail="Contact not found")
+    
+    # Calculate totals
+    subtotal = sum(item.get("amount", 0) for item in invoice_data.items)
+    total = subtotal + invoice_data.tax
+    
+    # Generate invoice number
+    count = await db.crm_invoices.count_documents({})
+    invoice_number = f"INV-{datetime.now().year}-{count + 1:04d}"
+    
+    invoice = Invoice(
+        invoice_number=invoice_number,
+        contact_id=invoice_data.contact_id,
+        contact_name=f"{contact['first_name']} {contact['last_name']}",
+        contact_email=contact['email'],
+        organization=contact.get('organization_name'),
+        items=invoice_data.items,
+        subtotal=subtotal,
+        tax=invoice_data.tax,
+        total=total,
+        notes=invoice_data.notes,
+        due_date=invoice_data.due_date
+    )
+    
+    doc = invoice.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    await db.crm_invoices.insert_one(doc)
+    
+    return doc
+
+# ==================== CRM AGREEMENT ENDPOINTS ====================
+
+@crm_router.get("/agreements")
+async def get_agreements(request: Request):
+    """Get all agreements"""
+    await get_current_user(request)
+    
+    agreements = await db.crm_agreements.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    return agreements
+
+@crm_router.post("/agreements")
+async def create_agreement(agreement_data: AgreementCreate, request: Request):
+    """Create new agreement"""
+    await get_current_user(request)
+    
+    # Get contact info
+    contact = await db.crm_contacts.find_one({"id": agreement_data.contact_id}, {"_id": 0})
+    if not contact:
+        raise HTTPException(status_code=404, detail="Contact not found")
+    
+    # Default terms
+    default_terms = """
+SPEAKER AGREEMENT
+
+This Agreement is entered into between Chelsea Flynn ("Speaker") and the Organization listed above ("Client").
+
+1. SERVICES: Speaker agrees to provide speaking services at the event described above.
+
+2. COMPENSATION: Client agrees to pay the fee listed above. 50% deposit due upon signing, balance due on event date.
+
+3. TRAVEL: Client will provide or reimburse reasonable travel expenses if the event is outside the Cayman Islands.
+
+4. CANCELLATION: If Client cancels within 30 days of the event, deposit is non-refundable. If Speaker cancels, full deposit will be refunded.
+
+5. RECORDING: Client may not record or broadcast without prior written consent.
+
+By signing below, both parties agree to the terms of this Agreement.
+"""
+    
+    agreement = Agreement(
+        contact_id=agreement_data.contact_id,
+        contact_name=f"{contact['first_name']} {contact['last_name']}",
+        contact_email=contact['email'],
+        organization=contact.get('organization_name'),
+        event_date=agreement_data.event_date,
+        event_type=agreement_data.event_type,
+        event_location=agreement_data.event_location,
+        fee=agreement_data.fee,
+        terms=agreement_data.terms or default_terms
+    )
+    
+    doc = agreement.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    await db.crm_agreements.insert_one(doc)
+    
+    return doc
+
+# ==================== INCLUDE ROUTERS ====================
+
 app.include_router(api_router)
+app.include_router(crm_router)
 
 app.add_middleware(
     CORSMiddleware,
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
