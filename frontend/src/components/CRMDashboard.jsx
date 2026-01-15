@@ -40,6 +40,7 @@ const CRMDashboard = () => {
   const [showContactModal, setShowContactModal] = useState(false);
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [showTodoModal, setShowTodoModal] = useState(false);
+  const [showActivityModal, setShowActivityModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [stageFilter, setStageFilter] = useState('');
 
