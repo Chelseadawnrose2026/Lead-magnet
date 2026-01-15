@@ -239,6 +239,10 @@ const CRMDashboard = () => {
           />
         )}
         
+        {activeTab === 'kpis' && (
+          <KPIsView contacts={contacts} />
+        )}
+        
         {activeTab === 'pipeline' && (
           <KanbanView 
             contacts={contacts}
