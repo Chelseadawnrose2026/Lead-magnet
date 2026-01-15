@@ -43,33 +43,6 @@ const CRMDashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [stageFilter, setStageFilter] = useState('');
 
-  // Check auth on mount
-  useEffect(() => {
-    if (location.hash?.includes('session_id=')) {
-      return; // Let AuthCallback handle this
-    }
-    
-    if (!user) {
-      checkAuth();
-    } else {
-      loadDashboard();
-    }
-  }, []);
-
-  const checkAuth = async () => {
-    try {
-      const response = await axios.get(`${API_URL}/api/crm/auth/me`, {
-        withCredentials: true
-      });
-      setUser(response.data);
-      setLoading(false);
-      loadDashboard();
-    } catch (error) {
-      setLoading(false);
-      navigate('/crm/login');
-    }
-  };
-
   const loadDashboard = async () => {
     try {
       const [dashRes, contactsRes, todosRes] = await Promise.all([
@@ -85,6 +58,20 @@ const CRMDashboard = () => {
     }
   };
 
+  const checkAuth = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/api/crm/auth/me`, {
+        withCredentials: true
+      });
+      setUser(response.data);
+      setLoading(false);
+      loadDashboard();
+    } catch (error) {
+      setLoading(false);
+      navigate('/crm/login');
+    }
+  };
+
   const logout = async () => {
     try {
       await axios.post(`${API_URL}/api/crm/auth/logout`, {}, { withCredentials: true });
@@ -93,6 +80,20 @@ const CRMDashboard = () => {
     }
     navigate('/crm/login');
   };
+
+  // Check auth on mount
+  useEffect(() => {
+    if (location.hash?.includes('session_id=')) {
+      return; // Let AuthCallback handle this
+    }
+    
+    if (!user) {
+      checkAuth();
+    } else {
+      loadDashboard();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const filteredContacts = contacts.filter(c => {
     const matchesSearch = 
