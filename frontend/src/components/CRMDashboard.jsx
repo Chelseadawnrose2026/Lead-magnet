@@ -1548,13 +1548,17 @@ const ContactModal = ({ contact, onClose, onSave }) => {
             />
           </div>
           <div className="col-span-2">
-            <label className="block text-sm font-medium mb-1">Notes</label>
+            <label className="block text-sm font-medium mb-1">Notes / Activity Log</label>
             <textarea
-              value={formData.notes}
+              value={formData.notes || ''}
               onChange={(e) => setFormData({...formData, notes: e.target.value})}
               className="w-full px-3 py-2 border rounded-lg"
-              rows={3}
+              rows={5}
+              placeholder="Add notes, paste email replies, call summaries, meeting notes..."
             />
+            <p className="text-xs text-gray-400 mt-1">
+              Tip: Copy & paste email conversations or add timestamps for each interaction
+            </p>
           </div>
         </div>
 
