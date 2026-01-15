@@ -109,8 +109,11 @@ class CRMContact(BaseModel):
     # Notes and follow-up
     notes: Optional[str] = None
     follow_up_date: Optional[str] = None
+    last_contacted: Optional[str] = None  # Date of last contact
     # Tags
     tags: List[str] = []
+    # Documents attached to this contact
+    documents: List[Dict[str, Any]] = []  # [{name, url, type, uploaded_at}]
     # Timestamps
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
@@ -130,7 +133,9 @@ class CRMContactCreate(BaseModel):
     stage: str = "New Lead"
     notes: Optional[str] = None
     follow_up_date: Optional[str] = None
+    last_contacted: Optional[str] = None
     tags: List[str] = []
+    documents: List[Dict[str, Any]] = []
 
 class CRMContactUpdate(BaseModel):
     first_name: Optional[str] = None
@@ -147,7 +152,9 @@ class CRMContactUpdate(BaseModel):
     stage: Optional[str] = None
     notes: Optional[str] = None
     follow_up_date: Optional[str] = None
+    last_contacted: Optional[str] = None
     tags: Optional[List[str]] = None
+    documents: Optional[List[Dict[str, Any]]] = None
 
 # Activity tracking
 class Activity(BaseModel):
