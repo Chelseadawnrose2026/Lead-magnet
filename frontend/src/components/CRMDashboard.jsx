@@ -43,6 +43,7 @@ const CRMDashboard = () => {
   const [showActivityModal, setShowActivityModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [stageFilter, setStageFilter] = useState('');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const loadDashboard = async () => {
     try {
