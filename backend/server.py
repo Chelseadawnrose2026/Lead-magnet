@@ -860,6 +860,8 @@ async def send_mass_email(email_request: MassEmailRequest, request: Request):
     await get_current_user(request)
     
     results = []
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    
     for contact_id in email_request.contact_ids:
         contact = await db.crm_contacts.find_one({"id": contact_id}, {"_id": 0})
         if contact:
@@ -872,12 +874,19 @@ async def send_mass_email(email_request: MassEmailRequest, request: Request):
             results.append({"contact_id": contact_id, "email": contact["email"], **result})
             
             if result["success"]:
+                # Update last_contacted date
+                await db.crm_contacts.update_one(
+                    {"id": contact_id}, 
+                    {"$set": {"last_contacted": today, "updated_at": datetime.now(timezone.utc).isoformat()}}
+                )
                 activity = Activity(
                     contact_id=contact_id,
                     activity_type="email_sent",
                     description=f"Mass email sent: {email_request.subject}"
                 )
-                await db.crm_activities.insert_one(activity.model_dump())
+                activity_doc = activity.model_dump()
+                activity_doc['created_at'] = activity_doc['created_at'].isoformat()
+                await db.crm_activities.insert_one(activity_doc)
     
     return {"results": results}
 
