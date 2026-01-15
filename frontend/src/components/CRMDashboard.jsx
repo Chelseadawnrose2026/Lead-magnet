@@ -1245,7 +1245,7 @@ const ContactsView = ({
 
       {/* Selected Actions Bar */}
       {selectedContacts.length > 0 && (
-        <div className="flex items-center gap-4 p-3 rounded-lg" style={{ backgroundColor: '#E0C4C0' }}>
+        <div className="flex flex-wrap items-center gap-3 p-3 rounded-lg" style={{ backgroundColor: '#E0C4C0' }}>
           <span className="font-medium" style={{ color: '#7B3B3B' }}>
             {selectedContacts.length} contact{selectedContacts.length > 1 ? 's' : ''} selected
           </span>
@@ -1257,6 +1257,11 @@ const ContactsView = ({
             <Mail className="w-4 h-4 mr-2" />
             Email Selected
           </Button>
+          <BulkOrganizationAssign 
+            selectedContacts={selectedContactObjects}
+            allContacts={contacts}
+            onAssign={onBulkAssignOrg}
+          />
           <Button 
             variant="outline"
             size="sm"
