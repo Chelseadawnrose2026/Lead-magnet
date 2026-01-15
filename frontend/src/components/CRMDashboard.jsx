@@ -734,10 +734,6 @@ const EmailsView = ({ contacts, onSendEmail }) => {
   const [selectedContacts, setSelectedContacts] = useState([]);
   const [templates, setTemplates] = useState([]);
 
-  useEffect(() => {
-    loadTemplates();
-  }, []);
-
   const loadTemplates = async () => {
     try {
       const res = await axios.get(`${API_URL}/api/crm/email-templates`, { withCredentials: true });
@@ -746,6 +742,10 @@ const EmailsView = ({ contacts, onSendEmail }) => {
       console.error('Error loading templates:', error);
     }
   };
+
+  useEffect(() => {
+    loadTemplates();
+  }, []);
 
   const toggleContact = (contact) => {
     setSelectedContacts(prev => 
