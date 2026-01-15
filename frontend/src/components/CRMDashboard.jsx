@@ -903,6 +903,7 @@ const DocumentsView = ({ contacts }) => {
 
   useEffect(() => {
     loadDocuments();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
   }, []);
 
   return (
