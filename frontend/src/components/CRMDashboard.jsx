@@ -143,15 +143,34 @@ const CRMDashboard = () => {
   return (
     <div className="min-h-screen flex" style={{ background: '#F9F5F4' }}>
       {/* Sidebar */}
-      <div className="w-64 text-white p-4 flex flex-col" style={{ background: 'linear-gradient(180deg, #7B3B3B 0%, #5a2a2a 100%)' }}>
-        <div className="mb-8">
-          <h1 className="text-xl font-bold">Chelsea Flynn</h1>
-          <p className="text-sm opacity-80">CRM Dashboard</p>
+      <div 
+        className={`${sidebarCollapsed ? 'w-16' : 'w-64'} text-white p-4 flex flex-col transition-all duration-300 relative`} 
+        style={{ background: 'linear-gradient(180deg, #7B3B3B 0%, #5a2a2a 100%)' }}
+      >
+        {/* Collapse Toggle Button */}
+        <button
+          onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+          className="absolute -right-3 top-8 bg-white text-gray-700 rounded-full p-1 shadow-lg hover:bg-gray-100 z-10"
+          title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        >
+          {sidebarCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+        </button>
+
+        <div className={`mb-8 ${sidebarCollapsed ? 'text-center' : ''}`}>
+          {sidebarCollapsed ? (
+            <h1 className="text-lg font-bold">CF</h1>
+          ) : (
+            <>
+              <h1 className="text-xl font-bold">Chelsea Flynn</h1>
+              <p className="text-sm opacity-80">CRM Dashboard</p>
+            </>
+          )}
         </div>
         
         <nav className="flex-1 space-y-2">
           {[
             { id: 'dashboard', icon: BarChart3, label: 'Dashboard' },
+            { id: 'kpis', icon: TrendingUp, label: 'KPIs' },
             { id: 'pipeline', icon: LayoutGrid, label: 'Pipeline' },
             { id: 'contacts', icon: Users, label: 'Contacts' },
             { id: 'emails', icon: Mail, label: 'Emails' },
@@ -161,34 +180,43 @@ const CRMDashboard = () => {
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${
+              className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center' : ''} gap-3 px-4 py-3 rounded-lg transition ${
                 activeTab === item.id ? 'bg-white/20' : 'hover:bg-white/10'
               }`}
               data-testid={`nav-${item.id}`}
+              title={sidebarCollapsed ? item.label : ''}
             >
               <item.icon className="w-5 h-5" />
-              {item.label}
+              {!sidebarCollapsed && item.label}
             </button>
           ))}
         </nav>
         
         <div className="pt-4 border-t border-white/20">
-          <div className="flex items-center gap-3 px-4 py-2 mb-2">
-            {user?.picture && (
-              <img src={user.picture} alt="" className="w-8 h-8 rounded-full" />
-            )}
-            <div className="flex-1 truncate">
-              <p className="text-sm font-medium truncate">{user?.name}</p>
-              <p className="text-xs opacity-70 truncate">{user?.email}</p>
+          {!sidebarCollapsed && (
+            <div className="flex items-center gap-3 px-4 py-2 mb-2">
+              {user?.picture && (
+                <img src={user.picture} alt="" className="w-8 h-8 rounded-full" />
+              )}
+              <div className="flex-1 truncate">
+                <p className="text-sm font-medium truncate">{user?.name}</p>
+                <p className="text-xs opacity-70 truncate">{user?.email}</p>
+              </div>
             </div>
-          </div>
+          )}
+          {sidebarCollapsed && user?.picture && (
+            <div className="flex justify-center mb-2">
+              <img src={user.picture} alt="" className="w-8 h-8 rounded-full" />
+            </div>
+          )}
           <button
             onClick={logout}
-            className="w-full flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-white/10 transition text-sm"
+            className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center' : ''} gap-3 px-4 py-2 rounded-lg hover:bg-white/10 transition text-sm`}
             data-testid="logout-btn"
+            title={sidebarCollapsed ? 'Logout' : ''}
           >
             <LogOut className="w-4 h-4" />
-            Logout
+            {!sidebarCollapsed && 'Logout'}
           </button>
         </div>
       </div>
