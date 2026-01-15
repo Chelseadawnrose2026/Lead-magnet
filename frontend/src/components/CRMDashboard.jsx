@@ -1043,23 +1043,8 @@ const ContactsView = ({
                   {isColumnVisible('last_contacted') && (
                     <td className="px-3 py-2">{contact.last_contacted || '-'}</td>
                   )}
-                  {isColumnVisible('last_activity') && (
-                    <td className="px-3 py-2 max-w-[150px]">
-                      {contact.last_activity ? (
-                        <span className="truncate block text-xs" title={contact.last_activity}>
-                          {contact.last_activity.substring(0, 40)}{contact.last_activity.length > 40 ? '...' : ''}
-                        </span>
-                      ) : '-'}
-                    </td>
-                  )}
                   {isColumnVisible('notes') && (
-                    <td className="px-3 py-2 max-w-[150px]">
-                      {contact.notes ? (
-                        <span className="truncate block" title={contact.notes}>
-                          {contact.notes.substring(0, 30)}{contact.notes.length > 30 ? '...' : ''}
-                        </span>
-                      ) : '-'}
-                    </td>
+                    <NotesCell notes={contact.notes} />
                   )}
                   {isColumnVisible('documents') && (
                     <td className="px-3 py-2">
