@@ -2125,6 +2125,40 @@ const ContactModal = ({ contact, companies, onClose, onSave, onViewCompany }) =>
             />
           </div>
           <div>
+            <label className="block text-sm font-medium mb-1">Link to Company</label>
+            <div className="flex gap-2">
+              <select
+                value={formData.company_id || ''}
+                onChange={(e) => {
+                  const companyId = e.target.value;
+                  const company = companies?.find(c => c.id === companyId);
+                  setFormData({
+                    ...formData, 
+                    company_id: companyId,
+                    organization_name: company?.name || formData.organization_name,
+                    organization_type: company?.company_type || formData.organization_type
+                  });
+                }}
+                className="flex-1 px-3 py-2 border rounded-lg"
+              >
+                <option value="">No company linked</option>
+                {companies?.map(c => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+              </select>
+              {linkedCompany && onViewCompany && (
+                <button
+                  type="button"
+                  onClick={() => onViewCompany(linkedCompany)}
+                  className="px-3 py-2 border rounded-lg hover:bg-gray-50"
+                  title="View Company"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+          </div>
+          <div>
             <label className="block text-sm font-medium mb-1">Organization Type</label>
             <select
               value={formData.organization_type}
