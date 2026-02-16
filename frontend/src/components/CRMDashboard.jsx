@@ -1626,6 +1626,196 @@ const ContactsView = ({
   );
 };
 
+// Companies View Component
+const CompaniesView = ({ companies, contacts, onAddCompany, onEditCompany, onDeleteCompany, onViewContact, setActiveTab }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCompany, setSelectedCompany] = useState(null);
+
+  const filteredCompanies = companies.filter(c => 
+    c.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    c.city?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Get contacts for selected company
+  const companyContacts = selectedCompany 
+    ? contacts.filter(c => c.company_id === selectedCompany.id)
+    : [];
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold" style={{ color: '#7B3B3B' }}>Companies</h2>
+        <Button 
+          onClick={onAddCompany}
+          style={{ backgroundColor: '#7B3B3B' }}
+          data-testid="add-company-btn"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Company
+        </Button>
+      </div>
+
+      <div className="flex gap-4">
+        <div className="flex-1 relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search companies..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-3 gap-6">
+        {/* Companies List */}
+        <div className="col-span-1 space-y-3 max-h-[600px] overflow-auto">
+          {filteredCompanies.length === 0 ? (
+            <p className="text-gray-500 text-center py-8">No companies found</p>
+          ) : (
+            filteredCompanies.map(company => (
+              <Card 
+                key={company.id} 
+                className={`p-4 cursor-pointer transition hover:shadow-md ${selectedCompany?.id === company.id ? 'ring-2' : ''}`}
+                style={{ borderLeftColor: '#7B3B3B', borderLeftWidth: selectedCompany?.id === company.id ? '4px' : '0' }}
+                onClick={() => setSelectedCompany(company)}
+              >
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="font-semibold">{company.name}</p>
+                    {company.company_type && (
+                      <span className="text-xs px-2 py-0.5 bg-gray-100 rounded mt-1 inline-block">
+                        {company.company_type}
+                      </span>
+                    )}
+                    {company.city && (
+                      <p className="text-sm text-gray-500 mt-1">
+                        <MapPin className="w-3 h-3 inline mr-1" />
+                        {company.city}{company.state ? `, ${company.state}` : ''}
+                      </p>
+                    )}
+                  </div>
+                  <span className="text-sm font-medium" style={{ color: '#7B3B3B' }}>
+                    {contacts.filter(c => c.company_id === company.id).length} contacts
+                  </span>
+                </div>
+              </Card>
+            ))
+          )}
+        </div>
+
+        {/* Company Details */}
+        <div className="col-span-2">
+          {selectedCompany ? (
+            <Card className="p-6">
+              <div className="flex items-start justify-between mb-6">
+                <div>
+                  <h3 className="text-xl font-bold" style={{ color: '#7B3B3B' }}>{selectedCompany.name}</h3>
+                  {selectedCompany.company_type && (
+                    <span className="text-sm px-2 py-1 bg-gray-100 rounded mt-1 inline-block">
+                      {selectedCompany.company_type}
+                    </span>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" onClick={() => onEditCompany(selectedCompany)}>
+                    <Edit className="w-4 h-4 mr-1" /> Edit
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => onDeleteCompany(selectedCompany)}>
+                    <Trash2 className="w-4 h-4 text-red-500" />
+                  </Button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                {selectedCompany.email && (
+                  <div>
+                    <p className="text-xs text-gray-500">Email</p>
+                    <p className="text-sm">{selectedCompany.email}</p>
+                  </div>
+                )}
+                {selectedCompany.phone && (
+                  <div>
+                    <p className="text-xs text-gray-500">Phone</p>
+                    <p className="text-sm">{selectedCompany.phone}</p>
+                  </div>
+                )}
+                {selectedCompany.website && (
+                  <div>
+                    <p className="text-xs text-gray-500">Website</p>
+                    <a href={selectedCompany.website} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline">
+                      {selectedCompany.website}
+                    </a>
+                  </div>
+                )}
+                {(selectedCompany.address || selectedCompany.city) && (
+                  <div>
+                    <p className="text-xs text-gray-500">Address</p>
+                    <p className="text-sm">
+                      {selectedCompany.address && <>{selectedCompany.address}<br /></>}
+                      {selectedCompany.city}{selectedCompany.state ? `, ${selectedCompany.state}` : ''} {selectedCompany.country}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {selectedCompany.notes && (
+                <div className="mb-6 p-3 bg-gray-50 rounded-lg">
+                  <p className="text-xs text-gray-500 mb-1">Notes</p>
+                  <p className="text-sm whitespace-pre-wrap">{selectedCompany.notes}</p>
+                </div>
+              )}
+
+              {/* Linked Contacts */}
+              <div>
+                <h4 className="font-semibold mb-3 flex items-center gap-2">
+                  <Users className="w-4 h-4" />
+                  Linked Contacts ({companyContacts.length})
+                </h4>
+                {companyContacts.length === 0 ? (
+                  <p className="text-gray-500 text-sm">No contacts linked to this company yet.</p>
+                ) : (
+                  <div className="space-y-2">
+                    {companyContacts.map(contact => (
+                      <div 
+                        key={contact.id} 
+                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-pointer"
+                        onClick={() => onViewContact(contact)}
+                      >
+                        <div>
+                          <p className="font-medium text-sm">{contact.first_name} {contact.last_name}</p>
+                          <p className="text-xs text-gray-500">{contact.role || contact.email}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span 
+                            className="text-xs px-2 py-1 rounded text-white"
+                            style={{ backgroundColor: STAGE_COLORS[contact.stage] }}
+                          >
+                            {contact.stage}
+                          </span>
+                          <ExternalLink className="w-4 h-4 text-gray-400" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </Card>
+          ) : (
+            <div className="flex items-center justify-center h-full text-gray-400">
+              <div className="text-center">
+                <Building2 className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                <p>Select a company to view details</p>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // Emails View Component
 const EmailsView = ({ contacts, onSendEmail }) => {
   const [selectedContacts, setSelectedContacts] = useState([]);
