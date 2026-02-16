@@ -2037,12 +2037,13 @@ const DocumentsView = ({ contacts }) => {
 };
 
 // Contact Modal Component
-const ContactModal = ({ contact, onClose, onSave }) => {
+const ContactModal = ({ contact, companies, onClose, onSave, onViewCompany }) => {
   const [formData, setFormData] = useState(contact || {
     first_name: '',
     last_name: '',
     email: '',
     phone: '',
+    company_id: '',
     organization_name: '',
     organization_type: '',
     role: '',
@@ -2057,6 +2058,9 @@ const ContactModal = ({ contact, onClose, onSave }) => {
     tags: [],
     documents: []
   });
+
+  // Get linked company info
+  const linkedCompany = companies?.find(c => c.id === formData.company_id);
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
