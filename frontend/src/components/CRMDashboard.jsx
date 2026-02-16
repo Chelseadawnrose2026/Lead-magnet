@@ -339,6 +339,7 @@ const CRMDashboard = () => {
               setSelectedContact(contacts);
               setShowEmailModal(true); 
             }}
+            onForwardEmail={() => setShowForwardEmailModal(true)}
           />
         )}
         
@@ -350,7 +351,7 @@ const CRMDashboard = () => {
             onEditCompany={(c) => { setSelectedCompany(c); setShowCompanyModal(true); }}
             onDeleteCompany={async (c) => {
               if (window.confirm(`Delete ${c.name}? Contacts will be unlinked.`)) {
-                await axios.delete(`${API_URL}/api/crm/contacts/${c.id}`, { withCredentials: true });
+                await axios.delete(`${API_URL}/api/crm/companies/${c.id}`, { withCredentials: true });
                 loadDashboard();
                 toast.success('Company deleted');
               }
