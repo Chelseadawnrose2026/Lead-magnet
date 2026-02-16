@@ -1823,7 +1823,7 @@ const CompaniesView = ({ companies, contacts, onAddCompany, onEditCompany, onDel
 };
 
 // Emails View Component
-const EmailsView = ({ contacts, onSendEmail }) => {
+const EmailsView = ({ contacts, onSendEmail, onForwardEmail }) => {
   const [selectedContacts, setSelectedContacts] = useState([]);
   const [templates, setTemplates] = useState([]);
 
@@ -1852,19 +1852,28 @@ const EmailsView = ({ contacts, onSendEmail }) => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold" style={{ color: '#7B3B3B' }}>Mass Email</h2>
-        <Button 
-          onClick={() => onSendEmail(selectedContacts)}
-          disabled={selectedContacts.length === 0}
-          style={{ backgroundColor: selectedContacts.length > 0 ? '#7B3B3B' : '#ccc' }}
-        >
-          <Send className="w-4 h-4 mr-2" />
-          Email Selected ({selectedContacts.length})
-        </Button>
+        <h2 className="text-2xl font-bold" style={{ color: '#7B3B3B' }}>Emails</h2>
+        <div className="flex gap-2">
+          <Button 
+            variant="outline"
+            onClick={onForwardEmail}
+          >
+            <Mail className="w-4 h-4 mr-2" />
+            Add Email to CRM
+          </Button>
+          <Button 
+            onClick={() => onSendEmail(selectedContacts)}
+            disabled={selectedContacts.length === 0}
+            style={{ backgroundColor: selectedContacts.length > 0 ? '#7B3B3B' : '#ccc' }}
+          >
+            <Send className="w-4 h-4 mr-2" />
+            Email Selected ({selectedContacts.length})
+          </Button>
+        </div>
       </div>
 
       <Card className="p-6">
-        <h3 className="font-semibold mb-4">Select Recipients</h3>
+        <h3 className="font-semibold mb-4">Select Recipients for Mass Email</h3>
         <div className="grid grid-cols-3 gap-3 max-h-96 overflow-auto">
           {contacts.map(contact => (
             <div
