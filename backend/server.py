@@ -95,7 +95,9 @@ class CRMContact(BaseModel):
     last_name: str
     email: str
     phone: Optional[str] = None
-    # Organization
+    # Company link
+    company_id: Optional[str] = None  # Link to company
+    # Organization (legacy - can be used if no company linked)
     organization_name: Optional[str] = None  # Parish name, Conference name, etc.
     organization_type: Optional[str] = None  # Parish, Conference, Retreat Center, Diocese, Other
     role: Optional[str] = None  # DRE, Pastor, OCIA Coordinator, Event Planner, etc.
@@ -124,6 +126,7 @@ class CRMContactCreate(BaseModel):
     last_name: str
     email: str
     phone: Optional[str] = None
+    company_id: Optional[str] = None
     organization_name: Optional[str] = None
     organization_type: Optional[str] = None
     role: Optional[str] = None
@@ -144,6 +147,7 @@ class CRMContactUpdate(BaseModel):
     last_name: Optional[str] = None
     email: Optional[str] = None
     phone: Optional[str] = None
+    company_id: Optional[str] = None
     organization_name: Optional[str] = None
     organization_type: Optional[str] = None
     role: Optional[str] = None
@@ -158,6 +162,59 @@ class CRMContactUpdate(BaseModel):
     last_activity: Optional[str] = None
     tags: Optional[List[str]] = None
     documents: Optional[List[Dict[str, Any]]] = None
+
+# Company model
+class Company(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    company_type: Optional[str] = None  # Parish, Conference, Diocese, Retreat Center, School, Other
+    # Contact info
+    email: Optional[str] = None
+    phone: Optional[str] = None
+    website: Optional[str] = None
+    # Address
+    address: Optional[str] = None
+    city: Optional[str] = None
+    state: Optional[str] = None
+    country: Optional[str] = None
+    # Notes
+    notes: Optional[str] = None
+    # Timestamps
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class CompanyCreate(BaseModel):
+    name: str
+    company_type: Optional[str] = None
+    email: Optional[str] = None
+    phone: Optional[str] = None
+    website: Optional[str] = None
+    address: Optional[str] = None
+    city: Optional[str] = None
+    state: Optional[str] = None
+    country: Optional[str] = None
+    notes: Optional[str] = None
+
+class CompanyUpdate(BaseModel):
+    name: Optional[str] = None
+    company_type: Optional[str] = None
+    email: Optional[str] = None
+    phone: Optional[str] = None
+    website: Optional[str] = None
+    address: Optional[str] = None
+    city: Optional[str] = None
+    state: Optional[str] = None
+    country: Optional[str] = None
+    notes: Optional[str] = None
+
+# Email forwarding model
+class ForwardedEmail(BaseModel):
+    from_email: str
+    from_name: Optional[str] = None
+    subject: str
+    body: str
+    received_at: Optional[str] = None
 
 # Activity tracking
 class Activity(BaseModel):
