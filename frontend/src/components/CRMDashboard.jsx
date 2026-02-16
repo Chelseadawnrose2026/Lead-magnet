@@ -173,6 +173,7 @@ const CRMDashboard = () => {
             { id: 'kpis', icon: TrendingUp, label: 'KPIs' },
             { id: 'pipeline', icon: LayoutGrid, label: 'Pipeline' },
             { id: 'contacts', icon: Users, label: 'Contacts' },
+            { id: 'companies', icon: Building2, label: 'Companies' },
             { id: 'emails', icon: Mail, label: 'Emails' },
             { id: 'todos', icon: CheckSquare, label: 'To-Do List' },
             { id: 'documents', icon: FileText, label: 'Documents' },
