@@ -342,6 +342,27 @@ const CRMDashboard = () => {
           />
         )}
         
+        {activeTab === 'companies' && (
+          <CompaniesView 
+            companies={companies}
+            contacts={contacts}
+            onAddCompany={() => { setSelectedCompany(null); setShowCompanyModal(true); }}
+            onEditCompany={(c) => { setSelectedCompany(c); setShowCompanyModal(true); }}
+            onDeleteCompany={async (c) => {
+              if (window.confirm(`Delete ${c.name}? Contacts will be unlinked.`)) {
+                await axios.delete(`${API_URL}/api/crm/contacts/${c.id}`, { withCredentials: true });
+                loadDashboard();
+                toast.success('Company deleted');
+              }
+            }}
+            onViewContact={(contact) => { 
+              setSelectedContact(contact); 
+              setShowContactModal(true); 
+            }}
+            setActiveTab={setActiveTab}
+          />
+        )}
+        
         {activeTab === 'todos' && (
           <TodosView 
             todos={todos}
