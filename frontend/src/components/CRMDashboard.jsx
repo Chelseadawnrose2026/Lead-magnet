@@ -36,25 +36,31 @@ const CRMDashboard = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [dashboard, setDashboard] = useState(null);
   const [contacts, setContacts] = useState([]);
+  const [companies, setCompanies] = useState([]);
   const [todos, setTodos] = useState([]);
   const [selectedContact, setSelectedContact] = useState(null);
+  const [selectedCompany, setSelectedCompany] = useState(null);
   const [showContactModal, setShowContactModal] = useState(false);
+  const [showCompanyModal, setShowCompanyModal] = useState(false);
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [showTodoModal, setShowTodoModal] = useState(false);
   const [showActivityModal, setShowActivityModal] = useState(false);
+  const [showForwardEmailModal, setShowForwardEmailModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [stageFilter, setStageFilter] = useState('');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const loadDashboard = async () => {
     try {
-      const [dashRes, contactsRes, todosRes] = await Promise.all([
+      const [dashRes, contactsRes, companiesRes, todosRes] = await Promise.all([
         axios.get(`${API_URL}/api/crm/dashboard`, { withCredentials: true }),
         axios.get(`${API_URL}/api/crm/contacts`, { withCredentials: true }),
+        axios.get(`${API_URL}/api/crm/companies`, { withCredentials: true }),
         axios.get(`${API_URL}/api/crm/todos`, { withCredentials: true })
       ]);
       setDashboard(dashRes.data);
       setContacts(contactsRes.data);
+      setCompanies(companiesRes.data);
       setTodos(todosRes.data);
     } catch (error) {
       console.error('Error loading dashboard:', error);
