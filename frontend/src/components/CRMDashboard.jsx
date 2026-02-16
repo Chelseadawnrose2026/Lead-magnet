@@ -507,6 +507,45 @@ const CRMDashboard = () => {
           }}
         />
       )}
+
+      {showCompanyModal && (
+        <CompanyModal 
+          company={selectedCompany}
+          onClose={() => { setShowCompanyModal(false); setSelectedCompany(null); }}
+          onSave={async (data) => {
+            try {
+              if (selectedCompany) {
+                await axios.put(`${API_URL}/api/crm/companies/${selectedCompany.id}`, data, { withCredentials: true });
+                toast.success('Company updated');
+              } else {
+                await axios.post(`${API_URL}/api/crm/companies`, data, { withCredentials: true });
+                toast.success('Company created');
+              }
+              loadDashboard();
+              setShowCompanyModal(false);
+              setSelectedCompany(null);
+            } catch (error) {
+              toast.error('Error saving company');
+            }
+          }}
+        />
+      )}
+
+      {showForwardEmailModal && (
+        <ForwardEmailModal 
+          onClose={() => setShowForwardEmailModal(false)}
+          onSave={async (data) => {
+            try {
+              const response = await axios.post(`${API_URL}/api/crm/forward-email`, data, { withCredentials: true });
+              toast.success(response.data.message);
+              loadDashboard();
+              setShowForwardEmailModal(false);
+            } catch (error) {
+              toast.error('Error processing email');
+            }
+          }}
+        />
+      )}
     </div>
   );
 };
