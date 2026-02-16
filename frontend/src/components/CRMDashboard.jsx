@@ -393,6 +393,12 @@ const CRMDashboard = () => {
         <ContactModal 
           contact={selectedContact}
           onClose={() => { setShowContactModal(false); setSelectedContact(null); }}
+          companies={companies}
+          onViewCompany={(company) => {
+            setShowContactModal(false);
+            setSelectedContact(null);
+            setActiveTab('companies');
+          }}
           onSave={async (data) => {
             try {
               if (selectedContact) {
