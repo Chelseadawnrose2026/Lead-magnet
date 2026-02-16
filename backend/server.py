@@ -1001,6 +1001,165 @@ async def get_pipeline_stages(request: Request):
     await get_current_user(request)
     return PIPELINE_STAGES
 
+# ==================== CRM COMPANY ENDPOINTS ====================
+
+@crm_router.get("/companies")
+async def get_companies(request: Request):
+    """Get all companies"""
+    await get_current_user(request)
+    companies = await db.crm_companies.find({}, {"_id": 0}).sort("name", 1).to_list(1000)
+    return companies
+
+@crm_router.get("/companies/{company_id}")
+async def get_company(company_id: str, request: Request):
+    """Get single company with linked contacts"""
+    await get_current_user(request)
+    company = await db.crm_companies.find_one({"id": company_id}, {"_id": 0})
+    if not company:
+        raise HTTPException(status_code=404, detail="Company not found")
+    
+    # Get contacts linked to this company
+    contacts = await db.crm_contacts.find({"company_id": company_id}, {"_id": 0}).to_list(100)
+    company["contacts"] = contacts
+    return company
+
+@crm_router.post("/companies")
+async def create_company(company: CompanyCreate, request: Request):
+    """Create new company"""
+    await get_current_user(request)
+    
+    company_obj = Company(**company.model_dump())
+    doc = company_obj.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    doc['updated_at'] = doc['updated_at'].isoformat()
+    
+    await db.crm_companies.insert_one(doc)
+    doc.pop('_id', None)
+    return doc
+
+@crm_router.put("/companies/{company_id}")
+async def update_company(company_id: str, update: CompanyUpdate, request: Request):
+    """Update company"""
+    await get_current_user(request)
+    
+    update_data = {k: v for k, v in update.model_dump().items() if v is not None}
+    update_data['updated_at'] = datetime.now(timezone.utc).isoformat()
+    
+    result = await db.crm_companies.update_one({"id": company_id}, {"$set": update_data})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Company not found")
+    
+    return await db.crm_companies.find_one({"id": company_id}, {"_id": 0})
+
+@crm_router.delete("/companies/{company_id}")
+async def delete_company(company_id: str, request: Request):
+    """Delete company and unlink contacts"""
+    await get_current_user(request)
+    
+    # Unlink contacts from this company
+    await db.crm_contacts.update_many({"company_id": company_id}, {"$set": {"company_id": None}})
+    
+    result = await db.crm_companies.delete_one({"id": company_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Company not found")
+    
+    return {"message": "Company deleted"}
+
+@crm_router.post("/companies/{company_id}/link-contacts")
+async def link_contacts_to_company(company_id: str, request: Request):
+    """Link multiple contacts to a company"""
+    await get_current_user(request)
+    
+    body = await request.json()
+    contact_ids = body.get("contact_ids", [])
+    
+    # Verify company exists
+    company = await db.crm_companies.find_one({"id": company_id}, {"_id": 0})
+    if not company:
+        raise HTTPException(status_code=404, detail="Company not found")
+    
+    # Update contacts
+    result = await db.crm_contacts.update_many(
+        {"id": {"$in": contact_ids}},
+        {"$set": {"company_id": company_id, "organization_name": company["name"]}}
+    )
+    
+    return {"linked": result.modified_count}
+
+# ==================== EMAIL FORWARDING ENDPOINT ====================
+
+@crm_router.post("/forward-email")
+async def forward_email(email_data: ForwardedEmail, request: Request):
+    """Process a forwarded email - creates contact or adds to existing"""
+    await get_current_user(request)
+    
+    from_email = email_data.from_email.lower().strip()
+    from_name = email_data.from_name or ""
+    
+    # Split name into first/last
+    name_parts = from_name.strip().split(" ", 1)
+    first_name = name_parts[0] if name_parts else "Unknown"
+    last_name = name_parts[1] if len(name_parts) > 1 else ""
+    
+    # Check if contact exists
+    existing = await db.crm_contacts.find_one({"email": from_email}, {"_id": 0})
+    
+    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M")
+    activity_note = f"[{timestamp}] 📧 Email Received:\nSubject: {email_data.subject}\n\n{email_data.body}\n\n"
+    
+    if existing:
+        # Append to existing contact's notes
+        existing_notes = existing.get("notes", "") or ""
+        updated_notes = activity_note + existing_notes
+        
+        await db.crm_contacts.update_one(
+            {"id": existing["id"]},
+            {"$set": {
+                "notes": updated_notes,
+                "last_contacted": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+                "updated_at": datetime.now(timezone.utc).isoformat()
+            }}
+        )
+        
+        # Log activity
+        activity = Activity(
+            contact_id=existing["id"],
+            activity_type="email_received",
+            description=f"Email received: {email_data.subject}"
+        )
+        activity_doc = activity.model_dump()
+        activity_doc['created_at'] = activity_doc['created_at'].isoformat()
+        await db.crm_activities.insert_one(activity_doc)
+        
+        return {"status": "updated", "contact_id": existing["id"], "message": f"Added email to existing contact: {from_email}"}
+    else:
+        # Create new contact
+        new_contact = CRMContact(
+            first_name=first_name,
+            last_name=last_name,
+            email=from_email,
+            notes=activity_note,
+            last_contacted=datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+            stage="New Lead"
+        )
+        doc = new_contact.model_dump()
+        doc['created_at'] = doc['created_at'].isoformat()
+        doc['updated_at'] = doc['updated_at'].isoformat()
+        
+        await db.crm_contacts.insert_one(doc)
+        
+        # Log activity
+        activity = Activity(
+            contact_id=new_contact.id,
+            activity_type="created",
+            description=f"Contact created from forwarded email: {email_data.subject}"
+        )
+        activity_doc = activity.model_dump()
+        activity_doc['created_at'] = activity_doc['created_at'].isoformat()
+        await db.crm_activities.insert_one(activity_doc)
+        
+        return {"status": "created", "contact_id": new_contact.id, "message": f"Created new contact: {from_email}"}
+
 # ==================== CRM INVOICE ENDPOINTS ====================
 
 @crm_router.get("/invoices")
