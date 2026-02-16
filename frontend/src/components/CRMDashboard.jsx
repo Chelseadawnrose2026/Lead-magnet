@@ -2525,4 +2525,240 @@ const ActivityModal = ({ contact, onClose, onSave }) => {
   );
 };
 
+// Company Modal Component
+const CompanyModal = ({ company, onClose, onSave }) => {
+  const [formData, setFormData] = useState(company || {
+    name: '',
+    company_type: '',
+    email: '',
+    phone: '',
+    website: '',
+    address: '',
+    city: '',
+    state: '',
+    country: '',
+    notes: ''
+  });
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-auto">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xl font-bold" style={{ color: '#7B3B3B' }}>
+            {company ? 'Edit Company' : 'Add Company'}
+          </h3>
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div className="col-span-2">
+            <label className="block text-sm font-medium mb-1">Company Name *</label>
+            <input
+              type="text"
+              value={formData.name}
+              onChange={(e) => setFormData({...formData, name: e.target.value})}
+              className="w-full px-3 py-2 border rounded-lg"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Company Type</label>
+            <select
+              value={formData.company_type}
+              onChange={(e) => setFormData({...formData, company_type: e.target.value})}
+              className="w-full px-3 py-2 border rounded-lg"
+            >
+              <option value="">Select type...</option>
+              <option value="Parish">Parish</option>
+              <option value="Conference">Conference</option>
+              <option value="Diocese">Diocese</option>
+              <option value="Retreat Center">Retreat Center</option>
+              <option value="School">School</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Email</label>
+            <input
+              type="email"
+              value={formData.email}
+              onChange={(e) => setFormData({...formData, email: e.target.value})}
+              className="w-full px-3 py-2 border rounded-lg"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Phone</label>
+            <input
+              type="tel"
+              value={formData.phone}
+              onChange={(e) => setFormData({...formData, phone: e.target.value})}
+              className="w-full px-3 py-2 border rounded-lg"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Website</label>
+            <input
+              type="url"
+              value={formData.website}
+              onChange={(e) => setFormData({...formData, website: e.target.value})}
+              className="w-full px-3 py-2 border rounded-lg"
+              placeholder="https://"
+            />
+          </div>
+          <div className="col-span-2">
+            <label className="block text-sm font-medium mb-1">Address</label>
+            <input
+              type="text"
+              value={formData.address}
+              onChange={(e) => setFormData({...formData, address: e.target.value})}
+              className="w-full px-3 py-2 border rounded-lg"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">City</label>
+            <input
+              type="text"
+              value={formData.city}
+              onChange={(e) => setFormData({...formData, city: e.target.value})}
+              className="w-full px-3 py-2 border rounded-lg"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">State/Province</label>
+            <input
+              type="text"
+              value={formData.state}
+              onChange={(e) => setFormData({...formData, state: e.target.value})}
+              className="w-full px-3 py-2 border rounded-lg"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Country</label>
+            <input
+              type="text"
+              value={formData.country}
+              onChange={(e) => setFormData({...formData, country: e.target.value})}
+              className="w-full px-3 py-2 border rounded-lg"
+            />
+          </div>
+          <div className="col-span-2">
+            <label className="block text-sm font-medium mb-1">Notes</label>
+            <textarea
+              value={formData.notes || ''}
+              onChange={(e) => setFormData({...formData, notes: e.target.value})}
+              className="w-full px-3 py-2 border rounded-lg"
+              rows={3}
+            />
+          </div>
+        </div>
+
+        <div className="flex justify-end gap-3 mt-6">
+          <Button variant="outline" onClick={onClose}>Cancel</Button>
+          <Button 
+            onClick={() => onSave(formData)}
+            style={{ backgroundColor: '#7B3B3B' }}
+            disabled={!formData.name}
+          >
+            {company ? 'Save Changes' : 'Add Company'}
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Forward Email Modal Component
+const ForwardEmailModal = ({ onClose, onSave }) => {
+  const [formData, setFormData] = useState({
+    from_email: '',
+    from_name: '',
+    subject: '',
+    body: ''
+  });
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-auto">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xl font-bold" style={{ color: '#7B3B3B' }}>
+            Add Email to CRM
+          </h3>
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        <p className="text-sm text-gray-500 mb-4">
+          Paste email details below. If the sender exists in your CRM, the email will be added to their notes. 
+          Otherwise, a new contact will be created.
+        </p>
+
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Sender Email *</label>
+              <input
+                type="email"
+                value={formData.from_email}
+                onChange={(e) => setFormData({...formData, from_email: e.target.value})}
+                className="w-full px-3 py-2 border rounded-lg"
+                placeholder="sender@example.com"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Sender Name</label>
+              <input
+                type="text"
+                value={formData.from_name}
+                onChange={(e) => setFormData({...formData, from_name: e.target.value})}
+                className="w-full px-3 py-2 border rounded-lg"
+                placeholder="John Smith"
+              />
+            </div>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium mb-1">Subject *</label>
+            <input
+              type="text"
+              value={formData.subject}
+              onChange={(e) => setFormData({...formData, subject: e.target.value})}
+              className="w-full px-3 py-2 border rounded-lg"
+              placeholder="Email subject line"
+              required
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium mb-1">Email Body *</label>
+            <textarea
+              value={formData.body}
+              onChange={(e) => setFormData({...formData, body: e.target.value})}
+              className="w-full px-3 py-2 border rounded-lg"
+              rows={10}
+              placeholder="Paste the email content here..."
+              required
+            />
+          </div>
+        </div>
+
+        <div className="flex justify-end gap-3 mt-6">
+          <Button variant="outline" onClick={onClose}>Cancel</Button>
+          <Button 
+            onClick={() => onSave(formData)}
+            style={{ backgroundColor: '#7B3B3B' }}
+            disabled={!formData.from_email || !formData.subject || !formData.body}
+          >
+            <Mail className="w-4 h-4 mr-2" />
+            Add to CRM
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default CRMDashboard;
