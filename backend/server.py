@@ -1203,7 +1203,7 @@ async def link_contacts_to_company(company_id: str, request: Request):
 
 @crm_router.post("/forward-email")
 async def forward_email(email_data: ForwardedEmail, request: Request):
-    """Process a forwarded email - creates contact or adds to existing"""
+    """Process a forwarded email - creates contact or adds to existing, with AI summarization"""
     await get_current_user(request)
     
     from_email = email_data.from_email.lower().strip()
@@ -1214,11 +1214,35 @@ async def forward_email(email_data: ForwardedEmail, request: Request):
     first_name = name_parts[0] if name_parts else "Unknown"
     last_name = name_parts[1] if len(name_parts) > 1 else ""
     
+    # AI Summarization
+    summary = ""
+    if EMERGENT_LLM_KEY and len(email_data.body) > 200:
+        try:
+            chat = LlmChat(
+                api_key=EMERGENT_LLM_KEY,
+                session_id=f"summary-{uuid.uuid4()}",
+                system_message="You are a helpful assistant that summarizes emails and articles concisely. Create a brief 2-3 sentence summary capturing the key points. If it's a Google Alert or news article, extract the main topic and relevance."
+            ).with_model("openai", "gpt-4o-mini")
+            
+            user_message = UserMessage(
+                text=f"Summarize this email/article:\n\nSubject: {email_data.subject}\n\n{email_data.body[:3000]}"
+            )
+            summary = await chat.send_message(user_message)
+            logger.info(f"AI Summary generated for email from {from_email}")
+        except Exception as e:
+            logger.error(f"AI summarization failed: {e}")
+            summary = ""
+    
     # Check if contact exists
     existing = await db.crm_contacts.find_one({"email": from_email}, {"_id": 0})
     
     timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M")
-    activity_note = f"[{timestamp}] 📧 Email Received:\nSubject: {email_data.subject}\n\n{email_data.body}\n\n"
+    
+    # Build activity note with summary
+    if summary:
+        activity_note = f"[{timestamp}] 📧 Email Received:\nSubject: {email_data.subject}\n\n📝 AI Summary: {summary}\n\n--- Original Content ---\n{email_data.body}\n\n"
+    else:
+        activity_note = f"[{timestamp}] 📧 Email Received:\nSubject: {email_data.subject}\n\n{email_data.body}\n\n"
     
     if existing:
         # Append to existing contact's notes
@@ -1234,17 +1258,28 @@ async def forward_email(email_data: ForwardedEmail, request: Request):
             }}
         )
         
+        # Also update company notes if contact is linked to a company
+        if existing.get("company_id"):
+            company = await db.crm_companies.find_one({"id": existing["company_id"]}, {"_id": 0})
+            if company:
+                company_notes = company.get("notes", "") or ""
+                company_activity = f"[{timestamp}] 📧 Email from {first_name} {last_name}:\n{summary if summary else email_data.subject}\n\n"
+                await db.crm_companies.update_one(
+                    {"id": existing["company_id"]},
+                    {"$set": {"notes": company_activity + company_notes, "updated_at": datetime.now(timezone.utc).isoformat()}}
+                )
+        
         # Log activity
         activity = Activity(
             contact_id=existing["id"],
             activity_type="email_received",
-            description=f"Email received: {email_data.subject}"
+            description=f"Email received: {email_data.subject}" + (f" (Summary: {summary[:100]}...)" if summary else "")
         )
         activity_doc = activity.model_dump()
         activity_doc['created_at'] = activity_doc['created_at'].isoformat()
         await db.crm_activities.insert_one(activity_doc)
         
-        return {"status": "updated", "contact_id": existing["id"], "message": f"Added email to existing contact: {from_email}"}
+        return {"status": "updated", "contact_id": existing["id"], "summary": summary, "message": f"Added email to existing contact: {from_email}"}
     else:
         # Create new contact
         new_contact = CRMContact(
@@ -1271,7 +1306,162 @@ async def forward_email(email_data: ForwardedEmail, request: Request):
         activity_doc['created_at'] = activity_doc['created_at'].isoformat()
         await db.crm_activities.insert_one(activity_doc)
         
-        return {"status": "created", "contact_id": new_contact.id, "message": f"Created new contact: {from_email}"}
+        return {"status": "created", "contact_id": new_contact.id, "summary": summary, "message": f"Created new contact: {from_email}"}
+
+# ==================== INBOUND EMAIL WEBHOOK ====================
+
+@crm_router.post("/inbound-email-webhook")
+async def inbound_email_webhook(request: Request):
+    """Webhook endpoint for Resend inbound emails"""
+    try:
+        body = await request.json()
+        logger.info(f"Inbound email webhook received: {body}")
+        
+        # Extract email data from Resend webhook payload
+        from_email = body.get("from", "")
+        from_name = ""
+        
+        # Parse "Name <email>" format
+        if "<" in from_email and ">" in from_email:
+            parts = from_email.split("<")
+            from_name = parts[0].strip()
+            from_email = parts[1].replace(">", "").strip()
+        
+        subject = body.get("subject", "No Subject")
+        text_body = body.get("text", "") or body.get("html", "")
+        
+        # Process the email using the same logic
+        email_data = ForwardedEmail(
+            from_email=from_email,
+            from_name=from_name,
+            subject=subject,
+            body=text_body
+        )
+        
+        # Create a mock request for auth bypass (webhook is trusted)
+        # Process without auth for webhook
+        from_email_clean = from_email.lower().strip()
+        name_parts = from_name.strip().split(" ", 1) if from_name else ["Unknown"]
+        first_name = name_parts[0]
+        last_name = name_parts[1] if len(name_parts) > 1 else ""
+        
+        # AI Summarization
+        summary = ""
+        if EMERGENT_LLM_KEY and len(text_body) > 200:
+            try:
+                chat = LlmChat(
+                    api_key=EMERGENT_LLM_KEY,
+                    session_id=f"summary-{uuid.uuid4()}",
+                    system_message="You are a helpful assistant that summarizes emails and articles concisely. Create a brief 2-3 sentence summary capturing the key points."
+                ).with_model("openai", "gpt-4o-mini")
+                
+                user_message = UserMessage(text=f"Summarize:\n\nSubject: {subject}\n\n{text_body[:3000]}")
+                summary = await chat.send_message(user_message)
+            except Exception as e:
+                logger.error(f"AI summarization failed: {e}")
+        
+        timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M")
+        if summary:
+            activity_note = f"[{timestamp}] 📧 Forwarded Email:\nSubject: {subject}\n\n📝 AI Summary: {summary}\n\n--- Original ---\n{text_body}\n\n"
+        else:
+            activity_note = f"[{timestamp}] 📧 Forwarded Email:\nSubject: {subject}\n\n{text_body}\n\n"
+        
+        existing = await db.crm_contacts.find_one({"email": from_email_clean}, {"_id": 0})
+        
+        if existing:
+            existing_notes = existing.get("notes", "") or ""
+            await db.crm_contacts.update_one(
+                {"id": existing["id"]},
+                {"$set": {"notes": activity_note + existing_notes, "last_contacted": datetime.now(timezone.utc).strftime("%Y-%m-%d")}}
+            )
+            logger.info(f"Added forwarded email to contact: {from_email_clean}")
+        else:
+            new_contact = CRMContact(
+                first_name=first_name,
+                last_name=last_name,
+                email=from_email_clean,
+                notes=activity_note,
+                stage="New Lead"
+            )
+            doc = new_contact.model_dump()
+            doc['created_at'] = doc['created_at'].isoformat()
+            doc['updated_at'] = doc['updated_at'].isoformat()
+            await db.crm_contacts.insert_one(doc)
+            logger.info(f"Created new contact from forwarded email: {from_email_clean}")
+        
+        return {"status": "processed"}
+    except Exception as e:
+        logger.error(f"Inbound email webhook error: {e}")
+        return {"status": "error", "message": str(e)}
+
+# ==================== DOCUMENT UPLOAD ====================
+
+@crm_router.post("/upload-document")
+async def upload_document(file: UploadFile = File(...), entity_type: str = "contact", entity_id: str = ""):
+    """Upload a document for a contact or company"""
+    if not entity_id:
+        raise HTTPException(status_code=400, detail="entity_id is required")
+    
+    # Read file content
+    content = await file.read()
+    
+    # Store file (in production, use S3 or cloud storage)
+    # For now, store as base64 in database
+    file_data = {
+        "id": str(uuid.uuid4()),
+        "name": file.filename,
+        "type": file.content_type,
+        "size": len(content),
+        "data": base64.b64encode(content).decode('utf-8'),
+        "uploaded_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    if entity_type == "contact":
+        result = await db.crm_contacts.update_one(
+            {"id": entity_id},
+            {"$push": {"documents": file_data}}
+        )
+    elif entity_type == "company":
+        result = await db.crm_companies.update_one(
+            {"id": entity_id},
+            {"$push": {"documents": file_data}}
+        )
+    else:
+        raise HTTPException(status_code=400, detail="entity_type must be 'contact' or 'company'")
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail=f"{entity_type} not found")
+    
+    # Return without the base64 data
+    return {"id": file_data["id"], "name": file_data["name"], "type": file_data["type"], "uploaded_at": file_data["uploaded_at"]}
+
+@crm_router.get("/download-document/{entity_type}/{entity_id}/{document_id}")
+async def download_document(entity_type: str, entity_id: str, document_id: str, request: Request):
+    """Download a document"""
+    await get_current_user(request)
+    
+    if entity_type == "contact":
+        entity = await db.crm_contacts.find_one({"id": entity_id}, {"_id": 0})
+    elif entity_type == "company":
+        entity = await db.crm_companies.find_one({"id": entity_id}, {"_id": 0})
+    else:
+        raise HTTPException(status_code=400, detail="Invalid entity type")
+    
+    if not entity:
+        raise HTTPException(status_code=404, detail="Entity not found")
+    
+    documents = entity.get("documents", [])
+    doc = next((d for d in documents if d.get("id") == document_id), None)
+    
+    if not doc:
+        raise HTTPException(status_code=404, detail="Document not found")
+    
+    content = base64.b64decode(doc["data"])
+    return Response(
+        content=content,
+        media_type=doc["type"],
+        headers={"Content-Disposition": f'attachment; filename="{doc["name"]}"'}
+    )
 
 # ==================== CRM INVOICE ENDPOINTS ====================
 
