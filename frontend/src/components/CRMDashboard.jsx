@@ -1636,12 +1636,20 @@ const ContactsView = ({
 // Companies View Component
 const CompaniesView = ({ companies, contacts, onAddCompany, onEditCompany, onDeleteCompany, onViewContact, setActiveTab }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [industryFilter, setIndustryFilter] = useState('');
   const [selectedCompany, setSelectedCompany] = useState(null);
 
-  const filteredCompanies = companies.filter(c => 
-    c.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    c.city?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Get unique industries for filter
+  const industries = [...new Set(companies.map(c => c.industry).filter(Boolean))];
+
+  const filteredCompanies = companies.filter(c => {
+    const matchesSearch = 
+      c.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      c.city?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      c.industry?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesIndustry = !industryFilter || c.industry === industryFilter;
+    return matchesSearch && matchesIndustry;
+  });
 
   // Get contacts for selected company
   const companyContacts = selectedCompany 
@@ -1667,12 +1675,24 @@ const CompaniesView = ({ companies, contacts, onAddCompany, onEditCompany, onDel
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
           <input
             type="text"
-            placeholder="Search companies..."
+            placeholder="Search companies, cities, industries..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none"
           />
         </div>
+        {industries.length > 0 && (
+          <select
+            value={industryFilter}
+            onChange={(e) => setIndustryFilter(e.target.value)}
+            className="px-4 py-2 border rounded-lg"
+          >
+            <option value="">All Industries</option>
+            {industries.map(ind => (
+              <option key={ind} value={ind}>{ind}</option>
+            ))}
+          </select>
+        )}
       </div>
 
       <div className="grid grid-cols-3 gap-6">
