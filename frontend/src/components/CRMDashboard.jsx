@@ -1751,6 +1751,11 @@ const CompaniesView = ({ companies, contacts, onAddCompany, onEditCompany, onDel
                       {selectedCompany.company_type}
                     </span>
                   )}
+                  {selectedCompany.industry && (
+                    <span className="text-sm px-2 py-1 bg-blue-100 text-blue-700 rounded mt-1 ml-1 inline-block">
+                      {selectedCompany.industry}
+                    </span>
+                  )}
                 </div>
                 <div className="flex gap-2">
                   <Button variant="outline" size="sm" onClick={() => onEditCompany(selectedCompany)}>
@@ -1794,12 +1799,45 @@ const CompaniesView = ({ companies, contacts, onAddCompany, onEditCompany, onDel
                 )}
               </div>
 
-              {selectedCompany.notes && (
-                <div className="mb-6 p-3 bg-gray-50 rounded-lg">
-                  <p className="text-xs text-gray-500 mb-1">Notes</p>
-                  <p className="text-sm whitespace-pre-wrap">{selectedCompany.notes}</p>
-                </div>
-              )}
+              {/* Notes Section */}
+              <div className="mb-6">
+                <h4 className="font-semibold mb-2 flex items-center gap-2">
+                  <FileText className="w-4 h-4" />
+                  Notes & Activity
+                </h4>
+                {selectedCompany.notes ? (
+                  <div className="p-3 bg-gray-50 rounded-lg max-h-48 overflow-auto">
+                    <p className="text-sm whitespace-pre-wrap">{selectedCompany.notes}</p>
+                  </div>
+                ) : (
+                  <p className="text-gray-400 text-sm">No notes yet. Edit company to add notes or forward emails.</p>
+                )}
+              </div>
+
+              {/* Documents Section */}
+              <div className="mb-6">
+                <h4 className="font-semibold mb-2 flex items-center gap-2">
+                  <Paperclip className="w-4 h-4" />
+                  Documents ({selectedCompany.documents?.length || 0})
+                </h4>
+                {selectedCompany.documents?.length > 0 ? (
+                  <div className="space-y-2">
+                    {selectedCompany.documents.map(doc => (
+                      <div key={doc.id} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                        <span className="text-sm">{doc.name}</span>
+                        <a 
+                          href={`${API_URL}/api/crm/download-document/company/${selectedCompany.id}/${doc.id}`}
+                          className="text-blue-600 text-xs hover:underline"
+                        >
+                          Download
+                        </a>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-400 text-sm">No documents attached</p>
+                )}
+              </div>
 
               {/* Linked Contacts */}
               <div>
