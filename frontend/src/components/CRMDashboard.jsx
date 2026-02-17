@@ -1711,11 +1711,18 @@ const CompaniesView = ({ companies, contacts, onAddCompany, onEditCompany, onDel
                 <div className="flex items-start justify-between">
                   <div>
                     <p className="font-semibold">{company.name}</p>
-                    {company.company_type && (
-                      <span className="text-xs px-2 py-0.5 bg-gray-100 rounded mt-1 inline-block">
-                        {company.company_type}
-                      </span>
-                    )}
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {company.company_type && (
+                        <span className="text-xs px-2 py-0.5 bg-gray-100 rounded">
+                          {company.company_type}
+                        </span>
+                      )}
+                      {company.industry && (
+                        <span className="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded">
+                          {company.industry}
+                        </span>
+                      )}
+                    </div>
                     {company.city && (
                       <p className="text-sm text-gray-500 mt-1">
                         <MapPin className="w-3 h-3 inline mr-1" />
