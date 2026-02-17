@@ -2710,13 +2710,17 @@ const CompanyModal = ({ company, onClose, onSave }) => {
             />
           </div>
           <div className="col-span-2">
-            <label className="block text-sm font-medium mb-1">Notes</label>
+            <label className="block text-sm font-medium mb-1">Notes / Activity Log</label>
             <textarea
               value={formData.notes || ''}
               onChange={(e) => setFormData({...formData, notes: e.target.value})}
               className="w-full px-3 py-2 border rounded-lg"
-              rows={3}
+              rows={5}
+              placeholder="Add notes, meeting summaries, email conversations..."
             />
+            <p className="text-xs text-gray-400 mt-1">
+              Forwarded emails will automatically be added here with AI summaries
+            </p>
           </div>
         </div>
 
