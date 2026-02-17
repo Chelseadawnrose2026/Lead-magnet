@@ -16,6 +16,9 @@ import csv
 import io
 import base64
 
+# AI summarization
+from emergentintegrations.llm.chat import LlmChat, UserMessage
+
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
@@ -27,6 +30,9 @@ logger = logging.getLogger(__name__)
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
+
+# Emergent LLM key for AI summarization
+EMERGENT_LLM_KEY = os.environ.get('EMERGENT_LLM_KEY', '')
 
 # Resend configuration
 resend.api_key = os.environ.get('RESEND_API_KEY')
