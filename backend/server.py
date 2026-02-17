@@ -1067,39 +1067,45 @@ async def get_companies(request: Request):
     
     # First, auto-sync any new organizations from contacts
     contacts = await db.crm_contacts.find(
-        {"organization_name": {"$ne": None, "$ne": ""}, "company_id": None},
+        {"organization_name": {"$ne": None, "$ne": ""}},
         {"_id": 0}
     ).to_list(1000)
     
     # Auto-create companies for unlinked organizations
     for contact in contacts:
         org_name = contact.get("organization_name", "").strip()
-        if org_name:
-            existing = await db.crm_companies.find_one({"name": org_name})
-            if not existing:
-                company = Company(
-                    name=org_name,
-                    company_type=contact.get("organization_type"),
-                    city=contact.get("city"),
-                    state=contact.get("state"),
-                    country=contact.get("country")
-                )
-                doc = company.model_dump()
-                doc['created_at'] = doc['created_at'].isoformat()
-                doc['updated_at'] = doc['updated_at'].isoformat()
-                await db.crm_companies.insert_one(doc)
-                
-                # Link contact to new company
-                await db.crm_contacts.update_one(
-                    {"id": contact["id"]},
-                    {"$set": {"company_id": company.id}}
-                )
-            else:
-                # Link contact to existing company
-                await db.crm_contacts.update_one(
-                    {"id": contact["id"]},
-                    {"$set": {"company_id": existing["id"]}}
-                )
+        company_id = contact.get("company_id")
+        
+        # Skip if already linked or no org name
+        if company_id or not org_name:
+            continue
+            
+        existing = await db.crm_companies.find_one({"name": org_name})
+        if not existing:
+            company = Company(
+                name=org_name,
+                company_type=contact.get("organization_type"),
+                city=contact.get("city"),
+                state=contact.get("state"),
+                country=contact.get("country")
+            )
+            doc = company.model_dump()
+            doc['created_at'] = doc['created_at'].isoformat()
+            doc['updated_at'] = doc['updated_at'].isoformat()
+            await db.crm_companies.insert_one(doc)
+            doc.pop('_id', None)
+            
+            # Link contact to new company
+            await db.crm_contacts.update_one(
+                {"id": contact["id"]},
+                {"$set": {"company_id": company.id}}
+            )
+        else:
+            # Link contact to existing company
+            await db.crm_contacts.update_one(
+                {"id": contact["id"]},
+                {"$set": {"company_id": existing["id"]}}
+            )
     
     companies = await db.crm_companies.find({}, {"_id": 0}).sort("name", 1).to_list(1000)
     return companies
