@@ -169,6 +169,7 @@ class Company(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     name: str
     company_type: Optional[str] = None  # Parish, Conference, Diocese, Retreat Center, School, Other
+    industry: Optional[str] = None  # Industry tag for searching
     # Contact info
     email: Optional[str] = None
     phone: Optional[str] = None
@@ -180,6 +181,8 @@ class Company(BaseModel):
     country: Optional[str] = None
     # Notes
     notes: Optional[str] = None
+    # Documents
+    documents: List[Dict[str, Any]] = []  # [{name, url, type, uploaded_at}]
     # Timestamps
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
@@ -187,6 +190,7 @@ class Company(BaseModel):
 class CompanyCreate(BaseModel):
     name: str
     company_type: Optional[str] = None
+    industry: Optional[str] = None
     email: Optional[str] = None
     phone: Optional[str] = None
     website: Optional[str] = None
@@ -195,10 +199,12 @@ class CompanyCreate(BaseModel):
     state: Optional[str] = None
     country: Optional[str] = None
     notes: Optional[str] = None
+    documents: List[Dict[str, Any]] = []
 
 class CompanyUpdate(BaseModel):
     name: Optional[str] = None
     company_type: Optional[str] = None
+    industry: Optional[str] = None
     email: Optional[str] = None
     phone: Optional[str] = None
     website: Optional[str] = None
@@ -207,6 +213,7 @@ class CompanyUpdate(BaseModel):
     state: Optional[str] = None
     country: Optional[str] = None
     notes: Optional[str] = None
+    documents: Optional[List[Dict[str, Any]]] = None
 
 # Email forwarding model
 class ForwardedEmail(BaseModel):
