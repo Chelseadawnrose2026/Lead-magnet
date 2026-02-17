@@ -2584,6 +2584,7 @@ const CompanyModal = ({ company, onClose, onSave }) => {
   const [formData, setFormData] = useState(company || {
     name: '',
     company_type: '',
+    industry: '',
     email: '',
     phone: '',
     website: '',
@@ -2591,7 +2592,8 @@ const CompanyModal = ({ company, onClose, onSave }) => {
     city: '',
     state: '',
     country: '',
-    notes: ''
+    notes: '',
+    documents: []
   });
 
   return (
@@ -2632,6 +2634,16 @@ const CompanyModal = ({ company, onClose, onSave }) => {
               <option value="School">School</option>
               <option value="Other">Other</option>
             </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Industry</label>
+            <input
+              type="text"
+              value={formData.industry || ''}
+              onChange={(e) => setFormData({...formData, industry: e.target.value})}
+              className="w-full px-3 py-2 border rounded-lg"
+              placeholder="e.g., Education, Religious, Healthcare"
+            />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Email</label>
