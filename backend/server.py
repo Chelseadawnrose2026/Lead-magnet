@@ -596,6 +596,63 @@ async def get_all_bookings():
             booking['timestamp'] = datetime.fromisoformat(booking['timestamp'])
     return bookings
 
+# Sync all leads to external CRM
+@api_router.post("/sync-leads-to-crm")
+async def sync_leads_to_crm():
+    """Sync all existing contacts and bookings to the external CRM"""
+    import httpx
+    
+    webhook_url = "https://recruit-hub-124.emergent.host/api/webhook/new-contact"
+    results = {"synced": 0, "failed": 0, "errors": []}
+    
+    async with httpx.AsyncClient() as http_client:
+        # Sync all contacts
+        contacts = await db.contact_submissions.find({}, {"_id": 0}).to_list(1000)
+        for contact in contacts:
+            try:
+                payload = {
+                    "full_name": contact.get("name", ""),
+                    "email": contact.get("email", ""),
+                    "phone": contact.get("phone"),
+                    "source": "Chelsea Flynn Website Contact Form",
+                    "tags": ["Website Lead", "Historical Import"],
+                    "extra_data": {"message": contact.get("message", "")[:500] if contact.get("message") else None}
+                }
+                response = await http_client.post(webhook_url, json=payload, timeout=10)
+                if response.status_code == 200:
+                    results["synced"] += 1
+                else:
+                    results["failed"] += 1
+                    results["errors"].append(f"Contact {contact.get('email')}: {response.status_code}")
+            except Exception as e:
+                results["failed"] += 1
+                results["errors"].append(f"Contact {contact.get('email')}: {str(e)}")
+        
+        # Sync all bookings
+        bookings = await db.booking_requests.find({}, {"_id": 0}).to_list(1000)
+        for booking in bookings:
+            try:
+                payload = {
+                    "full_name": booking.get("name", ""),
+                    "email": booking.get("email", ""),
+                    "phone": booking.get("phone"),
+                    "source": booking.get("booking_type", "Chelsea Flynn Website Booking"),
+                    "tags": ["Booking Request", booking.get("booking_type", "Unknown"), "Historical Import"],
+                    "extra_data": {"booking_type": booking.get("booking_type"), "message": booking.get("message", "")[:500] if booking.get("message") else None}
+                }
+                response = await http_client.post(webhook_url, json=payload, timeout=10)
+                if response.status_code == 200:
+                    results["synced"] += 1
+                else:
+                    results["failed"] += 1
+                    results["errors"].append(f"Booking {booking.get('email')}: {response.status_code}")
+            except Exception as e:
+                results["failed"] += 1
+                results["errors"].append(f"Booking {booking.get('email')}: {str(e)}")
+    
+    logger.info(f"CRM Sync complete: {results['synced']} synced, {results['failed']} failed")
+    return results
+
 # PDF Download endpoints
 @api_router.get("/download/slides")
 async def download_slides():
