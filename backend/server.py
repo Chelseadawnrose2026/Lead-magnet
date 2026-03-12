@@ -512,6 +512,25 @@ async def submit_contact_form(input: ContactSubmissionCreate):
         <p>{contact_obj.message}</p>
         """
         await send_notification_email(f"New Contact: {contact_obj.name}", html_content)
+        
+        # Sync to external CRM (Chelsea Flynn main CRM)
+        try:
+            import httpx
+            webhook_url = "https://recruit-hub-124.emergent.host/api/webhook/new-contact"
+            webhook_payload = {
+                "full_name": contact_obj.name,
+                "email": contact_obj.email,
+                "phone": contact_obj.phone,
+                "source": "Chelsea Flynn Website Contact Form",
+                "tags": ["Website Lead"],
+                "extra_data": {"message": contact_obj.message[:500] if contact_obj.message else None}
+            }
+            async with httpx.AsyncClient() as http_client:
+                await http_client.post(webhook_url, json=webhook_payload, timeout=10)
+                logger.info(f"Contact synced to external CRM: {contact_obj.email}")
+        except Exception as webhook_err:
+            logger.error(f"Failed to sync contact to external CRM: {webhook_err}")
+        
         return contact_obj
     except Exception as e:
         logger.error(f"Error submitting contact form: {str(e)}")
@@ -545,6 +564,25 @@ async def submit_booking_request(input: BookingRequestCreate):
         <p>{booking_obj.message}</p>
         """
         await send_notification_email(f"New Booking: {booking_obj.name}", html_content)
+        
+        # Sync to external CRM (Chelsea Flynn main CRM)
+        try:
+            import httpx
+            webhook_url = "https://recruit-hub-124.emergent.host/api/webhook/new-contact"
+            webhook_payload = {
+                "full_name": booking_obj.name,
+                "email": booking_obj.email,
+                "phone": booking_obj.phone,
+                "source": "Chelsea Flynn Website Booking",
+                "tags": ["Booking Request", booking_obj.booking_type],
+                "extra_data": {"booking_type": booking_obj.booking_type, "message": booking_obj.message[:500] if booking_obj.message else None}
+            }
+            async with httpx.AsyncClient() as http_client:
+                await http_client.post(webhook_url, json=webhook_payload, timeout=10)
+                logger.info(f"Booking synced to external CRM: {booking_obj.email}")
+        except Exception as webhook_err:
+            logger.error(f"Failed to sync booking to external CRM: {webhook_err}")
+        
         return booking_obj
     except Exception as e:
         logger.error(f"Error submitting booking request: {str(e)}")
